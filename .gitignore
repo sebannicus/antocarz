@@ -1,1 +1,12 @@
+dist/
+.output/
+node_modules/
+.astro/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+npm-debug.log*
+
 .vercel
