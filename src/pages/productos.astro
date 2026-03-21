@@ -1,0 +1,71 @@
+---
+/**
+ * productos.astro — Antocarz
+ * Página completa del catálogo de productos.
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Products from '../components/sections/Products.astro';
+---
+
+<BaseLayout
+  title="Catálogo de Productos | Antocarz La Serena"
+  description="Explora nuestro catálogo completo: car audio JBL y Pioneer, alarmas, polarizado, iluminación LED, cámaras y más. Filtros por categoría, marca y precio."
+  canonicalUrl="https://antocarz.cl/productos"
+>
+  <!-- Mini hero de página -->
+  <div class="page-hero">
+    <div class="container page-hero__inner">
+      <a href="/" class="page-hero__back">← Volver al inicio</a>
+      <h1 class="page-hero__title">
+        Catálogo de <span class="page-hero__accent">Productos</span>
+      </h1>
+      <p class="page-hero__sub">
+        Equipamiento automotriz de primeras marcas. Haz clic en cualquier producto
+        para ver el detalle y cotizar directamente por WhatsApp.
+      </p>
+    </div>
+  </div>
+
+  <Products />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    padding-top: 100px;
+    padding-bottom: var(--space-12);
+  }
+
+  .page-hero__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .page-hero__back {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    transition: color var(--transition-fast);
+    width: fit-content;
+  }
+  .page-hero__back:hover { color: var(--color-gold); }
+
+  .page-hero__title {
+    font-family: var(--font-headline);
+    font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
+    font-weight: var(--weight-extrabold);
+    color: var(--color-text-primary);
+    line-height: var(--leading-tight);
+  }
+
+  .page-hero__accent { color: var(--color-gold); }
+
+  .page-hero__sub {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    max-width: 560px;
+    line-height: var(--leading-relaxed);
+  }
+</style>

@@ -1,0 +1,176 @@
+---
+/**
+ * Testimonials.astro — Antocarz
+ * Reseñas de Google. Reemplazar placeholders con reseñas reales de GMB.
+ */
+
+import SectionLabel from '../ui/SectionLabel.astro';
+import { TESTIMONIALS } from '../../content/testimonials';
+---
+
+<section class="testimonials section section--surface" id="testimonios" aria-labelledby="testimonials-heading">
+  <div class="container">
+    <div class="testimonials__header" data-scroll-children>
+      <SectionLabel text="RESEÑAS GOOGLE" align="center" />
+      <h2 class="testimonials__title" id="testimonials-heading">
+        Lo que dicen nuestros<br />
+        <span class="text-gradient-gold">clientes en La Serena.</span>
+      </h2>
+    </div>
+
+    <!-- Promedio Google -->
+    <div class="testimonials__rating gs-fade-in">
+      <img src="/logos/PNG PEQUE LOGO.png" alt="Antocarz" class="testimonials__logo" loading="lazy" />
+      <span class="testimonials__rating-divider" aria-hidden="true">|</span>
+      <span class="testimonials__stars" aria-label="5 estrellas">★★★★★</span>
+      <span class="testimonials__rating-score">5.0</span>
+      <span class="testimonials__rating-label">en Google Reviews</span>
+    </div>
+
+    <div class="testimonials__grid">
+      {TESTIMONIALS.map((t) => (
+        <article class="testimonial-card gs-fade-up">
+          <div class="testimonial-card__stars" aria-label={`${t.stars} estrellas`}>
+            {'★'.repeat(t.stars)}
+          </div>
+          <blockquote class="testimonial-card__text">"{t.text}"</blockquote>
+          <footer class="testimonial-card__footer">
+            <div class="testimonial-card__avatar" aria-hidden="true">{t.initials}</div>
+            <div>
+              <p class="testimonial-card__name">{t.name}</p>
+              <p class="testimonial-card__service">{t.service}</p>
+            </div>
+          </footer>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials__header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+
+  .testimonials__title {
+    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+  }
+
+  .testimonials__rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-10);
+    flex-wrap: wrap;
+  }
+
+  .testimonials__stars {
+    color: #FFC903;
+    font-size: var(--text-xl);
+    letter-spacing: 2px;
+  }
+
+  .testimonials__rating-score {
+    font-family: var(--font-headline);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-extrabold);
+    color: var(--color-text-primary);
+  }
+
+  .testimonials__rating-label {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .testimonials__logo {
+    height: 68px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+  }
+
+  .testimonials__rating-divider {
+    color: var(--color-border-hover);
+    font-size: var(--text-xl);
+    opacity: 0.5;
+  }
+
+  .testimonials__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 768px) {
+    .testimonials__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Card */
+  .testimonial-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    transition: border-color var(--transition-base), box-shadow var(--transition-slow);
+  }
+
+  .testimonial-card:hover {
+    border-color: var(--color-border-hover);
+    box-shadow: var(--shadow-gold);
+  }
+
+  .testimonial-card__stars {
+    color: #FFC903;
+    font-size: var(--text-base);
+    letter-spacing: 1px;
+  }
+
+  .testimonial-card__text {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    font-style: normal;
+    flex: 1;
+  }
+
+  .testimonial-card__footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .testimonial-card__avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(227, 6, 19, 0.12);
+    border: 1px solid var(--color-border-hover);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-headline);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: var(--color-gold);
+    flex-shrink: 0;
+  }
+
+  .testimonial-card__name {
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    line-height: 1.2;
+  }
+
+  .testimonial-card__service {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+</style>

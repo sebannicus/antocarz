@@ -1,0 +1,232 @@
+---
+/**
+ * Differentiator.astro — Antocarz
+ * Sección destacada: Polarizado Legal con Certificado.
+ * Diferenciador clave: Antocarz tramita la certificación exigida por ley.
+ */
+
+import SectionLabel from '../ui/SectionLabel.astro';
+import Button from '../ui/Button.astro';
+import { SITE } from '../../content/site';
+
+const whatsappMsg = encodeURIComponent('Hola, quiero cotizar polarizado legal para mi vehículo.');
+const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
+---
+
+<section class="diff section" id="polarizado" aria-labelledby="diff-heading">
+  <div class="container">
+    <div class="diff__inner">
+      <div class="diff__content gs-slide-left">
+        <SectionLabel text="LEY POLARIZADOS" />
+        <h2 class="diff__title" id="diff-heading">
+          Polarizado con<br />
+          <span class="text-gradient-gold">certificado legal</span><br />
+          incluido.
+        </h2>
+        <p class="diff__text">
+          Desde 2019, Chile exige que los vehículos con polarizado
+          cuenten con un certificado que acredite el cumplimiento de la normativa.
+          En Antocarz gestionamos todo el proceso: instalamos la lámina correcta
+          y te entregamos el certificado listo para portar.
+        </p>
+        <ul class="diff__list">
+          <li class="diff__list-item">
+            <span class="diff__check" aria-hidden="true">✓</span>
+            Láminas americanas certificadas con control de luz visible
+          </li>
+          <li class="diff__list-item">
+            <span class="diff__check" aria-hidden="true">✓</span>
+            Certificado oficial incluido en el precio
+          </li>
+          <li class="diff__list-item">
+            <span class="diff__check" aria-hidden="true">✓</span>
+            Descarga digital y versión física disponible
+          </li>
+          <li class="diff__list-item">
+            <span class="diff__check" aria-hidden="true">✓</span>
+            Garantía de instalación sin burbujas ni rayaduras
+          </li>
+        </ul>
+        <div class="diff__cta">
+          <Button href={whatsappUrl} variant="primary" size="lg" external={true}>
+            Cotizar polarizado
+          </Button>
+          <Button href="#contacto" variant="ghost" size="lg">
+            Preguntas frecuentes
+          </Button>
+        </div>
+      </div>
+
+      <div class="diff__visual gs-slide-right" aria-hidden="true">
+        <div class="diff__card shimmer-border">
+          <div class="diff__card-icon">🪟</div>
+          <div class="diff__card-badge">CERTIFICADO LEGAL</div>
+          <p class="diff__card-text">
+            "Certificado de cumplimiento de<br />
+            Ley Polarizados — vigente en Chile"
+          </p>
+          <div class="diff__card-check">
+            <span class="diff__card-dot"></span>
+            Listo para portar en tu vehículo
+          </div>
+        </div>
+
+        <div class="diff__stats">
+          <div class="diff__stat">
+            <span class="diff__stat-value">Aprobado</span>
+            <span class="diff__stat-label">por normativa chilena</span>
+          </div>
+          <div class="diff__stat">
+            <span class="diff__stat-value">24h</span>
+            <span class="diff__stat-label">entrega del certificado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .diff { overflow: hidden; }
+
+  .diff__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .diff__inner { grid-template-columns: 1fr 1fr; }
+  }
+
+  .diff__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .diff__title {
+    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+  }
+
+  .diff__text {
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: 480px;
+  }
+
+  .diff__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .diff__list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+  }
+
+  .diff__check {
+    color: var(--color-gold);
+    font-weight: var(--weight-bold);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .diff__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: center;
+    padding-top: var(--space-2);
+  }
+
+  /* Visual */
+  .diff__visual {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  .diff__card {
+    width: 100%;
+    max-width: 360px;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-10);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .diff__card-icon { font-size: 3rem; line-height: 1; }
+
+  .diff__card-badge {
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-gold);
+    background: rgba(227, 6, 19, 0.10);
+    padding: var(--space-1) var(--space-4);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border-hover);
+  }
+
+  .diff__card-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    text-align: center;
+  }
+
+  .diff__card-check {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .diff__card-dot {
+    width: 8px;
+    height: 8px;
+    background: #2ECC71;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse-gold 2s ease-in-out infinite;
+  }
+
+  .diff__stats {
+    display: flex;
+    gap: var(--space-8);
+    justify-content: center;
+  }
+
+  .diff__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .diff__stat-value {
+    font-family: var(--font-headline);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-extrabold);
+    color: var(--color-gold);
+  }
+
+  .diff__stat-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+</style>

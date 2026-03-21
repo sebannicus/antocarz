@@ -1,0 +1,271 @@
+---
+/**
+ * ProductsCta.astro — Antocarz
+ * Teaser de catálogo en el index. Muestra 3 productos destacados
+ * y dirige al usuario a /productos para ver el catálogo completo.
+ */
+
+import SectionLabel from '../ui/SectionLabel.astro';
+import { PRODUCTS } from '../../content/products';
+import { SITE } from '../../content/site';
+
+// Mostrar los 3 primeros con badge, completar con los primeros si faltan
+const featured = [
+  ...PRODUCTS.filter(p => p.badge).slice(0, 3),
+  ...PRODUCTS.filter(p => !p.badge),
+].slice(0, 3);
+
+const whatsapp = SITE.whatsapp;
+---
+
+<section class="pcta section" id="productos" aria-labelledby="pcta-heading">
+  <div class="container">
+
+    <div class="pcta__header" data-scroll-children>
+      <SectionLabel text="CATÁLOGO" align="center" />
+      <h2 class="pcta__title" id="pcta-heading">
+        Productos que<br />
+        <span class="text-gradient-gold">tenemos en stock.</span>
+      </h2>
+      <p class="pcta__sub">
+        Car audio, alarmas, polarizado, LED y más. Más de 20 productos
+        disponibles para cotizar directamente por WhatsApp.
+      </p>
+    </div>
+
+    <!-- 3 productos destacados -->
+    <div class="pcta__grid">
+      {featured.map((product) => (
+        <a
+          href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hola, me interesa el producto: ${product.name} (${product.priceFormatted}). ¿Está disponible?`)}`}
+          class="pcta__card"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Cotizar ${product.name}`}
+        >
+          {product.badge && (
+            <span class="pcta__badge">{product.badge}</span>
+          )}
+          <div class="pcta__img-wrap">
+            <img
+              src={product.image}
+              alt={product.name}
+              class="pcta__img"
+              width="480"
+              height="320"
+              loading="lazy"
+            />
+            <div class="pcta__overlay">
+              <span>Cotizar por WhatsApp →</span>
+            </div>
+          </div>
+          <div class="pcta__body">
+            <div class="pcta__meta">
+              <span class="pcta__brand">{product.brand}</span>
+              <span class="pcta__cat">{product.category}</span>
+            </div>
+            <h3 class="pcta__name">{product.name}</h3>
+            <p class="pcta__price">{product.priceFormatted}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- CTA principal al catálogo -->
+    <div class="pcta__cta-wrap">
+      <p class="pcta__cta-hint">
+        +{PRODUCTS.length - 3} productos más disponibles
+      </p>
+      <a href="/productos" class="pcta__cta-btn">
+        Ver catálogo completo
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .pcta__header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+  }
+
+  .pcta__title {
+    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+    margin-bottom: var(--space-4);
+  }
+
+  .pcta__sub {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    max-width: 480px;
+    margin-inline: auto;
+    line-height: var(--leading-relaxed);
+  }
+
+  /* Grid de 3 */
+  .pcta__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-12);
+  }
+
+  @media (min-width: 640px)  { .pcta__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .pcta__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  /* Card */
+  .pcta__card {
+    position: relative;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: border-color var(--transition-base), transform var(--transition-slow), box-shadow var(--transition-slow);
+  }
+
+  .pcta__card:hover {
+    border-color: var(--color-border-hover);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-gold);
+  }
+
+  .pcta__badge {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    z-index: 2;
+    background: var(--color-gold);
+    color: #fff;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    padding: 3px var(--space-3);
+    border-radius: var(--radius-full);
+  }
+
+  .pcta__img-wrap {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+  }
+
+  .pcta__img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+  }
+
+  .pcta__card:hover .pcta__img { transform: scale(1.04); }
+
+  .pcta__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(227, 6, 19, 0.78);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    color: #fff;
+    font-weight: var(--weight-bold);
+    font-size: var(--text-base);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .pcta__card:hover .pcta__overlay { opacity: 1; }
+
+  .pcta__body {
+    padding: var(--space-4) var(--space-5) var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .pcta__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pcta__brand {
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  .pcta__cat {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    background: var(--color-bg);
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+
+  .pcta__name {
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    line-height: var(--leading-snug);
+  }
+
+  .pcta__price {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-extrabold);
+    color: var(--color-gold);
+    line-height: 1;
+  }
+
+  /* CTA final */
+  .pcta__cta-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .pcta__cta-hint {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .pcta__cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-10);
+    background: var(--color-gold);
+    color: #fff;
+    border-radius: var(--radius-full);
+    font-family: var(--font-subhead);
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-decoration: none;
+    transition: background var(--transition-base), transform var(--transition-spring), box-shadow var(--transition-base);
+    box-shadow: 0 4px 24px rgba(227, 6, 19, 0.30);
+  }
+
+  .pcta__cta-btn:hover {
+    background: var(--color-gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(227, 6, 19, 0.45);
+  }
+
+  .pcta__cta-btn svg {
+    transition: transform var(--transition-base);
+  }
+
+  .pcta__cta-btn:hover svg {
+    transform: translateX(4px);
+  }
+</style>

@@ -1,0 +1,166 @@
+---
+/**
+ * CtaFinal.astro — Antocarz
+ * Cierre de página: CTA de conversión a WhatsApp.
+ */
+
+import Button from '../ui/Button.astro';
+import { SITE } from '../../content/site';
+
+const whatsappMsg = encodeURIComponent('Hola, quiero cotizar un servicio para mi vehículo.');
+const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
+---
+
+<section class="cta-final section" aria-label="Llamada a la acción final">
+  <!-- Glows -->
+  <div class="bg-glow bg-glow--gold cta-final__glow cta-final__glow--1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow--violet cta-final__glow cta-final__glow--2" aria-hidden="true"></div>
+
+  <div class="container container--sm">
+    <div class="cta-final__inner" data-scroll-children>
+
+      <!-- Logo prominente antes del CTA -->
+      <img
+        src="/logos/PNG PEQUE LOGO.png"
+        alt="Antocarz"
+        class="cta-final__logo"
+        width="180"
+        height="80"
+        loading="lazy"
+      />
+
+      <span class="cta-final__label" aria-hidden="true">
+        <span class="cta-final__dot"></span>
+        Respuesta en menos de 1 hora
+      </span>
+
+      <h2 class="cta-final__title">
+        ¿Listo para equipar<br />
+        <span class="text-gradient-gold">tu auto?</span>
+      </h2>
+
+      <p class="cta-final__sub">
+        Cuéntanos qué necesitas y te cotizamos al instante por WhatsApp.
+        Sin compromisos, sin esperas.
+      </p>
+
+      <div class="cta-final__actions">
+        <Button href={whatsappUrl} variant="primary" size="lg" external={true} pulse={true}>
+          Cotizar por WhatsApp
+        </Button>
+        <Button href={`tel:${SITE.phone}`} variant="outline" size="lg">
+          Llamar ahora
+        </Button>
+      </div>
+
+      <div class="cta-final__trust">
+        <span>📍 Lautaro 812, La Serena</span>
+        <span class="cta-final__sep" aria-hidden="true">·</span>
+        <span>Lun–Vie 09:30–18:00</span>
+        <span class="cta-final__sep" aria-hidden="true">·</span>
+        <span>⭐ 5.0 en Google</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-final {
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .cta-final__glow--1 {
+    width: 500px;
+    height: 500px;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.12;
+  }
+
+  .cta-final__glow--2 {
+    width: 400px;
+    height: 400px;
+    bottom: -80px;
+    right: 10%;
+    opacity: 0.08;
+    animation-delay: -5s;
+  }
+
+  .cta-final__inner {
+    position: relative;
+    z-index: var(--z-above);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .cta-final__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-muted);
+  }
+
+  .cta-final__dot {
+    width: 8px;
+    height: 8px;
+    background: #2ECC71;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse-gold 2s ease-in-out infinite;
+  }
+
+  .cta-final__title {
+    font-size: clamp(var(--text-4xl), 6vw, var(--text-6xl));
+    line-height: var(--leading-tight);
+  }
+
+  .cta-final__sub {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    max-width: 420px;
+    line-height: var(--leading-relaxed);
+  }
+
+  .cta-final__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    justify-content: center;
+  }
+
+  .cta-final__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+    align-items: center;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    width: 100%;
+  }
+
+  .cta-final__sep { color: var(--color-border-hover); }
+
+  .cta-final__logo {
+    height: 110px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4));
+    margin-bottom: var(--space-2);
+  }
+
+  @media (max-width: 640px) {
+    .cta-final__actions { flex-direction: column; width: 100%; }
+    .cta-final__actions :global(.btn) { width: 100%; justify-content: center; }
+  }
+</style>

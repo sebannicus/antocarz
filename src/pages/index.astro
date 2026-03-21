@@ -1,0 +1,34 @@
+---
+/**
+ * index.astro — Antocarz
+ * Página principal. Solo orquesta secciones — sin lógica de negocio.
+ * Estructura: Hero → Authority → Brands → Services → Differentiator → Products → Testimonials → FAQ → LocalMap → CtaFinal
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import Authority from '../components/sections/Authority.astro';
+import Brands from '../components/sections/Brands.astro';
+import Services from '../components/sections/Services.astro';
+import Differentiator from '../components/sections/Differentiator.astro';
+import ProductsCta from '../components/sections/ProductsCta.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
+import FAQ from '../components/sections/FAQ.astro';
+import LocalMap from '../components/sections/LocalMap.astro';
+import CtaFinal from '../components/sections/CtaFinal.astro';
+import Instagram from '../components/sections/Instagram.astro';
+---
+
+<BaseLayout>
+  <Hero />
+  <Testimonials />
+  <Authority />
+  <Brands />
+  <Services />
+  <Instagram />
+  <Differentiator />
+  <ProductsCta />
+  <FAQ />
+  <LocalMap />
+  <CtaFinal />
+</BaseLayout>

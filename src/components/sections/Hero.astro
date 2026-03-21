@@ -1,0 +1,435 @@
+---
+/**
+ * Hero.astro — Antocarz
+ * Desktop: texto izquierda + slider derecha grande (58% viewport).
+ * Mobile: sin slider, fondo oscuro limpio. Texto primero, luego entra.
+ */
+
+import Button from '../ui/Button.astro';
+import { SITE } from '../../content/site';
+
+const whatsappMsg = encodeURIComponent('Hola, quiero cotizar un servicio para mi vehículo.');
+const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
+---
+
+<section class="hero" id="inicio" aria-label="Inicio">
+
+  <!-- ── Slider — panel derecho en desktop, oculto en mobile ── -->
+  <div class="hero__slider" id="hero-slider" aria-hidden="true">
+    <div class="hero__slide hero__slide--active">
+      <img src="/slides hero/BANNER POLARIZADOS.webp" alt="" class="hero__slide-img" fetchpriority="high" />
+    </div>
+    <div class="hero__slide">
+      <img src="/slides hero/SLIDE AUDIO.webp" alt="" class="hero__slide-img" loading="lazy" />
+    </div>
+    <div class="hero__slide">
+      <img src="/slides hero/SLIDE INMOB.webp" alt="" class="hero__slide-img" loading="lazy" />
+    </div>
+    <div class="hero__slide">
+      <img src="/slides hero/SLIDE LOGO.webp" alt="" class="hero__slide-img" loading="lazy" />
+    </div>
+
+    <!-- Dots dentro del panel del slider -->
+    <div class="hero__dots">
+      <button class="hero__dot hero__dot--active" data-slide="0" aria-label="Slide 1"></button>
+      <button class="hero__dot" data-slide="1" aria-label="Slide 2"></button>
+      <button class="hero__dot" data-slide="2" aria-label="Slide 3"></button>
+      <button class="hero__dot" data-slide="3" aria-label="Slide 4"></button>
+    </div>
+  </div>
+
+  <!-- Degradado de transición texto→slider (solo desktop) -->
+  <div class="hero__fade" aria-hidden="true"></div>
+
+  <!-- ── Contenido izquierda ── -->
+  <div class="container hero__inner">
+    <div class="hero__content" id="hero-content">
+
+      <span class="hero__label">
+        <span class="hero__label-dot" aria-hidden="true"></span>
+        Especialistas en equipamiento automotriz · La Serena
+      </span>
+
+      <h1 class="hero__title">
+        Tu auto merece<br />
+        <span class="hero__title-accent">lo mejor</span><br />
+        del mercado.
+      </h1>
+
+      <p class="hero__sub">
+        Car audio JBL y Pioneer, alarmas homologadas, polarizado legal,
+        iluminación LED y más. Instalación profesional con garantía.
+      </p>
+
+      <div class="hero__cta">
+        <Button href={whatsappUrl} variant="primary" size="lg" external={true} pulse={true}>
+          Cotizar por WhatsApp
+        </Button>
+        <Button href="#servicios" variant="ghost" size="lg">
+          Ver servicios →
+        </Button>
+      </div>
+
+      <div class="hero__proof">
+        <div class="hero__proof-item">
+          <span class="hero__proof-value">⭐ 5.0</span>
+          <span class="hero__proof-label">en Google</span>
+        </div>
+        <span class="hero__proof-divider" aria-hidden="true">·</span>
+        <div class="hero__proof-item">
+          <span class="hero__proof-value">+500</span>
+          <span class="hero__proof-label">instalaciones</span>
+        </div>
+        <span class="hero__proof-divider" aria-hidden="true">·</span>
+        <div class="hero__proof-item">
+          <span class="hero__proof-value">JBL · Pioneer</span>
+          <span class="hero__proof-label">marcas oficiales</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marquee -->
+  <div class="hero__marquee marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span class="hero__marquee-item">Car Audio</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Polarizado Legal</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Alarmas Homologadas</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">La Serena</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">JBL</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Pioneer</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Cámaras de Retroceso</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Iluminación LED</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Seguridad Automotriz</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Car Audio</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Polarizado Legal</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Alarmas Homologadas</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">La Serena</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">JBL</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Pioneer</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Cámaras de Retroceso</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Iluminación LED</span>
+      <span class="hero__marquee-sep">·</span>
+      <span class="hero__marquee-item">Seguridad Automotriz</span>
+      <span class="hero__marquee-sep">·</span>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="hero__scroll" id="hero-scroll" aria-hidden="true">
+    <div class="hero__scroll-line"></div>
+    <span class="hero__scroll-text">Scroll</span>
+  </div>
+
+</section>
+
+<script>
+  // Solo controla el slider — el texto es siempre estático
+  const SLIDE_DURATION = 5000;
+
+  const slides = Array.from(document.querySelectorAll<HTMLElement>('.hero__slide'));
+  const dots   = Array.from(document.querySelectorAll<HTMLButtonElement>('.hero__dot'));
+  let current = 0;
+  let timer: ReturnType<typeof setInterval>;
+
+  function goTo(index: number) {
+    slides[current].classList.remove('hero__slide--active');
+    dots[current].classList.remove('hero__dot--active');
+    current = index;
+    slides[current].classList.add('hero__slide--active');
+    dots[current].classList.add('hero__dot--active');
+  }
+
+  function next() { goTo((current + 1) % slides.length); }
+  function startAutoplay() { timer = setInterval(next, SLIDE_DURATION); }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => { clearInterval(timer); goTo(i); startAutoplay(); });
+  });
+
+  startAutoplay();
+</script>
+
+<style>
+  /* ── Base ── */
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    background: #0D0D0D;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* ── Slider: panel derecho fijo (solo desktop) ── */
+  .hero__slider {
+    display: none; /* oculto en mobile */
+  }
+
+  @media (min-width: 1024px) {
+    .hero__slider {
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 58%;
+      z-index: 1;
+    }
+  }
+
+  .hero__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  .hero__slide--active { opacity: 1; }
+
+  .hero__slide-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;    /* imagen completa, sin recorte */
+    object-position: center;
+    display: block;
+    background: #0D0D0D;
+  }
+
+  /* ── Degradado de fusión texto→slider ── */
+  .hero__fade {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .hero__fade {
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      /* empieza antes del slider y se extiende sobre él */
+      left: 30%;
+      width: 28%;
+      z-index: 2;
+      background: linear-gradient(
+        to right,
+        #0D0D0D 0%,
+        rgba(13,13,13,0.92) 20%,
+        rgba(13,13,13,0.55) 55%,
+        rgba(13,13,13,0.10) 85%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+  }
+
+  /* ── Glow rojo sutil en mobile (reemplaza al slider) ── */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    right: -120px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(ellipse, rgba(227,6,19,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Contenido ── */
+  .hero__inner {
+    position: relative;
+    z-index: 3;
+    padding-top: 100px;
+    padding-bottom: 130px;
+  }
+
+  .hero__content {
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .hero__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-subhead);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-wide);
+    color: rgba(255,255,255,0.68);
+  }
+
+  .hero__label-dot {
+    width: 8px; height: 8px;
+    background: var(--color-gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse-gold 2s ease-in-out infinite;
+  }
+
+  .hero__title {
+    font-family: var(--font-headline);
+    font-size: clamp(var(--text-4xl), 6.5vw, 80px);
+    font-weight: var(--weight-extrabold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    color: #ffffff;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.5);
+  }
+
+  .hero__title-accent {
+    color: var(--color-gold);
+    text-shadow: 0 0 40px rgba(227,6,19,0.40);
+  }
+
+  .hero__sub {
+    font-size: clamp(var(--text-base), 1.8vw, var(--text-lg));
+    color: rgba(255,255,255,0.75);
+    line-height: var(--leading-relaxed);
+    max-width: 500px;
+  }
+
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  .hero__proof {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(255,255,255,0.10);
+  }
+
+  .hero__proof-item { display: flex; flex-direction: column; gap: 2px; }
+  .hero__proof-value {
+    font-family: var(--font-headline);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    color: var(--color-gold);
+    line-height: 1;
+  }
+  .hero__proof-label  { font-size: var(--text-xs); color: rgba(255,255,255,0.45); }
+  .hero__proof-divider { color: rgba(255,255,255,0.18); font-size: var(--text-xl); }
+
+  /* ── Dots ── */
+  .hero__dots {
+    position: absolute;
+    bottom: var(--space-6);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .hero__dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.30);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--transition-base), transform var(--transition-base);
+  }
+  .hero__dot--active {
+    background: var(--color-gold);
+    transform: scale(1.4);
+  }
+
+  /* ── Marquee ── */
+  .hero__marquee {
+    position: absolute;
+    bottom: var(--space-12);
+    left: 0;
+    right: 0;
+    z-index: 3;
+    padding-block: var(--space-3);
+    border-top: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    background: rgba(13,13,13,0.55);
+    backdrop-filter: blur(8px);
+  }
+
+  @media (min-width: 1024px) {
+    /* Solo se muestra en el lado izquierdo — el slider ya tiene su propio espacio */
+    .hero__marquee { z-index: 4; }
+  }
+
+  .hero__marquee-item {
+    font-family: var(--font-subhead);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.60);
+    flex-shrink: 0;
+  }
+  .hero__marquee-sep { color: var(--color-gold); opacity: 0.40; font-size: var(--text-base); flex-shrink: 0; }
+
+  /* ── Scroll hint ── */
+  .hero__scroll {
+    position: absolute;
+    bottom: var(--space-3);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    opacity: 1;
+  }
+
+  .hero__scroll-line {
+    width: 1px; height: 36px;
+    background: linear-gradient(to bottom, var(--color-gold), transparent);
+    animation: scroll-line 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-line {
+    0%   { transform: scaleY(0); transform-origin: top; }
+    50%  { transform: scaleY(1); transform-origin: top; }
+    51%  { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  .hero__scroll-text {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .hero__scroll { display: none; }
+    .hero__inner  { padding-bottom: 110px; }
+    .hero__cta { flex-direction: column; align-items: flex-start; }
+    .hero__cta :global(.btn) { width: 100%; justify-content: center; }
+  }
+</style>

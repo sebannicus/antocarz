@@ -1,0 +1,45 @@
+---
+/**
+ * SectionLabel.astro — Antocarz
+ * Etiqueta de sección: texto pequeño en mayúsculas con acento rojo.
+ */
+
+export interface SectionLabelProps {
+  text: string;
+  align?: 'left' | 'center';
+}
+
+const { text, align = 'left' } = Astro.props as SectionLabelProps;
+---
+
+<span class:list={['section-label', align === 'center' && 'section-label--center']}>
+  <span class="section-label__dot" aria-hidden="true"></span>
+  {text}
+</span>
+
+<style>
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-subhead);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  .section-label--center {
+    display: flex;
+    justify-content: center;
+  }
+
+  .section-label__dot {
+    width: 6px;
+    height: 6px;
+    background: var(--color-gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+</style>

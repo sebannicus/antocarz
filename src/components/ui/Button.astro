@@ -1,0 +1,107 @@
+---
+/**
+ * Button.astro — Antocarz
+ * Componente de botón reutilizable con variantes.
+ */
+
+export interface ButtonProps {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
+  external?: boolean;
+  pulse?: boolean;
+  type?: 'button' | 'submit';
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  external = false,
+  pulse = false,
+  type = 'button',
+} = Astro.props as ButtonProps;
+
+const Tag = href ? 'a' : 'button';
+const externalProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+<Tag
+  href={href}
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, { 'pulse-gold': pulse }]}
+  type={!href ? type : undefined}
+  {...externalProps}
+>
+  <slot />
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-family: var(--font-subhead);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition:
+      background-color var(--transition-base),
+      color var(--transition-base),
+      box-shadow var(--transition-base),
+      transform var(--transition-spring);
+    white-space: nowrap;
+  }
+
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+
+  /* Tamaños */
+  .btn--sm  { padding: var(--space-2)  var(--space-5);  font-size: var(--text-sm); }
+  .btn--md  { padding: var(--space-3)  var(--space-6);  font-size: var(--text-base); }
+  .btn--lg  { padding: var(--space-4)  var(--space-8);  font-size: var(--text-lg); }
+
+  /* Variantes */
+  .btn--primary {
+    background: var(--color-gold);
+    color: #FFFFFF;
+    box-shadow: 0 4px 20px rgba(227, 6, 19, 0.35);
+  }
+  .btn--primary:hover {
+    background: var(--color-gold-light);
+    box-shadow: 0 6px 32px rgba(227, 6, 19, 0.50);
+  }
+
+  .btn--secondary {
+    background: rgba(227, 6, 19, 0.12);
+    color: var(--color-gold);
+    border: 1px solid var(--color-border-hover);
+  }
+  .btn--secondary:hover {
+    background: rgba(227, 6, 19, 0.22);
+  }
+
+  .btn--ghost {
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+  }
+  .btn--ghost:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-border-hover);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .btn--outline {
+    background: transparent;
+    color: var(--color-gold);
+    border: 1.5px solid var(--color-gold);
+  }
+  .btn--outline:hover {
+    background: var(--color-gold);
+    color: #FFFFFF;
+  }
+</style>

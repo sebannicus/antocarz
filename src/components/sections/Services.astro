@@ -1,0 +1,81 @@
+---
+/**
+ * Services.astro — Antocarz
+ * Grid de 6 servicios automotrices con cards.
+ */
+
+import SectionLabel from '../ui/SectionLabel.astro';
+import ServiceCard from '../ui/ServiceCard.astro';
+import { SERVICES } from '../../content/services';
+---
+
+<section class="services section section--surface" id="servicios" aria-labelledby="services-heading">
+  <div class="container">
+    <div class="services__header" data-scroll-children>
+      <SectionLabel text="SERVICIOS" align="center" />
+      <h2 class="services__title" id="services-heading">
+        Todo lo que tu auto<br />
+        <span class="text-gradient-gold">necesita, en un solo lugar.</span>
+      </h2>
+      <p class="services__sub">
+        Instalación profesional con garantía incluida. Trabajamos con las mejores marcas del
+        mercado y adaptadores específicos para tu modelo de vehículo.
+      </p>
+    </div>
+
+    <div class="services__grid">
+      {SERVICES.map((service) => (
+        <ServiceCard service={service} />
+      ))}
+    </div>
+
+    <p class="services__note gs-fade-in">
+      ¿No sabes qué necesitas?
+      <a href={`https://wa.me/56931258163?text=${encodeURIComponent('Hola, quiero consultar sobre un servicio para mi auto.')}`}
+         class="link-gold" target="_blank" rel="noopener noreferrer">
+        Consúltanos por WhatsApp →
+      </a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .services__header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+  }
+
+  .services__title {
+    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+    margin-bottom: var(--space-4);
+  }
+
+  .services__sub {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    max-width: 520px;
+    margin-inline: auto;
+    line-height: var(--leading-relaxed);
+  }
+
+  .services__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-10);
+  }
+
+  .services__note {
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .services__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1100px) {
+    .services__grid { grid-template-columns: repeat(3, 1fr); align-items: start; }
+  }
+</style>
