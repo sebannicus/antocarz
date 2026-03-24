@@ -25,6 +25,13 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
       ))}
     </nav>
 
+    <!-- Admin access -->
+    <button class="header__admin-access" id="admin-access" aria-label="" title="">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+      </svg>
+    </button>
+
     <!-- Theme toggle -->
     <button class="header__theme-toggle" id="theme-toggle" aria-label="Cambiar tema">
       <span class="header__theme-icon header__theme-icon--dark">☀️</span>
@@ -79,6 +86,11 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     applyTheme(current === 'dark' ? 'light' : 'dark');
   });
 
+  // Admin access
+  document.getElementById('admin-access')?.addEventListener('dblclick', () => {
+    window.location.href = '/login.php';
+  });
+
   // Hamburger toggle
   hamburger?.addEventListener('click', () => {
     const isOpen = mobileNav?.classList.toggle('header__mobile-nav--open');
@@ -115,6 +127,24 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 1px 0 var(--color-border), 0 2px 12px rgba(0,0,0,0.06);
   }
+
+  /* Admin access */
+  .header__admin-access {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    opacity: 0.25;
+    flex-shrink: 0;
+    transition: opacity var(--transition-fast);
+  }
+  .header__admin-access:hover { opacity: 0.45; }
 
   /* Theme toggle */
   .header__theme-toggle {
