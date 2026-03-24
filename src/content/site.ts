@@ -31,7 +31,7 @@ export const SITE = {
   },
 
   social: {
-    instagram: 'https://instagram.com/antocarz',
+    instagram: 'https://instagram.com/antocarzlaserena',
     facebook: 'https://facebook.com/antocarz',
   },
 
