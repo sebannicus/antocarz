@@ -1,15 +1,14 @@
 ---
 /**
  * LocalMap.astro — Antocarz
- * Dirección, horario y contacto. Refuerza SEO local para La Serena.
+ * Dirección, horario y contacto. Dos sucursales. SEO local La Serena.
  */
 
 import SectionLabel from '../ui/SectionLabel.astro';
 import Button from '../ui/Button.astro';
 import { SITE } from '../../content/site';
 
-const whatsappMsg = encodeURIComponent('Hola, quiero cotizar un servicio para mi vehículo.');
-const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
+const branches = SITE.branches;
 ---
 
 <section class="localmap section section--surface" aria-labelledby="map-heading">
@@ -18,69 +17,119 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
       <div class="localmap__info gs-slide-left">
         <SectionLabel text="DÓNDE ENCONTRARNOS" />
         <h2 class="localmap__title" id="map-heading">
-          Estamos en<br />
+          2 sucursales en<br />
           <span class="text-gradient-gold">La Serena.</span>
         </h2>
 
-        <div class="localmap__data">
-          <div class="localmap__row">
-            <span class="localmap__icon" aria-hidden="true">📍</span>
-            <div>
-              <p class="localmap__label">Dirección</p>
-              <a href={SITE.location.mapsUrl} target="_blank" rel="noopener noreferrer" class="localmap__value link-gold">
-                {SITE.location.address}, {SITE.location.city}
-              </a>
-            </div>
-          </div>
-
-          <div class="localmap__row">
-            <span class="localmap__icon" aria-hidden="true">🕐</span>
-            <div>
-              <p class="localmap__label">Horario</p>
-              <p class="localmap__value">{SITE.hours.weekdays}</p>
-              <p class="localmap__value">{SITE.hours.saturday}</p>
-              <p class="localmap__value localmap__value--muted">{SITE.hours.sunday}</p>
-            </div>
-          </div>
-
-          <div class="localmap__row">
-            <span class="localmap__icon" aria-hidden="true">📞</span>
-            <div>
-              <p class="localmap__label">Teléfono</p>
-              <a href={`tel:${SITE.phone}`} class="localmap__value link-gold">{SITE.phone}</a>
-            </div>
-          </div>
-
-          <div class="localmap__row">
-            <span class="localmap__icon" aria-hidden="true">✉️</span>
-            <div>
-              <p class="localmap__label">Email</p>
-              <a href={`mailto:${SITE.email}`} class="localmap__value link-gold">{SITE.email}</a>
-            </div>
-          </div>
+        <!-- Branch tabs -->
+        <div class="localmap__tabs" role="tablist" aria-label="Seleccionar sucursal">
+          {branches.map((branch, i) => (
+            <button
+              class={`localmap__tab ${i === 0 ? 'localmap__tab--active' : ''}`}
+              role="tab"
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-controls={`panel-${branch.id}`}
+              id={`tab-${branch.id}`}
+              data-branch={branch.id}
+            >
+              {branch.name}
+            </button>
+          ))}
         </div>
 
-        <Button href={whatsappUrl} variant="primary" size="lg" external={true}>
-          Agendar por WhatsApp
-        </Button>
+        {branches.map((branch, i) => (
+          <div
+            class={`localmap__panel ${i === 0 ? 'localmap__panel--active' : ''}`}
+            role="tabpanel"
+            id={`panel-${branch.id}`}
+            aria-labelledby={`tab-${branch.id}`}
+          >
+            <div class="localmap__data">
+              <div class="localmap__row">
+                <span class="localmap__icon" aria-hidden="true">📍</span>
+                <div>
+                  <p class="localmap__label">Dirección</p>
+                  <a href={branch.mapsUrl} target="_blank" rel="noopener noreferrer" class="localmap__value link-gold">
+                    {branch.address}, {branch.city}
+                  </a>
+                </div>
+              </div>
+
+              <div class="localmap__row">
+                <span class="localmap__icon" aria-hidden="true">🕐</span>
+                <div>
+                  <p class="localmap__label">Horario</p>
+                  <p class="localmap__value">{SITE.hours.weekdays}</p>
+                  <p class="localmap__value">{SITE.hours.saturday}</p>
+                  <p class="localmap__value localmap__value--muted">{SITE.hours.sunday}</p>
+                </div>
+              </div>
+
+              <div class="localmap__row">
+                <span class="localmap__icon" aria-hidden="true">📞</span>
+                <div>
+                  <p class="localmap__label">Teléfono</p>
+                  <a href={`tel:${SITE.phone}`} class="localmap__value link-gold">{SITE.phone}</a>
+                </div>
+              </div>
+            </div>
+
+            <Button
+              href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(branch.whatsappMsg)}`}
+              variant="primary"
+              size="lg"
+              external={true}
+            >
+              Agendar en {branch.name}
+            </Button>
+          </div>
+        ))}
       </div>
 
+      <!-- Map -->
       <div class="localmap__map-wrap gs-slide-right">
-        <iframe
-          class="localmap__map"
-          src="https://maps.google.com/maps?q=Antocarz+Lautaro+812+La+Serena+Chile&output=embed&hl=es"
-          width="100%"
-          height="400"
-          style="border:0;"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          title="Ubicación Antocarz — Lautaro 812, La Serena"
-        ></iframe>
+        {branches.map((branch, i) => (
+          <iframe
+            class={`localmap__map ${i === 0 ? 'localmap__map--active' : ''}`}
+            id={`map-${branch.id}`}
+            src={branch.mapsEmbed}
+            width="100%"
+            height="400"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title={`Ubicación Antocarz — ${branch.address}, ${branch.city}`}
+          ></iframe>
+        ))}
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.localmap__tab');
+  const panels = document.querySelectorAll<HTMLDivElement>('.localmap__panel');
+  const maps = document.querySelectorAll<HTMLIFrameElement>('.localmap__map');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const branchId = tab.dataset.branch;
+
+      tabs.forEach((t) => {
+        t.classList.remove('localmap__tab--active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      panels.forEach((p) => p.classList.remove('localmap__panel--active'));
+      maps.forEach((m) => m.classList.remove('localmap__map--active'));
+
+      tab.classList.add('localmap__tab--active');
+      tab.setAttribute('aria-selected', 'true');
+      document.getElementById(`panel-${branchId}`)?.classList.add('localmap__panel--active');
+      document.getElementById(`map-${branchId}`)?.classList.add('localmap__map--active');
+    });
+  });
+</script>
 
 <style>
   .localmap__inner {
@@ -91,7 +140,7 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
   }
 
   @media (min-width: 1024px) {
-    .localmap__inner { grid-template-columns: 1fr 1fr; align-items: center; }
+    .localmap__inner { grid-template-columns: 1fr 1fr; align-items: start; }
   }
 
   .localmap__info {
@@ -102,6 +151,47 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
 
   .localmap__title {
     font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+  }
+
+  /* Tabs */
+  .localmap__tabs {
+    display: flex;
+    gap: var(--space-2);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-1);
+  }
+
+  .localmap__tab {
+    flex: 1;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-lg);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-muted);
+    transition: background var(--transition-fast), color var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .localmap__tab--active {
+    background: var(--color-gold);
+    color: #000;
+    font-weight: var(--weight-semibold);
+  }
+
+  /* Panels */
+  .localmap__panel {
+    display: none;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .localmap__panel--active {
+    display: flex;
   }
 
   .localmap__data {
@@ -144,7 +234,15 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     border-radius: var(--radius-xl);
     overflow: hidden;
     border: 1px solid var(--color-border);
+    position: relative;
   }
 
-  .localmap__map { display: block; width: 100%; }
+  .localmap__map {
+    display: none;
+    width: 100%;
+  }
+
+  .localmap__map--active {
+    display: block;
+  }
 </style>

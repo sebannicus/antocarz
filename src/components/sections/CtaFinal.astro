@@ -1,17 +1,16 @@
 ---
 /**
  * CtaFinal.astro — Antocarz
- * Cierre de página: CTA de conversión a WhatsApp.
+ * Cierre de página: CTA de conversión a WhatsApp con selector de sucursal.
  */
 
 import Button from '../ui/Button.astro';
 import { SITE } from '../../content/site';
 
-const whatsappMsg = encodeURIComponent('Hola, quiero cotizar un servicio para mi vehículo.');
-const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
+const branches = SITE.branches;
 ---
 
-<section class="cta-final section" aria-label="Llamada a la acción final">
+<section class="cta-final section" id="contacto" aria-label="Llamada a la acción final">
   <!-- Glows -->
   <div class="bg-glow bg-glow--gold cta-final__glow cta-final__glow--1" aria-hidden="true"></div>
   <div class="bg-glow bg-glow--violet cta-final__glow cta-final__glow--2" aria-hidden="true"></div>
@@ -44,17 +43,44 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
         Sin compromisos, sin esperas.
       </p>
 
-      <div class="cta-final__actions">
-        <Button href={whatsappUrl} variant="primary" size="lg" external={true} pulse={true}>
-          Cotizar por WhatsApp
-        </Button>
-        <Button href={`tel:${SITE.phone}`} variant="outline" size="lg">
-          Llamar ahora
-        </Button>
+      <!-- Branch selector -->
+      <div class="cta-final__branches">
+        <p class="cta-final__branches-label">¿En qué sucursal nos visitas?</p>
+        <div class="cta-final__branch-btns">
+          {branches.map((branch) => {
+            const url = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(branch.whatsappMsg)}`;
+            return (
+              <a
+                href={url}
+                class="branch-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Cotizar por WhatsApp — ${branch.name}`}
+              >
+                <span class="branch-btn__icon" aria-hidden="true">📍</span>
+                <span class="branch-btn__content">
+                  <span class="branch-btn__name">{branch.name}</span>
+                  <span class="branch-btn__address">{branch.address}, {branch.city}</span>
+                </span>
+                <svg class="branch-btn__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            );
+          })}
+        </div>
       </div>
 
+      <div class="cta-final__divider">
+        <span>o</span>
+      </div>
+
+      <Button href={`tel:${SITE.phone}`} variant="outline" size="lg">
+        Llamar ahora — {SITE.phone}
+      </Button>
+
       <div class="cta-final__trust">
-        <span>📍 Lautaro 812, La Serena</span>
+        <span>2 sucursales en La Serena</span>
         <span class="cta-final__sep" aria-hidden="true">·</span>
         <span>Lun–Vie 09:30–18:00</span>
         <span class="cta-final__sep" aria-hidden="true">·</span>
@@ -129,11 +155,98 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     line-height: var(--leading-relaxed);
   }
 
-  .cta-final__actions {
+  /* Branch selector */
+  .cta-final__branches {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .cta-final__branches-label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .cta-final__branch-btns {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .branch-btn {
+    display: flex;
+    align-items: center;
     gap: var(--space-4);
-    justify-content: center;
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    text-decoration: none;
+    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+    text-align: left;
+  }
+
+  .branch-btn:hover {
+    border-color: var(--color-gold);
+    background: color-mix(in srgb, var(--color-gold) 6%, var(--color-bg-surface));
+    transform: translateY(-1px);
+  }
+
+  .branch-btn__icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .branch-btn__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .branch-btn__name {
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+  }
+
+  .branch-btn__address {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .branch-btn__arrow {
+    flex-shrink: 0;
+    color: var(--color-gold);
+    opacity: 0;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .branch-btn:hover .branch-btn__arrow {
+    opacity: 1;
+    transform: translateX(2px) translateY(-2px);
+  }
+
+  /* Divider */
+  .cta-final__divider {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    gap: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .cta-final__divider::before,
+  .cta-final__divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
   }
 
   .cta-final__trust {
@@ -160,7 +273,6 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
   }
 
   @media (max-width: 640px) {
-    .cta-final__actions { flex-direction: column; width: 100%; }
-    .cta-final__actions :global(.btn) { width: 100%; justify-content: center; }
+    .cta-final__branches { max-width: 100%; }
   }
 </style>
