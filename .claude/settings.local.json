@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/crman/Downloads/Claude/antocarz -name robots.txt -o -name sitemap.xml -o -name astro.config.*)",
+      "Bash(npm run:*)",
+      "WebSearch",
+      "WebFetch(domain:videos.feedspot.com)",
+      "WebFetch(domain:www.youtube.com)",
+      "WebFetch(domain:cajasacusticas.net)",
+      "WebFetch(domain:hypeauditor.com)",
+      "WebFetch(domain:www.fullaprendizaje.com)",
+      "WebFetch(domain:playboard.co)",
+      "WebFetch(domain:us.youtubers.me)",
+      "WebFetch(domain:www.speakrj.com)",
+      "WebFetch(domain:www.noxinfluencer.com)",
+      "WebFetch(domain:socialblade.com)"
+    ]
+  }
+}

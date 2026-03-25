@@ -1,71 +1,372 @@
 ---
-/**
- * productos.astro — Antocarz
- * Página completa del catálogo de productos.
- */
-
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Products from '../components/sections/Products.astro';
+import { PRODUCTS, CATEGORIES } from '../content/products';
+import Button from '../components/ui/Button.astro';
+
+const title = "Catálogo de Productos | Antocarz 2026";
+const description = "Explora nuestro catálogo completo de equipamiento automotriz en La Serena: Car Audio, Seguridad, Iluminación LED y más.";
 ---
 
-<BaseLayout
-  title="Catálogo de Productos | Antocarz La Serena"
-  description="Explora nuestro catálogo completo: car audio JBL y Pioneer, alarmas, polarizado, iluminación LED, cámaras y más. Filtros por categoría, marca y precio."
-  canonicalUrl="https://antocarz.cl/productos"
->
-  <!-- Mini hero de página -->
-  <div class="page-hero">
-    <div class="container page-hero__inner">
-      <a href="/" class="page-hero__back">← Volver al inicio</a>
-      <h1 class="page-hero__title">
-        Catálogo de <span class="page-hero__accent">Productos</span>
-      </h1>
-      <p class="page-hero__sub">
-        Equipamiento automotriz de primeras marcas. Haz clic en cualquier producto
-        para ver el detalle y cotizar directamente por WhatsApp.
-      </p>
+<BaseLayout title={title} description={description}>
+  <section class="catalog-hero">
+    <div class="container text-center">
+      <span class="section-label">Equipamiento Profesional</span>
+      <h1>Catálogo <span>2026</span></h1>
+      <p>Todo para potenciar tu vehículo con la mejor tecnología y calidad garantizada.</p>
     </div>
-  </div>
+  </section>
+  <div class="hazard-stripes"></div>
 
-  <Products />
+  <section class="catalog-main">
+    <div class="container">
+      <div class="catalog-layout">
+        <!-- Sidebar de Filtros -->
+        <aside class="filters-sidebar">
+          <div class="filter-group">
+            <h3>Buscar</h3>
+            <div class="search-box">
+              <input type="text" id="productSearch" placeholder="Ej: Radio JBL, Alarma..." />
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <h3>Categorías</h3>
+            <div class="category-list">
+              <button class="category-btn active" data-category="all">Todos los productos</button>
+              {CATEGORIES.map(cat => (
+                <button class="category-btn" data-category={cat}>{cat}</button>
+              ))}
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <h3>Marcas</h3>
+            <div class="brand-list">
+              <label><input type="checkbox" value="JBL" class="brand-filter" /> JBL</label>
+              <label><input type="checkbox" value="Pioneer" class="brand-filter" /> Pioneer</label>
+              <label><input type="checkbox" value="Hawk" class="brand-filter" /> Hawk</label>
+              <label><input type="checkbox" value="BRM" class="brand-filter" /> BRM</label>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Grilla de Productos -->
+        <div class="catalog-content">
+          <div class="catalog-header">
+            <span id="productCount">Mostrando {PRODUCTS.length} productos</span>
+            <div class="sort-box">
+              <select id="sortProducts">
+                <option value="default">Ordenar por</option>
+                <option value="price-low">Precio: Menor a Mayor</option>
+                <option value="price-high">Precio: Mayor a Menor</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="product-grid" id="productGrid">
+            {PRODUCTS.map(product => (
+              <a href={`/productos/${product.id}`} class="product-card" data-category={product.category} data-brand={product.brand} data-price={product.price}>
+                <div class="card-image">
+                  <img src={product.image} alt={product.name} loading="lazy" />
+                  {product.badge && <span class="badge">{product.badge}</span>}
+                </div>
+                <div class="card-body">
+                  <span class="brand">{product.brand}</span>
+                  <h3>{product.name}</h3>
+                  <p class="code">{product.code}</p>
+                  <div class="card-footer">
+                    <span class="price">{product.priceFormatted}</span>
+                    <span class="btn-view">Ver más</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <!-- Mensaje No Resultados -->
+          <div id="noResults" class="no-results hidden">
+            <p>No se encontraron productos con esos filtros.</p>
+            <button id="resetFilters" class="btn-link">Limpiar filtros</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  .page-hero {
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
-    padding-top: 100px;
-    padding-bottom: var(--space-12);
+  .catalog-hero {
+    padding: 160px 0 80px;
+    background: linear-gradient(to bottom, #111, var(--color-bg));
   }
 
-  .page-hero__inner {
+  .catalog-hero h1 {
+    font-size: 4rem;
+    margin: 15px 0;
+  }
+
+  .catalog-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+    padding-bottom: 100px;
+  }
+
+  /* Sidebar Styles */
+  .filters-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+
+  .filter-group {
+    margin-bottom: 35px;
+  }
+
+  .filter-group h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .category-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: 8px;
   }
 
-  .page-hero__back {
-    font-size: var(--text-sm);
+  .category-btn {
+    text-align: left;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: transparent;
     color: var(--color-text-muted);
-    transition: color var(--transition-fast);
-    width: fit-content;
-  }
-  .page-hero__back:hover { color: var(--color-gold); }
-
-  .page-hero__title {
-    font-family: var(--font-headline);
-    font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
-    font-weight: var(--weight-extrabold);
-    color: var(--color-text-primary);
-    line-height: var(--leading-tight);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
   }
 
-  .page-hero__accent { color: var(--color-gold); }
+  .category-btn:hover, .category-btn.active {
+    background: rgba(255,255,255,0.05);
+    color: var(--color-primary);
+  }
 
-  .page-hero__sub {
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    max-width: 560px;
-    line-height: var(--leading-relaxed);
+  .brand-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .brand-list label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+
+  /* Grid Styles */
+  .catalog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+  }
+
+  .product-card {
+    background: rgba(255,255,255,0.02);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255,255,255,0.04);
+    border-color: var(--color-primary);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+
+  .card-image {
+    aspect-ratio: 1.2;
+    overflow: hidden;
+    position: relative;
+    background: #1a1a1a;
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .product-card:hover .card-image img {
+    transform: scale(1.1);
+  }
+
+  .badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--color-primary);
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .card-body {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  .code {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 20px;
+  }
+
+  .card-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .price {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .btn-view {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .hidden { display: none; }
+
+  @media (max-width: 992px) {
+    .catalog-layout { grid-template-columns: 1fr; }
+    .filters-sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   }
 </style>
+
+<script>
+  // Script 2026: Filtrado Instantáneo sin Recarga
+  import gsap from 'gsap';
+
+  const grid = document.getElementById('productGrid');
+  const cards = document.querySelectorAll('.product-card');
+  const searchInput = document.getElementById('productSearch');
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  const brandFilters = document.querySelectorAll('.brand-filter');
+  const sortSelect = document.getElementById('sortProducts');
+  const countEl = document.getElementById('productCount');
+
+  let activeCategory = 'all';
+  let searchTerm = '';
+  let activeBrands = [];
+
+  function filterProducts() {
+    let visibleCount = 0;
+    
+    cards.forEach(card => {
+      const category = card.dataset.category;
+      const brand = card.dataset.brand;
+      const name = card.querySelector('h3').textContent.toLowerCase();
+      
+      const matchCategory = activeCategory === 'all' || category === activeCategory;
+      const matchSearch = name.includes(searchTerm.toLowerCase());
+      const matchBrand = activeBrands.length === 0 || activeBrands.includes(brand);
+
+      if (matchCategory && matchSearch && matchBrand) {
+        card.classList.remove('hidden');
+        visibleCount++;
+        gsap.to(card, { opacity: 1, scale: 1, duration: 0.3, display: 'flex' });
+      } else {
+        gsap.to(card, { opacity: 0, scale: 0.9, duration: 0.3, display: 'none', onComplete: () => {
+          card.classList.add('hidden');
+        }});
+      }
+    });
+
+    countEl.textContent = `Mostrando ${visibleCount} de ${cards.length} productos`;
+  }
+
+  // Event Listeners
+  searchInput.addEventListener('input', (e) => {
+    searchTerm = e.target.value;
+    filterProducts();
+  });
+
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = btn.dataset.category;
+      filterProducts();
+    });
+  });
+
+  brandFilters.forEach(check => {
+    check.addEventListener('change', () => {
+      activeBrands = Array.from(brandFilters)
+        .filter(i => i.checked)
+        .map(i => i.value);
+      filterProducts();
+    });
+  });
+
+  // Animación inicial
+  gsap.from('.product-card', {
+    y: 40,
+    opacity: 0,
+    duration: 0.8,
+    stagger: 0.1,
+    ease: 'expo.out'
+  });
+</script>

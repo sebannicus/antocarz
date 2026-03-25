@@ -48,7 +48,30 @@ const schemaLocalBusiness = {
   areaServed: [
     { '@type': 'City', name: 'La Serena' },
     { '@type': 'City', name: 'Coquimbo' },
+    { '@type': 'City', name: 'Ovalle' },
   ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.7',
+    bestRating: '5',
+    worstRating: '1',
+    ratingCount: '223',
+  },
+  sameAs: [
+    SITE.social.instagram,
+    SITE.social.facebook,
+  ],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Servicios de Equipamiento Automotriz',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Instalación de Radio Android con CarPlay y GPS' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Instalación de Alarmas Homologadas' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Polarizado Legal Certificado' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Instalación de Cámaras de Retroceso' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Iluminación LED Automotriz' } },
+    ],
+  },
   priceRange: '$$',
   inLanguage: 'es-CL',
 };
@@ -86,9 +109,20 @@ const schemaFAQPage = {
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:locale" content="es_CL" />
 
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${SITE.url}/og-image.jpg`} />
+
     <!-- Local SEO -->
     <meta name="geo.region" content="CL-CO" />
     <meta name="geo.placename" content="La Serena, Chile" />
+    <meta name="geo.position" content="-29.9027;-71.2519" />
+    <meta name="ICBM" content="-29.9027, -71.2519" />
+
+    <!-- Keywords SEO -->
+    <meta name="keywords" content="car audio La Serena, radio android CarPlay La Serena, Android Auto La Serena, GPS auto La Serena, alarmas homologadas La Serena, polarizado legal La Serena, cámara retroceso La Serena, ZTAudio, rastreadores.cl, inmovilizador RFID, antocarz" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -116,15 +150,223 @@ const schemaFAQPage = {
   </head>
 
   <body>
+    <!-- Efecto Difuminado Global de Rejilla -->
+    <div class="bg-hazard-glow"></div>
+    
+    <!-- Marca de agua gigante y sutil del logo (el perro) -->
+    <div class="bg-dog-watermark"></div>
     <Header />
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <Footer />
 
+    <!-- Branch Selection Modal -->
+    <div class="branch-modal-overlay" id="branchModal" aria-hidden="true">
+      <div class="branch-modal">
+        <button class="branch-modal__close" id="closeBranchModal" aria-label="Cerrar">&times;</button>
+        <span class="branch-modal__icon">📍</span>
+        <h3 class="branch-modal__title">¿En qué sucursal deseas cotizar?</h3>
+        <p class="branch-modal__desc">Elige el local que más te acomoda para enviarnos tu solicitud vía WhatsApp de forma directa y agilizar tu atención.</p>
+        
+        <div class="branch-modal__actions">
+          <button class="branch-btn" data-branch="Lautaro 812, La Serena">
+            <span class="branch-btn__title">Sucursal Lautaro</span>
+            <span class="branch-btn__address">Lautaro 812, La Serena</span>
+          </button>
+          <button class="branch-btn" data-branch="Balmaceda 2033, La Serena">
+            <span class="branch-btn__title">Sucursal Balmaceda</span>
+            <span class="branch-btn__address">Balmaceda 2033, La Serena</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <style is:global>
+      /* --- Modal de Sucursales --- */
+      .branch-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: var(--z-modal);
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-base), visibility var(--transition-base);
+        padding: var(--space-4);
+      }
+      .branch-modal-overlay--active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .branch-modal {
+        background: var(--color-bg-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-2xl);
+        padding: var(--space-8);
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+        text-align: center;
+        transform: translateY(20px) scale(0.95);
+        transition: transform var(--transition-spring);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(227, 6, 19, 0.1);
+      }
+      .branch-modal-overlay--active .branch-modal {
+        transform: translateY(0) scale(1);
+      }
+
+      .branch-modal__close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255,255,255,0.05);
+        border: none;
+        color: var(--color-text-muted);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background var(--transition-fast), color var(--transition-fast);
+      }
+      .branch-modal__close:hover {
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+      }
+
+      .branch-modal__icon {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: var(--space-4);
+      }
+
+      .branch-modal__title {
+        font-size: var(--text-2xl);
+        margin-bottom: var(--space-2);
+        color: #fff;
+      }
+
+      .branch-modal__desc {
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+        margin-bottom: var(--space-8);
+        line-height: var(--leading-relaxed);
+      }
+
+      .branch-modal__actions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .branch-btn {
+        width: 100%;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: var(--space-5);
+        border-radius: var(--radius-xl);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .branch-btn::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 4px; height: 100%;
+        background: var(--color-gold);
+        opacity: 0;
+        transition: opacity var(--transition-fast);
+      }
+
+      .branch-btn:hover {
+        background: rgba(255,255,255,0.06);
+        border-color: rgba(227, 6, 19, 0.4);
+        transform: translateY(-2px);
+      }
+      
+      .branch-btn:hover::before {
+        opacity: 1;
+      }
+
+      .branch-btn__title {
+        font-size: var(--text-lg);
+        font-weight: var(--weight-bold);
+        color: #fff;
+        font-family: var(--font-headline);
+      }
+
+      .branch-btn__address {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+      }
+    </style>
+
     <script>
       import { initScrollReveal } from '../utils/animations';
       setTimeout(() => initScrollReveal(), 300);
+
+      // --- Lógica del Modal de Sucursales ---
+      const branchModal = document.getElementById('branchModal');
+      const closeObj = document.getElementById('closeBranchModal');
+      const branchBtns = document.querySelectorAll('.branch-btn');
+      let pendingWaUrl = '';
+
+      document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const href = (link as HTMLAnchorElement).href;
+          // Si el botón ya tiene texto específico de sucursal (ej. el de LocalMap), no mostramos el popup
+          if (href.toLowerCase().includes('sucursal%20lautaro') || href.toLowerCase().includes('sucursal%20balmaceda')) {
+            return;
+          }
+          e.preventDefault();
+          pendingWaUrl = href;
+          branchModal?.classList.add('branch-modal-overlay--active');
+          branchModal?.setAttribute('aria-hidden', 'false');
+        });
+      });
+
+      closeObj?.addEventListener('click', () => {
+        branchModal?.classList.remove('branch-modal-overlay--active');
+        branchModal?.setAttribute('aria-hidden', 'true');
+      });
+
+      // Cerrar al clickear afuera
+      branchModal?.addEventListener('click', (e) => {
+        if (e.target === branchModal) {
+          branchModal.classList.remove('branch-modal-overlay--active');
+          branchModal.setAttribute('aria-hidden', 'true');
+        }
+      });
+
+      branchBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const branchName = btn.getAttribute('data-branch');
+          try {
+            const url = new URL(pendingWaUrl);
+            let text = url.searchParams.get('text') || 'Hola, quiero una cotización.';
+            text += `\n\n[Preferencia de atención: Sucursal ${branchName}]`;
+            url.searchParams.set('text', text);
+            window.open(url.toString(), '_blank');
+          } catch (error) {
+            window.open(pendingWaUrl, '_blank');
+          }
+          branchModal?.classList.remove('branch-modal-overlay--active');
+        });
+      });
     </script>
   </body>
 </html>

@@ -5,6 +5,7 @@
  */
 
 import SectionLabel from '../ui/SectionLabel.astro';
+import Button from '../ui/Button.astro';
 import { TESTIMONIALS } from '../../content/testimonials';
 ---
 
@@ -22,9 +23,9 @@ import { TESTIMONIALS } from '../../content/testimonials';
     <div class="testimonials__rating gs-fade-in">
       <img src="/logos/PNG PEQUE LOGO.png" alt="Antocarz" class="testimonials__logo" loading="lazy" />
       <span class="testimonials__rating-divider" aria-hidden="true">|</span>
-      <span class="testimonials__stars" aria-label="5 estrellas">★★★★★</span>
-      <span class="testimonials__rating-score">5.0</span>
-      <span class="testimonials__rating-label">en Google Reviews</span>
+      <span class="testimonials__stars" aria-label="4.7 estrellas">★★★★★</span>
+      <span class="testimonials__rating-score">4.7</span>
+      <span class="testimonials__rating-label">más de 223 reseñas comprobables</span>
     </div>
 
     <div class="testimonials__grid">
@@ -44,10 +45,25 @@ import { TESTIMONIALS } from '../../content/testimonials';
         </article>
       ))}
     </div>
+    <div style="margin-top: 60px; text-align: center; position: relative; z-index: 10;">
+      <Button 
+        href="https://www.google.com/maps/place/Antocarz/@-29.9053223,-71.2484449,17z/data=!4m18!1m9!3m8!1s0x9691ca64aa05cd93:0x6159aba653760123!2sAntocarz!8m2!3d-29.905327!4d-71.24587!9m1!1b1!16s%2Fg%2F11g8c611g7!3m7!1s0x9691ca64aa05cd93:0x6159aba653760123!8m2!3d-29.905327!4d-71.24587!9m1!1b1!16s%2Fg%2F11g8c611g7?entry=ttu&g_ep=EgoyMDI2MDMyMi4wIKXMDSoASAFQAw%3D%3D" 
+        variant="primary" 
+        size="lg" 
+        external={true}
+      >
+        Ver comentarios en Google
+      </Button>
+    </div>
   </div>
 </section>
 
 <style>
+  /* ── Fondo Difuminado Rojo ── */
+  .testimonials {
+    background: radial-gradient(ellipse at bottom, rgba(227, 6, 19, 0.08) 0%, var(--color-bg-surface) 75%);
+    border-top: 1px solid rgba(227, 6, 19, 0.05);
+  }
   .testimonials__header {
     text-align: center;
     margin-bottom: var(--space-8);

@@ -22,9 +22,9 @@ const brands = SITE.partnerBrands;
       </h2>
       <p class="own-brands__subtitle">
         Distribuimos y trabajamos con marcas propias que nos permiten ofrecerte
-        los mejores precios sin sacrificar calidad.
+        los mejores precios sin sacrificar calidad. Todos nuestros productos cuentan con garantía.
       </p>
-    </div>
+    </div>  
 
     <div class="own-brands__grid">
       {brands.map((brand) => (
@@ -48,6 +48,10 @@ const brands = SITE.partnerBrands;
           </p>
 
           <p class="own-brand-card__desc">{brand.description}</p>
+          
+          <div class="own-brand-card__product-image">
+            <img src={brand.image} alt={brand.name} loading="lazy" />
+          </div>
 
           <ul class="own-brand-card__features" role="list">
             {brand.features.map((feat) => (
@@ -161,6 +165,26 @@ const brands = SITE.partnerBrands;
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
+  }
+
+  .own-brand-card__product-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin-top: var(--space-4);
+    background: #111;
+  }
+
+  .own-brand-card__product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+  }
+
+  .own-brand-card:hover .own-brand-card__product-image img {
+    transform: scale(1.05);
   }
 
   .own-brand-card__features {
