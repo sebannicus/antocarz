@@ -1,18 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { PRODUCTS } from '../../content/products';
+import { getProductById } from '../../lib/getProducts';
 import Button from '../../components/ui/Button.astro';
 
-// 1. Generar las rutas estáticas para cada producto
-export async function getStaticPaths() {
-  return PRODUCTS.map((product) => ({
-    params: { id: product.id },
-    props: { product },
-  }));
-}
+const { id } = Astro.params;
+const product = await getProductById(id!);
 
-// 2. Obtener el producto desde las props
-const { product } = Astro.props;
+if (!product) return Astro.redirect('/productos');
 
 // SEO dinámico
 const seoTitle = `${product.name} | Antocarz`;
