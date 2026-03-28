@@ -384,7 +384,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
           try {
             const url = new URL(pendingWaUrl);
             let text = url.searchParams.get('text') || 'Hola, quiero una cotización.';
-            text += ` Prefiero atención en sucursal ${branchName} 📍`;
+            text = text.replace('Hola Antocarz', `Hola Antocarz sucursal ${branchName}`);
             url.searchParams.set('text', text);
             
             let finalUrl = url.toString();
