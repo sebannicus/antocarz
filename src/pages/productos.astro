@@ -6,16 +6,14 @@ let PRODUCTS: Awaited<ReturnType<typeof getProductsMetadata>>['products'] = [];
 let CATEGORIES: string[] = [];
 let BRANDS: string[] = [];
 let dbError = false;
-let dbErrorMsg = "";
 
 try {
   const meta = await getProductsMetadata();
   PRODUCTS   = meta.products;
   CATEGORIES = meta.categories;
   BRANDS     = meta.brands;
-} catch(e: any) {
+} catch {
   dbError = true;
-  dbErrorMsg = e?.message ?? String(e);
 }
 
 const title = "Catálogo de Productos | Antocarz 2026";
@@ -35,7 +33,7 @@ const description = "Explora nuestro catálogo completo de equipamiento automotr
 
       {dbError && (
         <div class="db-notice">
-          <p>ERROR: {dbErrorMsg} — El catálogo no pudo cargar. <a href="/productos">Recargar página</a> o <a href={`https://wa.me/56931258163?text=${encodeURIComponent('Hola, quiero consultar los productos disponibles.')}`} target="_blank" rel="noopener noreferrer">consultar por WhatsApp →</a></p>
+          <p>El catálogo se está cargando desde el servidor. <a href="/productos">Recargar página</a> o <a href={`https://wa.me/56931258163?text=${encodeURIComponent('Hola, quiero consultar los productos disponibles.')}`} target="_blank" rel="noopener noreferrer">consultar por WhatsApp →</a></p>
         </div>
       )}
 

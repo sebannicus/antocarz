@@ -13,3 +13,6 @@ npm-debug.log*
 
 # Videos (servir desde CDN/YouTube, no en git)
 public/videos/
+
+# PHP API (contiene credenciales, subir manualmente al hosting)
+php-api/
