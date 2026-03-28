@@ -6,8 +6,21 @@
  */
 
 import SectionLabel from '../ui/SectionLabel.astro';
-import { PRODUCTS, BRANDS, CATEGORIES_TREE, MAX_PRICE } from '../../content/products';
+import { getProductsMetadata } from '../../lib/getProducts';
 import { SITE } from '../../content/site';
+
+let PRODUCTS: Awaited<ReturnType<typeof getProductsMetadata>>['products'] = [];
+let BRANDS: string[] = [];
+let CATEGORIES_TREE: Record<string, string[]> = {};
+let MAX_PRICE = 325000;
+
+try {
+  const meta = await getProductsMetadata();
+  PRODUCTS        = meta.products;
+  BRANDS          = meta.brands;
+  CATEGORIES_TREE = meta.categoriesTree;
+  MAX_PRICE       = meta.maxPrice;
+} catch { /* DB no disponible */ }
 
 const categories = Object.keys(CATEGORIES_TREE);
 ---
