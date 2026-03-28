@@ -1,12 +1,12 @@
 import mysql from 'mysql2/promise';
 
 const dbConfig = {
-  host: import.meta.env.DB_HOST,
-  user: import.meta.env.DB_USER,
-  password: import.meta.env.DB_PASS,
-  database: import.meta.env.DB_NAME,
+  host: process.env.DB_HOST ?? import.meta.env.DB_HOST,
+  user: process.env.DB_USER ?? import.meta.env.DB_USER,
+  password: process.env.DB_PASS ?? import.meta.env.DB_PASS,
+  database: process.env.DB_NAME ?? import.meta.env.DB_NAME,
   ssl: {
-    rejectUnauthorized: false // Para manejar conexiones remotas que no tengan certificados SSL configurados
+    rejectUnauthorized: false
   }
 };
 
