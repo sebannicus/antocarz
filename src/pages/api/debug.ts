@@ -24,6 +24,8 @@ export const GET: APIRoute = async () => {
       }
     } catch (e: any) {
       info.fetch_error = e?.message ?? String(e);
+      info.fetch_cause = e?.cause?.message ?? e?.cause?.code ?? String(e?.cause ?? '');
+      info.fetch_stack = e?.stack?.split('\n')?.slice(0, 3)?.join(' | ');
     }
   } else {
     info.fetch_result = 'SKIP — env vars vacías';
