@@ -1,255 +1,154 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getProductById } from '../../lib/getProducts';
-import Button from '../../components/ui/Button.astro';
 
+// Renderiza un shell estático — el producto se carga client-side
 const { id } = Astro.params;
-const product = await getProductById(id!);
-
-if (!product) return Astro.redirect('/productos');
-
-// SEO dinámico
-const seoTitle = `${product.name} | Antocarz`;
-const seoDescription = product.description.substring(0, 160);
+const PHP_API_BASE = "https://antocarz.cl/api/products.php?key=antocarz_api_2026";
 ---
 
-<BaseLayout title={seoTitle} description={seoDescription}>
+<BaseLayout title="Producto | Antocarz" description="Detalle de producto Antocarz">
   <section class="product-detail">
     <div class="container">
-      <!-- Migas de pan (Breadcrumbs) -->
+
       <nav class="breadcrumbs">
-        <a href="/">Inicio</a> / 
-        <a href="/productos">Productos</a> / 
-        <span>{product.category}</span>
+        <a href="/">Inicio</a> /
+        <a href="/productos">Productos</a> /
+        <span id="bcCategory">...</span>
       </nav>
 
-      <div class="product-grid">
-        <!-- Columna Imagen -->
-        <div class="product-gallery">
-          <div class="image-wrapper">
-            <img src={product.image} alt={product.name} class="main-image" />
-            {product.badge && <span class="badge">{product.badge}</span>}
+      <div id="loadingState" class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Cargando producto...</p>
+      </div>
+
+      <div id="errorState" style="display:none; text-align:center; padding:80px 0; color: var(--color-text-muted);">
+        <p>Producto no encontrado. <a href="/productos" style="color:var(--color-primary)">← Volver al catálogo</a></p>
+      </div>
+
+      <div id="productContent" style="display:none;">
+        <div class="product-grid">
+          <div class="product-gallery">
+            <div class="image-wrapper">
+              <img id="pImg" src="" alt="" class="main-image" />
+              <span id="pBadge" class="badge" style="display:none">Destacado</span>
+            </div>
+          </div>
+          <div class="product-info">
+            <span id="pBrand" class="brand"></span>
+            <h1 id="pName"></h1>
+            <p id="pCode" class="code"></p>
+            <div class="price-box">
+              <span id="pPrice" class="price"></span>
+              <p class="iva-note">Precio con instalación incluida*</p>
+            </div>
+            <div class="description">
+              <h3>Descripción</h3>
+              <p id="pDesc"></p>
+            </div>
+            <div class="cta-actions">
+              <a id="pWhatsapp" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+                Consultar por WhatsApp
+              </a>
+            </div>
           </div>
         </div>
 
-        <!-- Columna Info -->
-        <div class="product-info">
-          <span class="brand">{product.brand}</span>
-          <h1>{product.name}</h1>
-          <p class="code">Código: {product.code}</p>
-          
-          <div class="price-box">
-            <span class="price">{product.priceFormatted}</span>
-            <p class="iva-note">Precio con instalación incluida*</p>
-          </div>
+        <div class="hazard-stripes" style="margin: 60px 0;"></div>
 
-          <div class="description">
-            <h3>Descripción</h3>
-            <p>{product.description}</p>
+        <div class="product-extras">
+          <div class="specs">
+            <h3>Características</h3>
+            <ul>
+              <li>Consulta compatibilidad vía WhatsApp</li>
+              <li>Instalación garantizada en nuestras sucursales</li>
+              <li>Soporte técnico directo</li>
+            </ul>
           </div>
-
-          <div class="cta-actions">
-            <Button 
-              href={`https://wa.me/56912345678?text=Hola,%20me%20interesa%20el%20producto:%20${product.name}`}
-              variant="primary"
-              size="lg"
-            >
-              Consultar por WhatsApp
-            </Button>
+          <div class="compatibility">
+            <h3>Vehículos Compatibles</h3>
+            <div class="tags">
+              <span class="tag">Apto para múltiples vehículos, consulta con un técnico.</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="hazard-stripes" style="margin: 60px 0;"></div>
-
-      <!-- Specs y Compatibilidad -->
-      <div class="product-extras">
-        <div class="specs">
-          <h3>Características</h3>
-          <ul>
-            {product.features.map(feature => (
-              <li>{feature}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div class="compatibility">
-          <h3>Vehículos Compatibles</h3>
-          <div class="tags">
-            {product.compatible.map(item => (
-              <span class="tag">{item}</span>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .product-detail {
-    padding: 120px 0 80px;
-    background: var(--color-bg);
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-
-  .breadcrumbs {
-    margin-bottom: 40px;
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-  }
-
-  .breadcrumbs a {
-    color: var(--color-primary);
-    text-decoration: none;
-  }
-
-  .product-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    margin-bottom: 80px;
-  }
-
-  .image-wrapper {
-    position: relative;
-    border-radius: 24px;
-    overflow: hidden;
-    background: #1a1a1a;
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-
-  .main-image {
-    width: 100%;
-    height: auto;
-    display: block;
-    transition: transform 0.5s ease;
-  }
-
-  .badge {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: var(--color-primary);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 0.8rem;
-  }
-
-  .brand {
-    color: var(--color-primary);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 700;
-    font-size: 0.8rem;
-    display: block;
-    margin-bottom: 10px;
-  }
-
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
-    line-height: 1.1;
-  }
-
-  .code {
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 30px;
-  }
-
-  .price-box {
-    margin-bottom: 40px;
-    padding: 30px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.05);
-  }
-
-  .price {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: #fff;
-    display: block;
-  }
-
-  .iva-note {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-    margin-top: 5px;
-  }
-
-  .description h3 {
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-  }
-
-  .description p {
-    line-height: 1.6;
-    color: var(--color-text-muted);
-  }
-
-  .cta-actions {
-    margin-top: 40px;
-  }
-
-  .product-extras {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    padding-top: 60px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-  }
-
-  .specs h3, .compatibility h3 {
-    margin-bottom: 25px;
-  }
-
-  .specs ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .specs li {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: var(--color-text-muted);
-    display: flex;
-    align-items: center;
-  }
-
-  .specs li::before {
-    content: '→';
-    margin-right: 15px;
-    color: var(--color-primary);
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .tag {
-    background: rgba(255,255,255,0.05);
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-
-  @media (max-width: 768px) {
-    .product-grid, .product-extras {
-      grid-template-columns: 1fr;
-    }
-    h1 { font-size: 2.2rem; }
-  }
+  .product-detail { padding: 120px 0 80px; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+  .breadcrumbs { margin-bottom: 40px; font-size: 0.9rem; color: var(--color-text-muted); }
+  .breadcrumbs a { color: var(--color-primary); text-decoration: none; }
+  .loading-state { text-align: center; padding: 80px 0; color: var(--color-text-muted); }
+  .loading-spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-bottom: 80px; }
+  .image-wrapper { position: relative; border-radius: 24px; overflow: hidden; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); }
+  .main-image { width: 100%; height: auto; display: block; }
+  .badge { position: absolute; top: 20px; left: 20px; background: var(--color-primary); color: #000; padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
+  .brand { color: var(--color-primary); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 10px; }
+  h1 { font-size: 3rem; margin-bottom: 10px; line-height: 1.1; }
+  .code { color: var(--color-text-muted); font-size: 0.9rem; margin-bottom: 30px; }
+  .price-box { margin-bottom: 40px; padding: 30px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+  .price { font-size: 2.5rem; font-weight: 800; color: #fff; display: block; }
+  .iva-note { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px; }
+  .description h3 { margin-bottom: 15px; font-size: 1.2rem; }
+  .description p { line-height: 1.6; color: var(--color-text-muted); }
+  .cta-actions { margin-top: 40px; }
+  .btn-primary { display: inline-block; background: var(--color-primary); color: #fff; padding: 16px 36px; border-radius: 50px; font-weight: 700; text-decoration: none; font-size: 1rem; transition: opacity 0.2s; }
+  .btn-primary:hover { opacity: 0.85; }
+  .product-extras { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .specs h3, .compatibility h3 { margin-bottom: 25px; }
+  .specs ul { list-style: none; padding: 0; }
+  .specs li { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--color-text-muted); display: flex; align-items: center; }
+  .specs li::before { content: '→'; margin-right: 15px; color: var(--color-primary); }
+  .tags { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tag { background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; color: var(--color-text-muted); border: 1px solid rgba(255,255,255,0.1); }
+  @media (max-width: 768px) { .product-grid, .product-extras { grid-template-columns: 1fr; } h1 { font-size: 2.2rem; } }
 </style>
+
+<script define:vars={{ PHP_API_BASE, slugParam: id }}>
+  // Extrae el ID numérico del slug (último segmento)
+  const numericId = slugParam.split('-').pop();
+
+  async function loadProduct() {
+    try {
+      const res = await fetch(`${PHP_API_BASE}&id=${numericId}`);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const p = await res.json();
+      if (!p) throw new Error('not found');
+
+      const price = p.precio ? Number(p.precio) : 0;
+      const priceStr = price > 0 ? '$' + price.toLocaleString('es-CL') : 'Consultar';
+      const img = p.imagen ? `https://antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
+      const code = p.codigo_antocarz || p.codigo_producto || `ANT-${p.id_producto}`;
+      const desc = p.descripcion ? p.descripcion.replace(/<[^>]*>/g, '') : 'Sin descripción detallada.';
+      const waMsg = encodeURIComponent(`Hola, me interesa el producto: ${p.nombre} (Cód: ${code})`);
+
+      document.getElementById('bcCategory').textContent = p.categoria || 'Productos';
+      document.getElementById('pImg').src = img;
+      document.getElementById('pImg').alt = p.nombre;
+      document.getElementById('pBrand').textContent = p.marca || '';
+      document.getElementById('pName').textContent = p.nombre;
+      document.getElementById('pCode').textContent = `Código: ${code}`;
+      document.getElementById('pPrice').textContent = priceStr;
+      document.getElementById('pDesc').textContent = desc;
+      document.getElementById('pWhatsapp').href = `https://wa.me/56931258163?text=${waMsg}`;
+      if (p.masvendido == 1) document.getElementById('pBadge').style.display = 'block';
+
+      document.title = `${p.nombre} | Antocarz`;
+
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('productContent').style.display = 'block';
+
+    } catch (e) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+    }
+  }
+
+  loadProduct();
+</script>
