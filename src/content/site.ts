@@ -9,7 +9,7 @@ export const SITE = {
   name: 'Antocarz',
   tagline: 'Especialistas en Car Audio, Alarmas y Polarizado en La Serena',
   description:
-    'Car audio Android con CarPlay, Android Auto y GPS integrado. Alarmas homologadas, polarizado legal certificado e iluminación LED en La Serena. Garantía absoluta. Más de 500 instalaciones.',
+    'Car audio Android con CarPlay, Android Auto y GPS integrado. Alarmas homologadas, polarizado legal certificado e iluminación LED en La Serena. Garantía absoluta. Más de 1.000 trabajos garantizados y +643 certificados de polarizado emitidos.',
   url: 'https://antocarz.cl',
 
   phone: '+56 9 3125 8163',
@@ -69,7 +69,12 @@ export const SITE = {
       id: 'ztaudio',
       name: 'ZTAudio',
       logo: '/logos/ztaudio.svg',
-      image: '/images/products/radio-android-jbl.webp',
+      image: '/images/products/radio-ztaudio-1.webp',
+      images: [
+        '/images/products/radio-ztaudio-1.webp',
+        '/images/products/radio-ztaudio-2.webp',
+        '/images/products/radio-ztaudio-3.webp',
+      ],
       tagline: 'Radio Android 9" · CarPlay · Android Auto · GPS',
       description: 'La radio todo en uno que transforma tu vehículo. Pantalla QLED táctil de 9 pulgadas con resolución 1280×720, CarPlay inalámbrico compatible con iOS 18, Android Auto, GPS integrado con mapas globales, WiFi para Spotify, Netflix y YouTube, Bluetooth manos libres y reproducción 4K. Compatible con el 90% de los vehículos del mercado (Toyota, Nissan, Kia, Hyundai, Chevrolet y más). Instalación incluida, garantía absoluta y soporte técnico inmediato.',
       badge: 'Marca propia',
@@ -88,8 +93,14 @@ export const SITE = {
     {
       id: 'rastreadores',
       name: 'rastreadores.cl',
-      logo: '/logos/rastreadores.svg',
-      image: '/images/products/gps-brm.webp',
+      logo: '/logos/rastreadores.webp',
+      image: '/images/products/rastreador-1.webp',
+      images: [
+        '/images/products/rastreador-1.webp',
+        '/images/products/rastreador-2.webp',
+        '/images/products/rastreador-3.webp',
+        '/images/products/rastreador-4.webp',
+      ],
       tagline: 'Protección Total · GPS · Antiportonazo · Inmovilizador',
       description: 'Sistemas de seguridad vehicular de última generación para autos y motos. Inmovilizador RFID que bloquea el motor cuando tú no estás, protección antiportonazo activada automáticamente, rastreo GPS en tiempo real y tecnología RF 2.4 GHz de largo alcance. Instalación profesional con soporte técnico inmediato y garantía absoluta. Más de 100 clientes han elegido rastreadores.cl para proteger su vehículo en La Serena.',
       badge: 'Marca propia',

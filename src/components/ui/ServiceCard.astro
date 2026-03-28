@@ -1,7 +1,7 @@
 ---
 /**
  * ServiceCard.astro — Antocarz
- * Tarjeta de servicio con imagen, icono, título, descripción y features.
+ * Tarjeta de servicio con imagen o carrusel táctil invisible (scroll-snap).
  */
 
 import type { Service } from '../../content/services';
@@ -11,6 +11,8 @@ export interface ServiceCardProps {
 }
 
 const { service } = Astro.props as ServiceCardProps;
+const hasCarousel = service.images && service.images.length > 1;
+const cardId = `sc-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <article class:list={['service-card', 'hover-lift', 'gs-fade-up']}>
@@ -19,17 +21,32 @@ const { service } = Astro.props as ServiceCardProps;
   )}
 
   <div class="service-card__img-wrap">
-    <img
-      src={service.image}
-      alt={service.title}
-      class="service-card__img"
-      width="480"
-      height="260"
-      loading="lazy"
-    />
-    <div class="service-card__img-overlay" aria-hidden="true">
-      <span class="service-card__icon">{service.icon}</span>
-    </div>
+    {hasCarousel ? (
+      <div class="sc-carousel" id={cardId} aria-label={`Imágenes de ${service.title}`}>
+        {service.images!.map((src, i) => (
+          <div class="sc-carousel__slide">
+            <img
+              src={src}
+              alt={i === 0 ? service.title : `${service.title} ${i + 1}`}
+              class="service-card__img"
+              width="480"
+              height="260"
+              loading={i === 0 ? 'eager' : 'lazy'}
+            />
+          </div>
+        ))}
+      </div>
+    ) : (
+      <img
+        src={service.image}
+        alt={service.title}
+        class="service-card__img"
+        width="480"
+        height="260"
+        loading="lazy"
+      />
+    )}
+    <div class="service-card__img-overlay" aria-hidden="true"></div>
   </div>
 
   <div class="service-card__body">
@@ -78,12 +95,33 @@ const { service } = Astro.props as ServiceCardProps;
     text-transform: uppercase;
   }
 
-  /* Imagen */
+  /* Imagen / Carrusel */
   .service-card__img-wrap {
     position: relative;
     aspect-ratio: 16 / 8;
     overflow: hidden;
     flex-shrink: 0;
+  }
+
+  /* Carrusel scroll-snap */
+  .sc-carousel {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .sc-carousel::-webkit-scrollbar { display: none; }
+
+  .sc-carousel__slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: start;
+    overflow: hidden;
   }
 
   .service-card__img {
@@ -94,7 +132,8 @@ const { service } = Astro.props as ServiceCardProps;
     transition: transform var(--transition-slow);
   }
 
-  .service-card:hover .service-card__img {
+  /* El scale en hover solo aplica a imagen única */
+  .service-card:hover > .service-card__img-wrap > .service-card__img {
     transform: scale(1.05);
   }
 
@@ -108,6 +147,8 @@ const { service } = Astro.props as ServiceCardProps;
     justify-content: flex-start;
     padding: var(--space-4);
     transition: background var(--transition-base);
+    pointer-events: none;
+    z-index: 1;
   }
 
   .service-card:hover .service-card__img-overlay {

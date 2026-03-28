@@ -1,21 +1,39 @@
 ---
 /**
  * ProductsCta.astro — Antocarz
- * Teaser de catálogo en el index. Muestra 3 productos destacados
- * y dirige al usuario a /productos para ver el catálogo completo.
+ * Teaser de catálogo en el index. Muestra 3 productos de la DB,
+ * priorizando marcas propias (ZTAudio, rastreadores.cl).
  */
 
 import SectionLabel from '../ui/SectionLabel.astro';
-import { PRODUCTS } from '../../content/products';
+import { getProducts } from '../../lib/getProducts';
 import { SITE } from '../../content/site';
 
-// Mostrar los 3 primeros con badge, completar con los primeros si faltan
-const featured = [
-  ...PRODUCTS.filter(p => p.badge).slice(0, 3),
-  ...PRODUCTS.filter(p => !p.badge),
-].slice(0, 3);
+let allProducts: Awaited<ReturnType<typeof getProducts>> = [];
+try {
+  allProducts = await getProducts();
+} catch {
+  // DB no disponible en build — fallback vacío
+}
+
+const OWN_BRANDS = ['ztaudio', 'ZTAudio', 'rastreadores.cl', 'Rastreadores.cl'];
+
+// Fisher-Yates shuffle — distinto en cada request SSR
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const ownFirst = shuffle(allProducts.filter(p => OWN_BRANDS.some(b => p.brand?.toLowerCase() === b.toLowerCase())));
+const rest     = shuffle(allProducts.filter(p => !OWN_BRANDS.some(b => p.brand?.toLowerCase() === b.toLowerCase())));
+const featured = [...ownFirst, ...rest].slice(0, 3);
 
 const whatsapp = SITE.whatsapp;
+const total = allProducts.length;
 ---
 
 <section class="pcta section" id="productos" aria-labelledby="pcta-heading">
@@ -28,54 +46,94 @@ const whatsapp = SITE.whatsapp;
         <span class="text-gradient-gold">tenemos en stock.</span>
       </h2>
       <p class="pcta__sub">
-        Car audio, alarmas, polarizado, LED y más. Más de 20 productos
+        Car audio, alarmas, polarizado, LED y más. Más de {total > 3 ? total : 20} productos
         disponibles para cotizar directamente por WhatsApp.
       </p>
     </div>
 
     <!-- 3 productos destacados -->
-    <div class="pcta__grid">
-      {featured.map((product) => (
+    {featured.length > 0 ? (
+      <div class="pcta__grid">
+        {featured.map((product) => (
+          <a
+            href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hola, me interesa el producto: ${product.name} (${product.priceFormatted}). ¿Está disponible?`)}`}
+            class="pcta__card"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Cotizar ${product.name}`}
+          >
+            {product.badge && (
+              <span class="pcta__badge">{product.badge}</span>
+            )}
+            <div class="pcta__img-wrap">
+              <img
+                src={product.image}
+                alt={product.name}
+                class="pcta__img"
+                width="480"
+                height="320"
+                loading="lazy"
+              />
+              <div class="pcta__overlay">
+                <span>Cotizar por WhatsApp →</span>
+              </div>
+            </div>
+            <div class="pcta__body">
+              <div class="pcta__meta">
+                <span class="pcta__brand">{product.brand}</span>
+                <span class="pcta__cat">{product.category}</span>
+              </div>
+              <h3 class="pcta__name">{product.name}</h3>
+              <p class="pcta__price">{product.priceFormatted}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <!-- Fallback si la DB no está disponible -->
+      <div class="pcta__grid">
         <a
-          href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hola, me interesa el producto: ${product.name} (${product.priceFormatted}). ¿Está disponible?`)}`}
-          class="pcta__card"
+          href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hola, quiero consultar los productos disponibles.')}`}
+          class="pcta__card pcta__card--placeholder"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`Cotizar ${product.name}`}
         >
-          {product.badge && (
-            <span class="pcta__badge">{product.badge}</span>
-          )}
           <div class="pcta__img-wrap">
-            <img
-              src={product.image}
-              alt={product.name}
-              class="pcta__img"
-              width="480"
-              height="320"
-              loading="lazy"
-            />
-            <div class="pcta__overlay">
-              <span>Cotizar por WhatsApp →</span>
-            </div>
+            <img src="/images/products/radio-ztaudio-1.webp" alt="Radio ZTAudio" class="pcta__img" width="480" height="320" loading="lazy" />
+            <div class="pcta__overlay"><span>Cotizar por WhatsApp →</span></div>
           </div>
           <div class="pcta__body">
-            <div class="pcta__meta">
-              <span class="pcta__brand">{product.brand}</span>
-              <span class="pcta__cat">{product.category}</span>
-            </div>
-            <h3 class="pcta__name">{product.name}</h3>
-            <p class="pcta__price">{product.priceFormatted}</p>
+            <div class="pcta__meta"><span class="pcta__brand">ZTAudio</span><span class="pcta__cat">Car Audio</span></div>
+            <h3 class="pcta__name">Radio Android 9" ZTAudio</h3>
+            <p class="pcta__price">Consultar</p>
           </div>
         </a>
-      ))}
-    </div>
+        <a
+          href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hola, quiero consultar sobre rastreadores GPS.')}`}
+          class="pcta__card pcta__card--placeholder"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="pcta__img-wrap">
+            <img src="/images/products/rastreador-1.webp" alt="Rastreador GPS" class="pcta__img" width="480" height="320" loading="lazy" />
+            <div class="pcta__overlay"><span>Cotizar por WhatsApp →</span></div>
+          </div>
+          <div class="pcta__body">
+            <div class="pcta__meta"><span class="pcta__brand">rastreadores.cl</span><span class="pcta__cat">Seguridad</span></div>
+            <h3 class="pcta__name">GPS Rastreador Inmovilizador</h3>
+            <p class="pcta__price">Consultar</p>
+          </div>
+        </a>
+      </div>
+    )}
 
     <!-- CTA principal al catálogo -->
     <div class="pcta__cta-wrap">
-      <p class="pcta__cta-hint">
-        +{PRODUCTS.length - 3} productos más disponibles
-      </p>
+      {total > 3 && (
+        <p class="pcta__cta-hint">
+          +{total - 3} productos más disponibles
+        </p>
+      )}
       <a href="/productos" class="pcta__cta-btn">
         Ver catálogo completo
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

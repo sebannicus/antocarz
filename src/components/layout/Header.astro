@@ -9,6 +9,10 @@ import Button from '../ui/Button.astro';
 
 const whatsappMsg = encodeURIComponent('Hola, quiero cotizar un servicio para mi vehículo.');
 const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
+
+const isHome = Astro.url.pathname === '/';
+const resolveHref = (href: string) =>
+  href.startsWith('#') && !isHome ? `/${href}` : href;
 ---
 
 <header class="header" id="header">
@@ -21,7 +25,7 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     <!-- Nav desktop -->
     <nav class="header__nav" aria-label="Navegación principal">
       {SITE.nav.map((item) => (
-        <a href={item.href} class="header__link">{item.label}</a>
+        <a href={resolveHref(item.href)} class="header__link">{item.label}</a>
       ))}
     </nav>
 
@@ -54,7 +58,7 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
   <!-- Mobile nav -->
   <nav class="header__mobile-nav" id="mobile-nav" aria-label="Menú móvil">
     {SITE.nav.map((item) => (
-      <a href={item.href} class="header__mobile-link">{item.label}</a>
+      <a href={resolveHref(item.href)} class="header__mobile-link">{item.label}</a>
     ))}
     <a href={whatsappUrl} class="btn btn--primary btn--md" target="_blank" rel="noopener noreferrer">
       Cotizar por WhatsApp
