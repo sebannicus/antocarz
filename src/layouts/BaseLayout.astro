@@ -142,10 +142,19 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Google Fonts: Lato -->
+    <!-- Preload primera imagen hero (LCP) -->
+    <link rel="preload" as="image" href="/slides hero/BANNER POLARIZADOS.webp" />
+
+    <!-- Preconnect al servidor de imágenes de productos -->
+    <link rel="preconnect" href="https://antocarz.cl" />
+    <link rel="dns-prefetch" href="https://antocarz.cl" />
+
+    <!-- Google Fonts: Lato — carga no bloqueante -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" /></noscript>
 
     <!-- Schema JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify(schemaLocalBusiness)} />
