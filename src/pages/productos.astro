@@ -5,8 +5,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const title = "Catálogo de Productos | Antocarz 2026";
 const description = "Explora nuestro catálogo completo de equipamiento automotriz.";
 const PHP_API = "https://api.antocarz.cl/api/products.php?key=antocarz_api_2026";
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://antocarz.cl" },
+    { "@type": "ListItem", "position": 2, "name": "Productos", "item": "https://antocarz.cl/productos" }
+  ]
+};
 ---
 <BaseLayout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   <section class="catalog-hero">
     <div class="container text-center">
       <span class="section-label">Equipamiento Profesional</span>

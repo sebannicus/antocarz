@@ -169,6 +169,21 @@ const PHP_API_BASE = "https://api.antocarz.cl/api/products.php?key=antocarz_api_
 
       document.title = `${p.nombre} | Antocarz`;
 
+      // Schema BreadcrumbList dinámico
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://antocarz.cl" },
+          { "@type": "ListItem", "position": 2, "name": "Productos", "item": "https://antocarz.cl/productos" },
+          { "@type": "ListItem", "position": 3, "name": p.nombre, "item": window.location.href }
+        ]
+      };
+      const s = document.createElement('script');
+      s.type = 'application/ld+json';
+      s.text = JSON.stringify(schema);
+      document.head.appendChild(s);
+
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('productContent').style.display = 'block';
 
