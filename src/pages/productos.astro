@@ -101,7 +101,7 @@ const PHP_API = "https://api.antocarz.cl/api/products.php?key=antocarz_api_2026"
     const slug = slugify(p.nombre, p.id_producto);
     const price = p.precio ? Number(p.precio) : 0;
     const priceStr = price > 0 ? formatPrice(price) : 'Consultar';
-    const img = p.imagen ? `https://antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
+    const img = p.imagen ? `https://api.antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
     const code = p.codigo_antocarz || p.codigo_producto || `ANT-${p.id_producto}`;
     const a = document.createElement('a');
     a.href = `/productos/${slug}`;

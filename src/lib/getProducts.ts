@@ -20,7 +20,7 @@ function rowToProduct(row: any): Product {
   const price = row.precio ? Number(row.precio) : 0;
   const code = row.codigo_antocarz || row.codigo_producto || `ANT-${row.id_producto}`;
   const imagePath = row.imagen && row.imagen.trim() !== ''
-    ? `https://antocarz.cl/imgprod/${row.imagen}`
+    ? `https://api.antocarz.cl/imgprod/${row.imagen}`
     : '/images/products/radio-ztaudio-1.webp';
 
   return {

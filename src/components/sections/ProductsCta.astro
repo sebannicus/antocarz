@@ -119,7 +119,7 @@ const whatsapp = SITE.whatsapp;
 
   function buildCard(p) {
     const price = p.precio ? '$' + Number(p.precio).toLocaleString('es-CL') : 'Consultar';
-    const img = p.imagen ? `https://antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
+    const img = p.imagen ? `https://api.antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
     const waText = encodeURIComponent(`Hola, me interesa el producto: ${p.nombre} (${price}). ¿Está disponible?`);
     const a = document.createElement('a');
     a.href = `https://wa.me/${whatsapp}?text=${waText}`;

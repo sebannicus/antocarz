@@ -123,7 +123,7 @@ const PHP_API_BASE = "https://api.antocarz.cl/api/products.php?key=antocarz_api_
 
       const price = p.precio ? Number(p.precio) : 0;
       const priceStr = price > 0 ? '$' + price.toLocaleString('es-CL') : 'Consultar';
-      const img = p.imagen ? `https://antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
+      const img = p.imagen ? `https://api.antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
       const code = p.codigo_antocarz || p.codigo_producto || `ANT-${p.id_producto}`;
       const desc = p.descripcion ? p.descripcion.replace(/<[^>]*>/g, '') : 'Sin descripción detallada.';
       const waMsg = encodeURIComponent(`Hola, me interesa el producto: ${p.nombre} (Cód: ${code})`);
