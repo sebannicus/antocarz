@@ -46,23 +46,23 @@ const branches = SITE.branches;
       <!-- Branch selector -->
       <div class="cta-final__branches">
         <p class="cta-final__branches-label">¿En qué sucursal nos visitas?</p>
-        <div class="cta-final__branch-btns">
+        <div class="cta-final__cta-branch-btns">
           {branches.map((branch) => {
             const url = `https://wa.me/${branch.whatsappNumber}?text=${encodeURIComponent(branch.whatsappMsg)}`;
             return (
               <a
                 href={url}
-                class="branch-btn"
+                class="cta-cta-branch-btn"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Cotizar por WhatsApp — ${branch.name}`}
               >
-                <span class="branch-btn__icon" aria-hidden="true">📍</span>
-                <span class="branch-btn__content">
-                  <span class="branch-btn__name">{branch.name}</span>
-                  <span class="branch-btn__address">{branch.address}, {branch.city}</span>
+                <span class="cta-cta-branch-btn__icon" aria-hidden="true">📍</span>
+                <span class="cta-cta-branch-btn__content">
+                  <span class="cta-cta-branch-btn__name">{branch.name}</span>
+                  <span class="cta-cta-branch-btn__address">{branch.address}, {branch.city}</span>
                 </span>
-                <svg class="branch-btn__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <svg class="cta-cta-branch-btn__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </a>
@@ -170,13 +170,13 @@ const branches = SITE.branches;
     margin-bottom: var(--space-4);
   }
 
-  .cta-final__branch-btns {
+  .cta-final__cta-branch-btns {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
   }
 
-  .branch-btn {
+  .cta-branch-btn {
     display: flex;
     align-items: center;
     gap: var(--space-4);
@@ -189,43 +189,43 @@ const branches = SITE.branches;
     text-align: left;
   }
 
-  .branch-btn:hover {
+  .cta-branch-btn:hover {
     border-color: var(--color-gold);
     background: color-mix(in srgb, var(--color-gold) 6%, var(--color-bg-surface));
     transform: translateY(-1px);
   }
 
-  .branch-btn__icon {
+  .cta-branch-btn__icon {
     font-size: 1.5rem;
     flex-shrink: 0;
   }
 
-  .branch-btn__content {
+  .cta-branch-btn__content {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
 
-  .branch-btn__name {
+  .cta-branch-btn__name {
     font-size: var(--text-base);
     font-weight: var(--weight-semibold);
     color: var(--color-text-primary);
   }
 
-  .branch-btn__address {
+  .cta-branch-btn__address {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
   }
 
-  .branch-btn__arrow {
+  .cta-branch-btn__arrow {
     flex-shrink: 0;
     color: var(--color-gold);
     opacity: 0;
     transition: opacity var(--transition-fast), transform var(--transition-fast);
   }
 
-  .branch-btn:hover .branch-btn__arrow {
+  .cta-branch-btn:hover .cta-branch-btn__arrow {
     opacity: 1;
     transform: translateX(2px) translateY(-2px);
   }
