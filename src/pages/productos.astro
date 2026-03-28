@@ -1,23 +1,10 @@
 ---
+export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getProductsMetadata } from '../lib/getProducts';
-
-let PRODUCTS: Awaited<ReturnType<typeof getProductsMetadata>>['products'] = [];
-let CATEGORIES: string[] = [];
-let BRANDS: string[] = [];
-let dbError = false;
-
-try {
-  const meta = await getProductsMetadata();
-  PRODUCTS   = meta.products;
-  CATEGORIES = meta.categories;
-  BRANDS     = meta.brands;
-} catch {
-  dbError = true;
-}
 
 const title = "Catálogo de Productos | Antocarz 2026";
 const description = "Explora nuestro catálogo completo de equipamiento automotriz.";
+const PHP_API = "https://antocarz.cl/api/products.php?key=antocarz_api_2026";
 ---
 <BaseLayout title={title} description={description}>
   <section class="catalog-hero">
@@ -31,27 +18,11 @@ const description = "Explora nuestro catálogo completo de equipamiento automotr
   <section class="catalog-main">
     <div class="container">
 
-      {dbError && (
-        <div class="db-notice">
-          <p>El catálogo se está cargando desde el servidor. <a href="/productos">Recargar página</a> o <a href={`https://wa.me/56931258163?text=${encodeURIComponent('Hola, quiero consultar los productos disponibles.')}`} target="_blank" rel="noopener noreferrer">consultar por WhatsApp →</a></p>
-        </div>
-      )}
-
-      <!-- Topbar de Filtros (Optimización de Espacio) -->
       <div class="filters-topbar">
         <div class="filter-controls">
           <input type="text" id="productSearch" placeholder="🔍 Buscar producto..." class="filter-input" />
-          
-          <select id="categorySelect" class="filter-select">
-            <option value="all">Todas las Categorías</option>
-            {CATEGORIES.map(cat => <option value={cat}>{cat}</option>)}
-          </select>
-
-          <select id="brandSelect" class="filter-select">
-            <option value="all">Todas las Marcas</option>
-            {BRANDS.map(brand => <option value={brand}>{brand}</option>)}
-          </select>
-
+          <select id="categorySelect" class="filter-select"><option value="all">Todas las Categorías</option></select>
+          <select id="brandSelect" class="filter-select"><option value="all">Todas las Marcas</option></select>
           <select id="sortProducts" class="filter-select">
             <option value="default">Recomendados</option>
             <option value="price-low">Precio: Menor a Mayor</option>
@@ -59,38 +30,22 @@ const description = "Explora nuestro catálogo completo de equipamiento automotr
           </select>
         </div>
         <div class="catalog-stats">
-          <span id="productCount">Calculando...</span>
+          <span id="productCount">Cargando catálogo...</span>
         </div>
       </div>
 
-      <!-- Grilla Principal -->
-      <div class="product-grid" id="productGrid">
-        {PRODUCTS.map((product) => (
-          <a href={`/productos/${product.id}`} 
-             class="product-card" 
-             data-category={product.category} 
-             data-brand={product.brand} 
-             data-price={product.price}
-             data-name={product.name.toLowerCase()}
-             style="display: none;">
-            <div class="card-image">
-              <img src={product.image} alt={product.name} loading="lazy" />
-              {product.badge && <span class="badge">{product.badge}</span>}
-            </div>
-            <div class="card-body">
-              <span class="brand">{product.brand}</span>
-              <h3>{product.name}</h3>
-              <p class="code">{product.code}</p>
-              <div class="card-footer">
-                <span class="price">{product.priceFormatted}</span>
-                <span class="btn-view">Ver más</span>
-              </div>
-            </div>
-          </a>
-        ))}
+      <div id="loadingState" class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Cargando productos...</p>
       </div>
 
-      <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+      <div id="errorState" class="db-notice" style="display:none;">
+        <p>No se pudo cargar el catálogo. <a href="/productos">Reintentar</a> o <a href="https://wa.me/56931258163" target="_blank" rel="noopener">consultar por WhatsApp →</a></p>
+      </div>
+
+      <div class="product-grid" id="productGrid"></div>
+
+      <div class="load-more-container" id="loadMoreContainer" style="display:none;">
         <button id="btnLoadMore" class="btn-load-more">Cargar más productos ↓</button>
       </div>
 
@@ -104,68 +59,17 @@ const description = "Explora nuestro catálogo completo de equipamiento automotr
   .catalog-main { padding-bottom: 100px; padding-top: 40px; }
   .db-notice { background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4) var(--space-6); margin-bottom: var(--space-8); font-size: var(--text-sm); color: var(--color-text-secondary); text-align: center; }
   .db-notice a { color: var(--color-gold); }
-  
-  /* Topbar Styles (Optimizando espacio) */
-  .filters-topbar {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 40px;
-  }
-  .filter-controls {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-  .filter-input, .filter-select {
-    width: 100%;
-    padding: 14px 20px;
-    border-radius: 10px;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #fff;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.3s;
-  }
-  .filter-select {
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.653C1.822 4.908 2.355 3.8 3.321 3.8h9.358c.966 0 1.499 1.108.87 1.853l-4.796 5.487a1.23 1.23 0 0 1-1.928 0z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: calc(100% - 15px) center;
-  }
-  .filter-input:focus, .filter-select:focus {
-    border-color: var(--color-primary);
-  }
-  .catalog-stats {
-    border-top: 1px solid rgba(255,255,255,0.05);
-    padding-top: 15px;
-    font-size: 0.9rem;
-    color: var(--color-primary);
-    font-weight: bold;
-    text-align: right;
-  }
-
-  /* Grid Styles */
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-  }
-  .product-card {
-    background: rgba(255,255,255,0.02);
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-  }
+  .loading-state { text-align: center; padding: 80px 0; color: var(--color-text-secondary); }
+  .loading-spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .filters-topbar { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-bottom: 40px; }
+  .filter-controls { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+  .filter-input, .filter-select { width: 100%; padding: 14px 20px; border-radius: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 0.95rem; outline: none; transition: border-color 0.3s; }
+  .filter-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.653C1.822 4.908 2.355 3.8 3.321 3.8h9.358c.966 0 1.499 1.108.87 1.853l-4.796 5.487a1.23 1.23 0 0 1-1.928 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: calc(100% - 15px) center; }
+  .filter-input:focus, .filter-select:focus { border-color: var(--color-primary); }
+  .catalog-stats { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; font-size: 0.9rem; color: var(--color-primary); font-weight: bold; text-align: right; }
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+  .product-card { background: rgba(255,255,255,0.02); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); text-decoration: none; color: inherit; display: none; flex-direction: column; }
   .product-card:hover { transform: translateY(-8px); background: rgba(255,255,255,0.04); border-color: var(--color-primary); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
   .card-image { aspect-ratio: 1.2; overflow: hidden; position: relative; background: #1a1a1a; }
   .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
@@ -178,116 +82,140 @@ const description = "Explora nuestro catálogo completo de equipamiento automotr
   .card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
   .price { font-size: 1.3rem; font-weight: 800; color: #fff; }
   .btn-view { font-size: 0.85rem; color: var(--color-primary); font-weight: 700; text-transform: uppercase; }
-
-  /* Load More */
   .load-more-container { text-align: center; margin-top: 50px; }
   .btn-load-more { background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary); padding: 14px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; transition: all 0.3s ease; }
-  .btn-load-more:hover { background: var(--color-primary); color: #000; box-shadow: 0 0 20px rgba(229, 9, 20, 0.4); }
-
-  @media (max-width: 992px) {
-    .filter-controls { grid-template-columns: 1fr 1fr; }
-    .catalog-stats { text-align: center; }
-  }
-  @media (max-width: 768px) {
-    .filter-controls { grid-template-columns: 1fr; }
-  }
+  .btn-load-more:hover { background: var(--color-primary); color: #000; }
+  @media (max-width: 992px) { .filter-controls { grid-template-columns: 1fr 1fr; } .catalog-stats { text-align: center; } }
+  @media (max-width: 768px) { .filter-controls { grid-template-columns: 1fr; } }
 </style>
 
-<script>
-  import gsap from 'gsap';
+<script define:vars={{ PHP_API }}>
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function slugify(str, id) {
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + id;
+  }
+  function formatPrice(n) {
+    return '$' + Number(n).toLocaleString('es-CL');
+  }
+  function buildCard(p) {
+    const slug = slugify(p.nombre, p.id_producto);
+    const price = p.precio ? Number(p.precio) : 0;
+    const priceStr = price > 0 ? formatPrice(price) : 'Consultar';
+    const img = p.imagen ? `https://antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
+    const code = p.codigo_antocarz || p.codigo_producto || `ANT-${p.id_producto}`;
+    const a = document.createElement('a');
+    a.href = `/productos/${slug}`;
+    a.className = 'product-card';
+    a.dataset.category = p.categoria || 'General';
+    a.dataset.brand = p.marca || 'Sin marca';
+    a.dataset.price = price;
+    a.dataset.name = p.nombre.toLowerCase();
+    a.innerHTML = `
+      <div class="card-image">
+        <img src="${img}" alt="${p.nombre}" loading="lazy" />
+        ${p.masvendido == 1 ? '<span class="badge">Destacado</span>' : ''}
+      </div>
+      <div class="card-body">
+        <span class="brand">${p.marca || 'Sin marca'}</span>
+        <h3>${p.nombre}</h3>
+        <p class="code">${code}</p>
+        <div class="card-footer">
+          <span class="price">${priceStr}</span>
+          <span class="btn-view">Ver más</span>
+        </div>
+      </div>`;
+    return a;
+  }
 
-  const cards = Array.from(document.querySelectorAll('.product-card'));
-  const searchInput = document.getElementById('productSearch') as HTMLInputElement;
-  const categorySelect = document.getElementById('categorySelect') as HTMLSelectElement;
-  const brandSelect = document.getElementById('brandSelect') as HTMLSelectElement;
-  const sortSelect = document.getElementById('sortProducts') as HTMLSelectElement;
-  
+  // ── Estado ────────────────────────────────────────────────────────────────
+  let allCards = [];
+  let matchingCards = [];
+  let currentLimit = 10;
+
+  const grid = document.getElementById('productGrid');
+  const loadingState = document.getElementById('loadingState');
+  const errorState = document.getElementById('errorState');
   const countEl = document.getElementById('productCount');
   const loadMoreContainer = document.getElementById('loadMoreContainer');
   const btnLoadMore = document.getElementById('btnLoadMore');
-  const grid = document.getElementById('productGrid');
+  const searchInput = document.getElementById('productSearch');
+  const categorySelect = document.getElementById('categorySelect');
+  const brandSelect = document.getElementById('brandSelect');
+  const sortSelect = document.getElementById('sortProducts');
 
-  let currentLimit = 10;
-  let matchingCards: Element[] = [];
+  // ── Filtros y paginación ──────────────────────────────────────────────────
+  function populateSelects(cards) {
+    const cats = [...new Set(cards.map(c => c.dataset.category).filter(Boolean))].sort();
+    const brands = [...new Set(cards.map(c => c.dataset.brand).filter(Boolean))].sort();
+    cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; categorySelect.appendChild(o); });
+    brands.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; brandSelect.appendChild(o); });
+  }
 
   function applyFiltersAndSort() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const activeCategory = categorySelect.value;
-    const activeBrand = brandSelect.value;
-    const sortVal = sortSelect.value;
+    const search = searchInput.value.toLowerCase();
+    const cat = categorySelect.value;
+    const brand = brandSelect.value;
+    const sort = sortSelect.value;
 
-    // 1. Filtrar
-    matchingCards = cards.filter(card => {
-      const el = card as HTMLElement;
-      const category = el.dataset.category;
-      const brand = el.dataset.brand;
-      const name = el.dataset.name;
+    matchingCards = allCards.filter(c =>
+      (cat === 'all' || c.dataset.category === cat) &&
+      (brand === 'all' || c.dataset.brand === brand) &&
+      c.dataset.name.includes(search)
+    );
 
-      const matchCategory = activeCategory === 'all' || category === activeCategory;
-      const matchBrand = activeBrand === 'all' || brand === activeBrand;
-      const matchSearch = name.includes(searchTerm);
-
-      return matchCategory && matchBrand && matchSearch;
-    });
-
-    // 2. Ordenar
-    if (sortVal !== 'default') {
+    if (sort !== 'default') {
       matchingCards.sort((a, b) => {
-        const priceA = parseFloat((a as HTMLElement).dataset.price) || 0;
-        const priceB = parseFloat((b as HTMLElement).dataset.price) || 0;
-        return sortVal === 'price-low' ? priceA - priceB : priceB - priceA;
+        const pa = parseFloat(a.dataset.price) || 0;
+        const pb = parseFloat(b.dataset.price) || 0;
+        return sort === 'price-low' ? pa - pb : pb - pa;
       });
     }
 
-    // 3. Restaurar orden en el DOM y ocultar todo inicialmente
-    cards.forEach(card => {
-      (card as HTMLElement).style.display = 'none';
-    });
-    
-    // Anexar nuevamente al grid en el orden correcto
-    matchingCards.forEach(card => grid.appendChild(card));
-
+    allCards.forEach(c => { c.style.display = 'none'; });
+    matchingCards.forEach(c => grid.appendChild(c));
+    currentLimit = 10;
     renderPagination();
   }
 
   function renderPagination() {
-    let visibleCount = 0;
-    const cardsToShow = matchingCards.slice(0, currentLimit);
-
-    cardsToShow.forEach(card => {
-      const el = card as HTMLElement;
-      // Solo animamos los que estaban ocultos para que al ordenar no parpadee todo molesto
-      if (el.style.display === 'none') {
-        el.style.display = 'flex';
-        gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
-      }
-      visibleCount++;
+    let shown = 0;
+    matchingCards.forEach((c, i) => {
+      if (i < currentLimit) { c.style.display = 'flex'; shown++; }
+      else { c.style.display = 'none'; }
     });
+    countEl.textContent = `Mostrando ${shown} de ${matchingCards.length} productos`;
+    loadMoreContainer.style.display = currentLimit >= matchingCards.length ? 'none' : 'block';
+  }
 
-    countEl.textContent = `Mostrando ${visibleCount} de ${matchingCards.length} productos`;
+  // ── Fetch desde el browser del usuario ───────────────────────────────────
+  async function loadProducts() {
+    try {
+      const res = await fetch(PHP_API);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
 
-    // Botón "Ver más"
-    if (currentLimit >= matchingCards.length) {
-      loadMoreContainer.style.display = 'none';
-    } else {
-      loadMoreContainer.style.display = 'block';
+      loadingState.style.display = 'none';
+
+      allCards = data.map(buildCard);
+      allCards.forEach(c => grid.appendChild(c));
+
+      populateSelects(allCards);
+      applyFiltersAndSort();
+
+      [searchInput, categorySelect, brandSelect, sortSelect].forEach(el =>
+        el.addEventListener('input', () => applyFiltersAndSort())
+      );
+      btnLoadMore.addEventListener('click', () => {
+        currentLimit += 10;
+        renderPagination();
+      });
+
+    } catch (e) {
+      loadingState.style.display = 'none';
+      errorState.style.display = 'block';
+      countEl.textContent = 'Error al cargar';
     }
   }
 
-  // Event Listeners rápidos
-  const controls = [searchInput, categorySelect, brandSelect, sortSelect];
-  controls.forEach(control => {
-    control.addEventListener('input', () => {
-      currentLimit = 10; // Reiniciar límite a 10 cada vez que se filtra o busca
-      applyFiltersAndSort();
-    });
-  });
-
-  btnLoadMore.addEventListener('click', () => {
-    currentLimit += 10; // Al hacer click suma 10 más a la vista
-    renderPagination();
-  });
-
-  // Init principal
-  applyFiltersAndSort();
+  loadProducts();
 </script>
