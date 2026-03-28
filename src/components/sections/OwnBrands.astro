@@ -54,7 +54,7 @@ const brands = SITE.partnerBrands;
               <div class="ob-carousel">
                 {brand.images.map((src: string, i: number) => (
                   <div class="ob-carousel__slide">
-                    <img src={src} alt={i === 0 ? brand.name : `${brand.name} ${i + 1}`} loading={i === 0 ? 'eager' : 'lazy'} />
+                    <img src={src} alt={i === 0 ? brand.name : `${brand.name} ${i + 1}`} loading="lazy" decoding="async" />
                   </div>
                 ))}
               </div>
