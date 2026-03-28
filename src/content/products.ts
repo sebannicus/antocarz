@@ -51,7 +51,7 @@ export const PRODUCTS: Product[] = [
     price: 189990,
     priceFormatted: '$189.990',
     description: 'Radio multimedia con pantalla táctil HD de 10 pulgadas. Sistema Android con acceso a todas las apps, GPS integrado, WiFi, Bluetooth 5.0 y compatibilidad con CarPlay y Android Auto.',
-    image: '/images/products/radio-android-jbl.webp',
+    image: '/images/products/radio-ztaudio-3.webp',
     features: [
       'Pantalla táctil HD 10 pulgadas',
       'Android Auto y Apple CarPlay',
@@ -73,7 +73,7 @@ export const PRODUCTS: Product[] = [
     price: 159990,
     priceFormatted: '$159.990',
     description: 'Unidad multimedia Pioneer con pantalla de 9 pulgadas, sistema Android, conectividad total y sonido premium. Instalación limpia con adaptador de fábrica.',
-    image: '/images/products/radio-pioneer.webp',
+    image: '/images/products/radio-android-9.webp',
     features: [
       'Pantalla táctil 9 pulgadas',
       'Android nativo con Play Store',
@@ -96,7 +96,7 @@ export const PRODUCTS: Product[] = [
     price: 89990,
     priceFormatted: '$89.990',
     description: 'Par de parlantes coaxiales JBL de 6.5 pulgadas con tweeter integrado. Potencia de 180W máximo, respuesta de frecuencia amplia y cono de polipropileno.',
-    image: '/images/products/parlantes-jbl.webp',
+    image: '/images/products/parlantes-1.webp',
     features: [
       'Par de parlantes 6.5"',
       'Potencia máx. 180W por par',
@@ -116,7 +116,7 @@ export const PRODUCTS: Product[] = [
     price: 79990,
     priceFormatted: '$79.990',
     description: 'Par de parlantes triaxiales Pioneer de 6x9 pulgadas. Alta fidelidad, graves profundos y altos cristalinos para completar cualquier sistema de audio.',
-    image: '/images/products/parlantes-pioneer.webp',
+    image: '/images/products/parlantes-2.webp',
     features: [
       'Par de parlantes 6x9"',
       'Sistema triaxial 3 vías',
@@ -179,7 +179,7 @@ export const PRODUCTS: Product[] = [
     price: 79990,
     priceFormatted: '$79.990',
     description: 'Alarma vehicular Hawk homologada ante el Ministerio de Transporte. Sensor de movimiento, control remoto de dos vías y sirena 120dB.',
-    image: '/images/products/alarma-hawk.webp',
+    image: '/images/products/rastreador-3.webp',
     features: [
       'Homologada — certificado incluido',
       'Control remoto de dos vías LCD',
@@ -201,7 +201,7 @@ export const PRODUCTS: Product[] = [
     price: 109990,
     priceFormatted: '$109.990',
     description: 'GPS de rastreo en tiempo real con app de control para Android e iOS. Historial de recorridos, notificaciones push y corte de motor remoto.',
-    image: '/images/products/gps-brm.webp',
+    image: '/images/products/rastreador-2.webp',
     features: [
       'Rastreo GPS en tiempo real',
       'App de control para Android e iOS',
@@ -223,7 +223,7 @@ export const PRODUCTS: Product[] = [
     price: 49990,
     priceFormatted: '$49.990',
     description: 'Kit de 4 sensores de reversa ultrasónicos con alerta sonora. Instalación en parachoque trasero con display digital de distancia.',
-    image: '/images/products/sensores-reversa.webp',
+    image: '/images/products/sensor-puerta.webp',
     features: [
       '4 sensores ultrasónicos',
       'Display digital de distancia',
@@ -264,7 +264,7 @@ export const PRODUCTS: Product[] = [
     price: 129990,
     priceFormatted: '$129.990',
     description: 'Lámina de polarizado americano al 35% para vehículos tipo sedan. Cumple ley chilena de polarizados. Certificado legal incluido con instalación.',
-    image: '/images/products/polarizado-sedan.webp',
+    image: '/images/products/polarizado-1.webp',
     features: [
       '35% transmisión de luz (cumple la ley)',
       'Certificado legal incluido',
@@ -286,7 +286,7 @@ export const PRODUCTS: Product[] = [
     price: 159990,
     priceFormatted: '$159.990',
     description: 'Polarizado americano al 35% para vehículos SUV y crossover. Mayor superficie cubierta, misma calidad de lámina y certificado legal incluido.',
-    image: '/images/products/polarizado-suv.webp',
+    image: '/images/products/polarizado-2.webp',
     features: [
       '35% transmisión de luz (cumple la ley)',
       'Certificado legal incluido',

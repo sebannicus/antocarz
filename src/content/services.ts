@@ -1,6 +1,7 @@
 /**
  * services.ts — Antocarz
  * Catálogo de servicios con imagen representativa por servicio.
+ * images[]: array para carrusel (si tiene >1 imagen, ServiceCard muestra carrusel táctil).
  */
 
 export interface Service {
@@ -9,6 +10,7 @@ export interface Service {
   description: string;
   features: string[];
   image: string;
+  images?: string[];
   badge?: string;
 }
 
@@ -24,7 +26,13 @@ export const SERVICES: Service[] = [
       'Amplificadores y subwoofers JBL / Pioneer',
       'Cámara de retroceso integrada al sistema',
     ],
-    image: '/images/services/car-audio.webp',
+    image: '/images/services/car-audio-1.webp',
+    images: [
+      '/images/services/car-audio-1.webp',
+      '/images/services/car-audio-2.webp',
+      '/images/services/car-audio-3.webp',
+      '/images/services/car-audio-4.webp',
+    ],
     badge: 'Más solicitado',
   },
   {
@@ -38,7 +46,15 @@ export const SERVICES: Service[] = [
       'Protección UV total',
       'Garantía de instalación',
     ],
-    image: '/images/services/polarizado.webp',
+    image: '/images/services/polarizado-1.webp',
+    images: [
+      '/images/services/polarizado-1.webp',
+      '/images/services/polarizado-2.webp',
+      '/images/services/polarizado-3.webp',
+      '/images/services/polarizado-4.webp',
+      '/images/services/polarizado-5.webp',
+      '/images/services/polarizado-6.webp',
+    ],
     badge: 'Incluye certificado',
   },
   {
@@ -47,12 +63,18 @@ export const SERVICES: Service[] = [
     description:
       'Sistemas de alarma homologados con tecnología antiportonazo, inmovilizador RFID y rastreo GPS. Soporte técnico inmediato post-instalación. Más de 100 clientes han protegido su vehículo con nuestros sistemas en La Serena.',
     features: [
-      'Alarmas homologadas Hawk y BRM certificadas',
+      'Alarmas homologadas Hawk certificadas',
       'Inmovilizador RFID antirrobo inteligente',
       'Antiportonazo · GPS rastreo en tiempo real',
       'Bloqueo de arranque + soporte técnico inmediato',
     ],
-    image: '/images/services/alarma.webp',
+    image: '/images/services/alarma-1.webp',
+    images: [
+      '/images/services/alarma-1.webp',
+      '/images/services/alarma-2.webp',
+      '/images/services/alarma-3.webp',
+      '/images/services/alarma-4.webp',
+    ],
   },
   {
     icon: '💡',
@@ -78,7 +100,12 @@ export const SERVICES: Service[] = [
       'Líneas guía de estacionamiento',
       'Visión nocturna incluida',
     ],
-    image: '/images/services/camara.webp',
+    image: '/images/services/camara-2.webp',
+    images: [
+      '/images/services/camara-2.webp',
+      '/images/services/camara-3.webp',
+      '/images/services/camara-1.webp',
+    ],
   },
   {
     icon: '❄️',

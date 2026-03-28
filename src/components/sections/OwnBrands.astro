@@ -50,7 +50,17 @@ const brands = SITE.partnerBrands;
           <p class="own-brand-card__desc">{brand.description}</p>
           
           <div class="own-brand-card__product-image">
-            <img src={brand.image} alt={brand.name} loading="lazy" />
+            {brand.images && brand.images.length > 1 ? (
+              <div class="ob-carousel">
+                {brand.images.map((src: string, i: number) => (
+                  <div class="ob-carousel__slide">
+                    <img src={src} alt={i === 0 ? brand.name : `${brand.name} ${i + 1}`} loading={i === 0 ? 'eager' : 'lazy'} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <img src={brand.image} alt={brand.name} loading="lazy" />
+            )}
           </div>
 
           <ul class="own-brand-card__features" role="list">
@@ -183,8 +193,34 @@ const brands = SITE.partnerBrands;
     transition: transform var(--transition-slow);
   }
 
-  .own-brand-card:hover .own-brand-card__product-image img {
+  .own-brand-card:hover > .own-brand-card__product-image > img {
     transform: scale(1.05);
+  }
+
+  /* Carrusel táctil */
+  .ob-carousel {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .ob-carousel::-webkit-scrollbar { display: none; }
+
+  .ob-carousel__slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: start;
+  }
+
+  .ob-carousel__slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .own-brand-card__features {
