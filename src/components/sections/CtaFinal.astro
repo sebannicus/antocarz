@@ -48,7 +48,7 @@ const branches = SITE.branches;
         <p class="cta-final__branches-label">¿En qué sucursal nos visitas?</p>
         <div class="cta-final__branch-btns">
           {branches.map((branch) => {
-            const url = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(branch.whatsappMsg)}`;
+            const url = `https://wa.me/${branch.whatsappNumber}?text=${encodeURIComponent(branch.whatsappMsg)}`;
             return (
               <a
                 href={url}
