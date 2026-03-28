@@ -1,199 +1,163 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { PRODUCTS, CATEGORIES } from '../content/products';
-import Button from '../components/ui/Button.astro';
+import { getProductsMetadata } from '../lib/getProducts';
+
+let PRODUCTS: Awaited<ReturnType<typeof getProductsMetadata>>['products'] = [];
+let CATEGORIES: string[] = [];
+let BRANDS: string[] = [];
+let dbError = false;
+
+try {
+  const meta = await getProductsMetadata();
+  PRODUCTS   = meta.products;
+  CATEGORIES = meta.categories;
+  BRANDS     = meta.brands;
+} catch {
+  dbError = true;
+}
 
 const title = "Catálogo de Productos | Antocarz 2026";
-const description = "Explora nuestro catálogo completo de equipamiento automotriz en La Serena: Car Audio, Seguridad, Iluminación LED y más.";
+const description = "Explora nuestro catálogo completo de equipamiento automotriz.";
 ---
-
 <BaseLayout title={title} description={description}>
   <section class="catalog-hero">
     <div class="container text-center">
       <span class="section-label">Equipamiento Profesional</span>
       <h1>Catálogo <span>2026</span></h1>
-      <p>Todo para potenciar tu vehículo con la mejor tecnología y calidad garantizada.</p>
     </div>
   </section>
   <div class="hazard-stripes"></div>
 
   <section class="catalog-main">
     <div class="container">
-      <div class="catalog-layout">
-        <!-- Sidebar de Filtros -->
-        <aside class="filters-sidebar">
-          <div class="filter-group">
-            <h3>Buscar</h3>
-            <div class="search-box">
-              <input type="text" id="productSearch" placeholder="Ej: Radio JBL, Alarma..." />
-            </div>
-          </div>
 
-          <div class="filter-group">
-            <h3>Categorías</h3>
-            <div class="category-list">
-              <button class="category-btn active" data-category="all">Todos los productos</button>
-              {CATEGORIES.map(cat => (
-                <button class="category-btn" data-category={cat}>{cat}</button>
-              ))}
-            </div>
-          </div>
+      {dbError && (
+        <div class="db-notice">
+          <p>El catálogo se está cargando desde el servidor. <a href="/productos">Recargar página</a> o <a href={`https://wa.me/56931258163?text=${encodeURIComponent('Hola, quiero consultar los productos disponibles.')}`} target="_blank" rel="noopener noreferrer">consultar por WhatsApp →</a></p>
+        </div>
+      )}
 
-          <div class="filter-group">
-            <h3>Marcas</h3>
-            <div class="brand-list">
-              <label><input type="checkbox" value="JBL" class="brand-filter" /> JBL</label>
-              <label><input type="checkbox" value="Pioneer" class="brand-filter" /> Pioneer</label>
-              <label><input type="checkbox" value="Hawk" class="brand-filter" /> Hawk</label>
-              <label><input type="checkbox" value="BRM" class="brand-filter" /> BRM</label>
-            </div>
-          </div>
-        </aside>
+      <!-- Topbar de Filtros (Optimización de Espacio) -->
+      <div class="filters-topbar">
+        <div class="filter-controls">
+          <input type="text" id="productSearch" placeholder="🔍 Buscar producto..." class="filter-input" />
+          
+          <select id="categorySelect" class="filter-select">
+            <option value="all">Todas las Categorías</option>
+            {CATEGORIES.map(cat => <option value={cat}>{cat}</option>)}
+          </select>
 
-        <!-- Grilla de Productos -->
-        <div class="catalog-content">
-          <div class="catalog-header">
-            <span id="productCount">Mostrando {PRODUCTS.length} productos</span>
-            <div class="sort-box">
-              <select id="sortProducts">
-                <option value="default">Ordenar por</option>
-                <option value="price-low">Precio: Menor a Mayor</option>
-                <option value="price-high">Precio: Mayor a Menor</option>
-              </select>
-            </div>
-          </div>
+          <select id="brandSelect" class="filter-select">
+            <option value="all">Todas las Marcas</option>
+            {BRANDS.map(brand => <option value={brand}>{brand}</option>)}
+          </select>
 
-          <div class="product-grid" id="productGrid">
-            {PRODUCTS.map(product => (
-              <a href={`/productos/${product.id}`} class="product-card" data-category={product.category} data-brand={product.brand} data-price={product.price}>
-                <div class="card-image">
-                  <img src={product.image} alt={product.name} loading="lazy" />
-                  {product.badge && <span class="badge">{product.badge}</span>}
-                </div>
-                <div class="card-body">
-                  <span class="brand">{product.brand}</span>
-                  <h3>{product.name}</h3>
-                  <p class="code">{product.code}</p>
-                  <div class="card-footer">
-                    <span class="price">{product.priceFormatted}</span>
-                    <span class="btn-view">Ver más</span>
-                  </div>
-                </div>
-              </a>
-            ))}
-          </div>
-
-          <!-- Mensaje No Resultados -->
-          <div id="noResults" class="no-results hidden">
-            <p>No se encontraron productos con esos filtros.</p>
-            <button id="resetFilters" class="btn-link">Limpiar filtros</button>
-          </div>
+          <select id="sortProducts" class="filter-select">
+            <option value="default">Recomendados</option>
+            <option value="price-low">Precio: Menor a Mayor</option>
+            <option value="price-high">Precio: Mayor a Menor</option>
+          </select>
+        </div>
+        <div class="catalog-stats">
+          <span id="productCount">Calculando...</span>
         </div>
       </div>
+
+      <!-- Grilla Principal -->
+      <div class="product-grid" id="productGrid">
+        {PRODUCTS.map((product) => (
+          <a href={`/productos/${product.id}`} 
+             class="product-card" 
+             data-category={product.category} 
+             data-brand={product.brand} 
+             data-price={product.price}
+             data-name={product.name.toLowerCase()}
+             style="display: none;">
+            <div class="card-image">
+              <img src={product.image} alt={product.name} loading="lazy" />
+              {product.badge && <span class="badge">{product.badge}</span>}
+            </div>
+            <div class="card-body">
+              <span class="brand">{product.brand}</span>
+              <h3>{product.name}</h3>
+              <p class="code">{product.code}</p>
+              <div class="card-footer">
+                <span class="price">{product.priceFormatted}</span>
+                <span class="btn-view">Ver más</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+        <button id="btnLoadMore" class="btn-load-more">Cargar más productos ↓</button>
+      </div>
+
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .catalog-hero {
-    padding: 160px 0 80px;
-    background: linear-gradient(to bottom, #111, var(--color-bg));
+  .catalog-hero { padding: 120px 0 60px; background: linear-gradient(to bottom, #111, var(--color-bg)); }
+  .catalog-hero h1 { font-size: 3.5rem; margin: 15px 0; }
+  .catalog-main { padding-bottom: 100px; padding-top: 40px; }
+  .db-notice { background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4) var(--space-6); margin-bottom: var(--space-8); font-size: var(--text-sm); color: var(--color-text-secondary); text-align: center; }
+  .db-notice a { color: var(--color-gold); }
+  
+  /* Topbar Styles (Optimizando espacio) */
+  .filters-topbar {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 40px;
   }
-
-  .catalog-hero h1 {
-    font-size: 4rem;
-    margin: 15px 0;
-  }
-
-  .catalog-layout {
+  .filter-controls {
     display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 40px;
-    padding-bottom: 100px;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
   }
-
-  /* Sidebar Styles */
-  .filters-sidebar {
-    position: sticky;
-    top: 100px;
-    height: fit-content;
-  }
-
-  .filter-group {
-    margin-bottom: 35px;
-  }
-
-  .filter-group h3 {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    color: #fff;
-    font-weight: 700;
-  }
-
-  .search-box input {
+  .filter-input, .filter-select {
     width: 100%;
-    padding: 12px 18px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.05);
+    padding: 14px 20px;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.5);
     border: 1px solid rgba(255,255,255,0.1);
     color: #fff;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s;
   }
-
-  .category-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .category-btn {
-    text-align: left;
-    padding: 10px 15px;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--color-text-muted);
-    border: none;
+  .filter-select {
     cursor: pointer;
-    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.653C1.822 4.908 2.355 3.8 3.321 3.8h9.358c.966 0 1.499 1.108.87 1.853l-4.796 5.487a1.23 1.23 0 0 1-1.928 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 15px) center;
   }
-
-  .category-btn:hover, .category-btn.active {
-    background: rgba(255,255,255,0.05);
+  .filter-input:focus, .filter-select:focus {
+    border-color: var(--color-primary);
+  }
+  .catalog-stats {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 15px;
+    font-size: 0.9rem;
     color: var(--color-primary);
-  }
-
-  .brand-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .brand-list label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--color-text-muted);
-    cursor: pointer;
+    font-weight: bold;
+    text-align: right;
   }
 
   /* Grid Styles */
-  .catalog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  }
-
   .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 30px;
   }
-
   .product-card {
     background: rgba(255,255,255,0.02);
-    border-radius: 20px;
+    border-radius: 16px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.05);
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -202,171 +166,128 @@ const description = "Explora nuestro catálogo completo de equipamiento automotr
     display: flex;
     flex-direction: column;
   }
+  .product-card:hover { transform: translateY(-8px); background: rgba(255,255,255,0.04); border-color: var(--color-primary); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+  .card-image { aspect-ratio: 1.2; overflow: hidden; position: relative; background: #1a1a1a; }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+  .product-card:hover .card-image img { transform: scale(1.1); }
+  .badge { position: absolute; top: 15px; right: 15px; background: var(--color-primary); padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; color:#000; }
+  .card-body { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+  .brand { font-size: 0.75rem; text-transform: uppercase; color: var(--color-primary); font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; }
+  .product-card h3 { font-size: 1.2rem; margin-bottom: 10px; line-height: 1.2; }
+  .code { font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 20px; }
+  .card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+  .price { font-size: 1.3rem; font-weight: 800; color: #fff; }
+  .btn-view { font-size: 0.85rem; color: var(--color-primary); font-weight: 700; text-transform: uppercase; }
 
-  .product-card:hover {
-    transform: translateY(-10px);
-    background: rgba(255,255,255,0.04);
-    border-color: var(--color-primary);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  }
-
-  .card-image {
-    aspect-ratio: 1.2;
-    overflow: hidden;
-    position: relative;
-    background: #1a1a1a;
-  }
-
-  .card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
-  }
-
-  .product-card:hover .card-image img {
-    transform: scale(1.1);
-  }
-
-  .badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--color-primary);
-    padding: 5px 12px;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-
-  .card-body {
-    padding: 25px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .brand {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: var(--color-primary);
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-  }
-
-  h3 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-    line-height: 1.2;
-  }
-
-  .code {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-    margin-bottom: 20px;
-  }
-
-  .card-footer {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .price {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: #fff;
-  }
-
-  .btn-view {
-    font-size: 0.85rem;
-    color: var(--color-primary);
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  .hidden { display: none; }
+  /* Load More */
+  .load-more-container { text-align: center; margin-top: 50px; }
+  .btn-load-more { background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary); padding: 14px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; transition: all 0.3s ease; }
+  .btn-load-more:hover { background: var(--color-primary); color: #000; box-shadow: 0 0 20px rgba(229, 9, 20, 0.4); }
 
   @media (max-width: 992px) {
-    .catalog-layout { grid-template-columns: 1fr; }
-    .filters-sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .filter-controls { grid-template-columns: 1fr 1fr; }
+    .catalog-stats { text-align: center; }
+  }
+  @media (max-width: 768px) {
+    .filter-controls { grid-template-columns: 1fr; }
   }
 </style>
 
 <script>
-  // Script 2026: Filtrado Instantáneo sin Recarga
   import gsap from 'gsap';
 
-  const grid = document.getElementById('productGrid');
-  const cards = document.querySelectorAll('.product-card');
-  const searchInput = document.getElementById('productSearch');
-  const categoryBtns = document.querySelectorAll('.category-btn');
-  const brandFilters = document.querySelectorAll('.brand-filter');
-  const sortSelect = document.getElementById('sortProducts');
+  const cards = Array.from(document.querySelectorAll('.product-card'));
+  const searchInput = document.getElementById('productSearch') as HTMLInputElement;
+  const categorySelect = document.getElementById('categorySelect') as HTMLSelectElement;
+  const brandSelect = document.getElementById('brandSelect') as HTMLSelectElement;
+  const sortSelect = document.getElementById('sortProducts') as HTMLSelectElement;
+  
   const countEl = document.getElementById('productCount');
+  const loadMoreContainer = document.getElementById('loadMoreContainer');
+  const btnLoadMore = document.getElementById('btnLoadMore');
+  const grid = document.getElementById('productGrid');
 
-  let activeCategory = 'all';
-  let searchTerm = '';
-  let activeBrands = [];
+  let currentLimit = 10;
+  let matchingCards: Element[] = [];
 
-  function filterProducts() {
-    let visibleCount = 0;
-    
-    cards.forEach(card => {
-      const category = card.dataset.category;
-      const brand = card.dataset.brand;
-      const name = card.querySelector('h3').textContent.toLowerCase();
-      
+  function applyFiltersAndSort() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const activeCategory = categorySelect.value;
+    const activeBrand = brandSelect.value;
+    const sortVal = sortSelect.value;
+
+    // 1. Filtrar
+    matchingCards = cards.filter(card => {
+      const el = card as HTMLElement;
+      const category = el.dataset.category;
+      const brand = el.dataset.brand;
+      const name = el.dataset.name;
+
       const matchCategory = activeCategory === 'all' || category === activeCategory;
-      const matchSearch = name.includes(searchTerm.toLowerCase());
-      const matchBrand = activeBrands.length === 0 || activeBrands.includes(brand);
+      const matchBrand = activeBrand === 'all' || brand === activeBrand;
+      const matchSearch = name.includes(searchTerm);
 
-      if (matchCategory && matchSearch && matchBrand) {
-        card.classList.remove('hidden');
-        visibleCount++;
-        gsap.to(card, { opacity: 1, scale: 1, duration: 0.3, display: 'flex' });
-      } else {
-        gsap.to(card, { opacity: 0, scale: 0.9, duration: 0.3, display: 'none', onComplete: () => {
-          card.classList.add('hidden');
-        }});
-      }
+      return matchCategory && matchBrand && matchSearch;
     });
 
-    countEl.textContent = `Mostrando ${visibleCount} de ${cards.length} productos`;
+    // 2. Ordenar
+    if (sortVal !== 'default') {
+      matchingCards.sort((a, b) => {
+        const priceA = parseFloat((a as HTMLElement).dataset.price) || 0;
+        const priceB = parseFloat((b as HTMLElement).dataset.price) || 0;
+        return sortVal === 'price-low' ? priceA - priceB : priceB - priceA;
+      });
+    }
+
+    // 3. Restaurar orden en el DOM y ocultar todo inicialmente
+    cards.forEach(card => {
+      (card as HTMLElement).style.display = 'none';
+    });
+    
+    // Anexar nuevamente al grid en el orden correcto
+    matchingCards.forEach(card => grid.appendChild(card));
+
+    renderPagination();
   }
 
-  // Event Listeners
-  searchInput.addEventListener('input', (e) => {
-    searchTerm = e.target.value;
-    filterProducts();
-  });
+  function renderPagination() {
+    let visibleCount = 0;
+    const cardsToShow = matchingCards.slice(0, currentLimit);
 
-  categoryBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      categoryBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeCategory = btn.dataset.category;
-      filterProducts();
+    cardsToShow.forEach(card => {
+      const el = card as HTMLElement;
+      // Solo animamos los que estaban ocultos para que al ordenar no parpadee todo molesto
+      if (el.style.display === 'none') {
+        el.style.display = 'flex';
+        gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+      }
+      visibleCount++;
+    });
+
+    countEl.textContent = `Mostrando ${visibleCount} de ${matchingCards.length} productos`;
+
+    // Botón "Ver más"
+    if (currentLimit >= matchingCards.length) {
+      loadMoreContainer.style.display = 'none';
+    } else {
+      loadMoreContainer.style.display = 'block';
+    }
+  }
+
+  // Event Listeners rápidos
+  const controls = [searchInput, categorySelect, brandSelect, sortSelect];
+  controls.forEach(control => {
+    control.addEventListener('input', () => {
+      currentLimit = 10; // Reiniciar límite a 10 cada vez que se filtra o busca
+      applyFiltersAndSort();
     });
   });
 
-  brandFilters.forEach(check => {
-    check.addEventListener('change', () => {
-      activeBrands = Array.from(brandFilters)
-        .filter(i => i.checked)
-        .map(i => i.value);
-      filterProducts();
-    });
+  btnLoadMore.addEventListener('click', () => {
+    currentLimit += 10; // Al hacer click suma 10 más a la vista
+    renderPagination();
   });
 
-  // Animación inicial
-  gsap.from('.product-card', {
-    y: 40,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.1,
-    ease: 'expo.out'
-  });
+  // Init principal
+  applyFiltersAndSort();
 </script>
