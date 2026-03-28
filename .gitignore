@@ -10,3 +10,6 @@ Thumbs.db
 npm-debug.log*
 
 .vercel
+
+# Videos (servir desde CDN/YouTube, no en git)
+public/videos/
