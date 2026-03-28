@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background: #0D0D0D;
+    font-family: 'Arial Black', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 80px;
+    position: relative;
+  }
+
+  /* Glow rojo */
+  body::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 600px; height: 600px;
+    background: radial-gradient(ellipse, rgba(227,6,19,0.25) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  /* Franjas hazard sutiles */
+  body::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      #C9A227 0px, #C9A227 40px,
+      #0D0D0D 40px, #0D0D0D 80px
+    );
+    opacity: 0.6;
+  }
+
+  .left {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    z-index: 1;
+    max-width: 620px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .badge-dot {
+    width: 8px; height: 8px;
+    background: #C9A227;
+    border-radius: 50%;
+  }
+
+  h1 {
+    font-size: 72px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+
+  h1 span { color: #E30613; }
+
+  .sub {
+    font-size: 22px;
+    color: rgba(255,255,255,0.65);
+    font-weight: 400;
+    line-height: 1.4;
+    font-family: Arial, sans-serif;
+  }
+
+  .tags {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    font-family: Arial, sans-serif;
+  }
+
+  .right {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+  }
+
+  .logo-wrap {
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(227,6,19,0.07);
+    border: 2px solid rgba(227,6,19,0.30);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 60px rgba(227,6,19,0.20), 0 0 120px rgba(227,6,19,0.08);
+    padding: 24px;
+  }
+
+  .logo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .rating {
+    text-align: right;
+  }
+
+  .stars { font-size: 28px; color: #FFC903; letter-spacing: 2px; }
+  .rating-score { font-size: 40px; font-weight: 900; color: #fff; }
+  .rating-label { font-size: 13px; color: rgba(255,255,255,0.4); font-family: Arial, sans-serif; }
+
+  .domain {
+    font-size: 18px;
+    color: rgba(255,255,255,0.3);
+    font-family: Arial, sans-serif;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="left">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      La Serena, Chile · Equipamiento Automotriz
+    </div>
+    <h1>ANTO<span>CARZ</span></h1>
+    <p class="sub">Radios Android · Alarmas · Polarizado Legal<br>Instalación profesional con garantía absoluta.</p>
+    <div class="tags">
+      <span class="tag">CarPlay · Android Auto</span>
+      <span class="tag">GPS Integrado</span>
+      <span class="tag">ZTAudio</span>
+      <span class="tag">rastreadores.cl</span>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="logo-wrap">
+      <img src="public/logos/PNG PEQUE LOGO.webp" alt="Antocarz" />
+    </div>
+    <div class="rating">
+      <div class="stars">★★★★★</div>
+      <div class="rating-score">5.0</div>
+      <div class="rating-label">Reseñas Google · La Serena</div>
+    </div>
+    <div class="domain">antocarz.cl</div>
+  </div>
+
+</body>
+</html>
