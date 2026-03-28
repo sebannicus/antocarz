@@ -32,7 +32,7 @@ export const SITE = {
       city: 'La Serena',
       mapsUrl: 'https://maps.google.com/?q=Lautaro+812+La+Serena+Chile',
       mapsEmbed: 'https://maps.google.com/maps?q=Antocarz+Lautaro+812+La+Serena+Chile&output=embed&hl=es',
-      whatsappMsg: 'Hola, quiero cotizar un servicio en la sucursal Lautaro (Lautaro 812, La Serena).',
+      whatsappMsg: 'Hola Antocarz sucursal Lautaro 👋 Los vi en su página web y me interesa obtener más información sobre sus servicios. ¿Me pueden ayudar?',
       whatsappNumber: '56997371969',
     },
     {
@@ -42,7 +42,7 @@ export const SITE = {
       city: 'La Serena',
       mapsUrl: 'https://maps.google.com/?q=Balmaceda+2033+La+Serena+Chile',
       mapsEmbed: 'https://maps.google.com/maps?q=Balmaceda+2033+La+Serena+Chile&output=embed&hl=es',
-      whatsappMsg: 'Hola, quiero cotizar un servicio en la sucursal Balmaceda (Balmaceda 2033, La Serena).',
+      whatsappMsg: 'Hola Antocarz sucursal Balmaceda 👋 Los vi en su página web y me interesa obtener más información sobre sus servicios. ¿Me pueden ayudar?',
       whatsappNumber: '56931258163',
     },
   ],
