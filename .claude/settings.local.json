@@ -13,7 +13,10 @@
       "WebFetch(domain:us.youtubers.me)",
       "WebFetch(domain:www.speakrj.com)",
       "WebFetch(domain:www.noxinfluencer.com)",
-      "WebFetch(domain:socialblade.com)"
+      "WebFetch(domain:socialblade.com)",
+      "Bash(npm install:*)",
+      "Bash(node -e \"const m = require\\(''mysql2''\\); console.log\\(''mysql2 ok'', m ? ''instalado'' : ''error''\\)\")",
+      "Bash(node -e \":*)"
     ]
   }
 }

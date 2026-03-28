@@ -185,11 +185,11 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
         <p class="branch-modal__desc">Elige el local que más te acomoda para enviarnos tu solicitud vía WhatsApp de forma directa y agilizar tu atención.</p>
         
         <div class="branch-modal__actions">
-          <button class="branch-btn" data-branch="Lautaro 812, La Serena">
+          <button class="branch-btn" data-branch="Lautaro 812, La Serena" data-wa="56997371969">
             <span class="branch-btn__title">Sucursal Lautaro</span>
             <span class="branch-btn__address">Lautaro 812, La Serena</span>
           </button>
-          <button class="branch-btn" data-branch="Balmaceda 2033, La Serena">
+          <button class="branch-btn" data-branch="Balmaceda 2033, La Serena" data-wa="56931258163">
             <span class="branch-btn__title">Sucursal Balmaceda</span>
             <span class="branch-btn__address">Balmaceda 2033, La Serena</span>
           </button>
@@ -370,12 +370,18 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
       branchBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           const branchName = btn.getAttribute('data-branch');
+          const branchWa = btn.getAttribute('data-wa');
           try {
             const url = new URL(pendingWaUrl);
             let text = url.searchParams.get('text') || 'Hola, quiero una cotización.';
             text += `\n\n[Preferencia de atención: Sucursal ${branchName}]`;
             url.searchParams.set('text', text);
-            window.open(url.toString(), '_blank');
+            
+            let finalUrl = url.toString();
+            // Reemplazamos el número global de la URL por el número específico de la sucursal seleccionada
+            finalUrl = finalUrl.replace(/569\d{8}/, branchWa);
+            
+            window.open(finalUrl, '_blank');
           } catch (error) {
             window.open(pendingWaUrl, '_blank');
           }

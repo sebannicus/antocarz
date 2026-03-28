@@ -10,7 +10,7 @@
  * 4. Reemplazar BEHOLD_FEED_ID abajo con tu ID real
  */
 
-const BEHOLD_FEED_ID = ''; // ← pegar aquí el ID de Behold.so
+const BEHOLD_FEED_ID = 'Nv26d89sn1o6MdGZ2U5Q'; // ← ID del cliente en Behold.so
 const IG_HANDLE     = 'antocarzlaserena';
 const IG_URL        = 'https://www.instagram.com/antocarzlaserena/';
 ---
@@ -45,7 +45,7 @@ const IG_URL        = 'https://www.instagram.com/antocarzlaserena/';
     <!-- Feed: Behold.so widget (activo cuando hay FEED ID) -->
     {BEHOLD_FEED_ID ? (
       <div class="ig__feed-live" id="ig-feed-live">
-        <div id={`behold-widget-${BEHOLD_FEED_ID}`}></div>
+        <behold-widget feed-id={BEHOLD_FEED_ID}></behold-widget>
       </div>
     ) : (
       <!-- Placeholder visual hasta configurar Behold.so -->

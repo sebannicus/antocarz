@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { query } from '../lib/mysql';
+
+let productos = [];
+let errorMsg = '';
+
+try {
+  // Probamos traer 5 productos reales
+  const results = await query('SELECT id_producto, nombre FROM anto_productos LIMIT 5');
+  productos = results;
+} catch (e) {
+  errorMsg = e.message;
+}
+---
+
+<BaseLayout title="Prueba de Conexión DB">
+  <section style="padding: 100px 0; color: white;">
+    <div class="container text-center">
+      <h1>📡 Prueba de Conexión DB Antocarz</h1>
+      
+      {errorMsg && (
+        <div style="background: rgba(255,0,0,0.1); border: 1px solid red; padding: 20px; border-radius: 8px; margin-top: 20px;">
+          <p style="color: red; font-weight: bold;">❌ Error de conexión:</p>
+          <p>{errorMsg}</p>
+        </div>
+      )}
+
+      {!errorMsg && productos.length > 0 ? (
+        <div style="margin-top: 40px;">
+          <p style="color: #00ff00; font-weight: bold;">✅ ¡CONEXIÓN EXITOSA!</p>
+          <p>Se trajeron los primeros {productos.length} productos de la base de datos de Antocarz:</p>
+          <ul style="list-style: none; margin-top: 20px; text-align: left; display: inline-block;">
+            {productos.map((p) => (
+              <li style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                ID: {p.id_producto} | Nombre: <strong>{p.nombre}</strong>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        !errorMsg && <p style="margin-top: 40px;">Buscando productos...</p>
+      )}
+
+      <div style="margin-top: 40px;">
+        <a href="/" style="color: red;">← Ir al inicio</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
