@@ -51,7 +51,7 @@ async function fetchRows(params?: string): Promise<any[]> {
   if (PHP_API_URL && PHP_API_SECRET) {
     // Producción: fetch al PHP en el hosting del cliente
     const url = `${PHP_API_URL}?key=${PHP_API_SECRET}${params ? `&${params}` : ''}`;
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(3000) });
     if (!res.ok) throw new Error(`PHP API error: ${res.status} ${res.statusText}`);
     return res.json();
   }

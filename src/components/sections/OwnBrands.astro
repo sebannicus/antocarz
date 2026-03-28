@@ -52,7 +52,7 @@ const brands = SITE.partnerBrands;
           <div class="own-brand-card__product-image">
             {brand.images && brand.images.length > 1 ? (
               <div class="ob-carousel">
-                {brand.images.map((src: string, i: number) => (
+                {brand.images.slice(0, 2).map((src: string, i: number) => (
                   <div class="ob-carousel__slide">
                     <img src={src} alt={i === 0 ? brand.name : `${brand.name} ${i + 1}`} loading="lazy" decoding="async" />
                   </div>
