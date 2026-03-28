@@ -3,7 +3,7 @@ import vercel from '@astrojs/vercel/serverless';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://antocarz.cl',
+  site: 'https://www.antocarz.cl',
   output: 'server',
   adapter: vercel(),
   integrations: [

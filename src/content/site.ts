@@ -10,7 +10,7 @@ export const SITE = {
   tagline: 'Especialistas en Car Audio, Alarmas y Polarizado en La Serena',
   description:
     'Car audio Android con CarPlay, Android Auto y GPS integrado. Alarmas homologadas, polarizado legal certificado e iluminación LED en La Serena. Garantía absoluta. Más de 1.000 trabajos garantizados y +643 certificados de polarizado emitidos.',
-  url: 'https://antocarz.cl',
+  url: 'https://www.antocarz.cl',
 
   phone: '+56 9 3125 8163',
   whatsapp: '56931258163',
