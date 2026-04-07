@@ -82,12 +82,12 @@ export const SERVICES: Service[] = [
     icon: '🔐',
     title: 'Alarmas y Seguridad',
     description:
-      'Sistemas de alarma homologados con tecnología antiportonazo, inmovilizador RFID y rastreo GPS. Soporte técnico inmediato post-instalación. Más de 100 clientes han protegido su vehículo con nuestros sistemas en La Serena.',
+      'Sistemas de alarma homologados con cortacorriente eléctrico, inmovilizador RFID y rastreo GPS. El cortacorriente impide el arranque del vehículo ante cualquier intento de robo. Antiportonazo, bloqueo de arranque y soporte técnico inmediato post-instalación.',
     features: [
-      'Alarmas homologadas Hawk certificadas',
+      'Cortacorriente eléctrico — bloqueo total del arranque',
       'Inmovilizador RFID antirrobo inteligente',
       'Antiportonazo · GPS rastreo en tiempo real',
-      'Bloqueo de arranque + soporte técnico inmediato',
+      'Alarmas homologadas Hawk certificadas',
     ],
     image: '/images/services/alarma-1.webp',
     images: [
