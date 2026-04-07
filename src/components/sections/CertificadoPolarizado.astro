@@ -6,6 +6,7 @@
  */
 
 import SectionLabel from '../ui/SectionLabel.astro';
+import Button from '../ui/Button.astro';
 import { SITE } from '../../content/site';
 
 const whatsappMsg = encodeURIComponent('Hola Antocarz 👋 Quiero instalar polarizado nanocarbón y obtener mi certificado legal. ¿Me pueden cotizar?');
@@ -52,15 +53,9 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
         </ul>
 
         <div class="cert__actions">
-          <a
-            href={whatsappUrl}
-            class="btn btn--primary btn--lg"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Cotizar polarizado con certificado por WhatsApp"
-          >
+          <Button href={whatsappUrl} variant="whatsapp" size="lg" external={true}>
             Cotizar con certificado →
-          </a>
+          </Button>
         </div>
 
         <p class="cert__note">

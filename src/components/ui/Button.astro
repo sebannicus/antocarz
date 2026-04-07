@@ -6,7 +6,7 @@
 
 export interface ButtonProps {
   href?: string;
-  variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'whatsapp';
   size?: 'sm' | 'md' | 'lg';
   external?: boolean;
   pulse?: boolean;
@@ -103,5 +103,15 @@ const externalProps = external ? { target: '_blank', rel: 'noopener noreferrer' 
   .btn--outline:hover {
     background: var(--color-gold);
     color: #FFFFFF;
+  }
+
+  .btn--whatsapp {
+    background: #25D366;
+    color: #FFFFFF;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+  }
+  .btn--whatsapp:hover {
+    background: #20BA5A;
+    box-shadow: 0 6px 32px rgba(37, 211, 102, 0.50);
   }
 </style>
