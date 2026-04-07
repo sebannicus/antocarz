@@ -96,7 +96,7 @@ export const SITE = {
     {
       id: 'rastreadores',
       name: 'Rastreadores.cl',
-      url: 'https://www.rastradores.cl',
+      url: 'https://www.rastreadores.cl',
       logo: '/logos/rastreadores.webp',
       image: '/images/products/rastreador-1.webp',
       images: [
