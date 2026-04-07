@@ -22,9 +22,10 @@ export const SERVICES: Service[] = [
       'Radios Android 9" con CarPlay inalámbrico, Android Auto, GPS integrado, WiFi y pantalla QLED. Amplificadores, parlantes y subwoofers JBL y Pioneer. Instalación profesional con garantía absoluta y soporte técnico inmediato.',
     features: [
       'Radios Android: CarPlay, Android Auto y GPS integrado',
-      'WiFi · Bluetooth A2DP · Radio FM · Reproducción 4K',
+      'WiFi · Bluetooth · Radio FM · Reproducción 4K',
       'Amplificadores y subwoofers JBL / Pioneer',
-      'Cámara de retroceso integrada al sistema',
+      'Gran stock de biseles para la mayoría de modelos del mercado',
+      'Cámara de retroceso (opcional, compatible con la mayoría de radios)',
     ],
     image: '/images/services/car-audio-1.webp',
     images: [
@@ -37,13 +38,14 @@ export const SERVICES: Service[] = [
   },
   {
     icon: '🪟',
-    title: 'Polarizado Legal',
+    title: 'Polarizado Nanocarbón',
     description:
-      'Polarizado americano de alta calidad con certificado legal incluido. Cumplimos con la Ley de Polarizados vigente en Chile.',
+      'Polarizado de nanocarbón de alta calidad en tonalidades al 5%, 20% y 35%. Cumplimos con la Ley de Polarizados vigente en Chile. Cada instalación incluye su sello en relieve y certificado legal.',
     features: [
-      'Certificado legal incluido',
-      'Láminas de seguridad americanas',
-      'Protección UV total',
+      'Disponible al 5%, 20% y 35% de transmisión de luz',
+      'Sello en relieve incluido por vidrio (exigencia legal)',
+      'Certificado legal de instalación incluido',
+      'Protección UV y reducción de calor solar',
       'Garantía de instalación',
     ],
     image: '/images/services/polarizado-1.webp',
@@ -56,6 +58,25 @@ export const SERVICES: Service[] = [
       '/images/services/polarizado-6.webp',
     ],
     badge: 'Incluye certificado',
+  },
+  {
+    icon: '🛡️',
+    title: 'Láminas de Seguridad',
+    description:
+      'Films anti-impactos para vidrios, línea diseñada exclusivamente para automóviles. Protegen ante golpes, fragmentan el vidrio de forma segura y disuaden el robo. No requieren certificado de instalación.',
+    features: [
+      'Films anti-impactos de alta resistencia',
+      'Fragmentación controlada ante golpes',
+      'Línea exclusiva para automóviles',
+      'Incoloras: no afectan visibilidad ni estética',
+      'No requieren certificado legal',
+    ],
+    image: '/images/services/polarizado-2.webp',
+    images: [
+      '/images/services/polarizado-2.webp',
+      '/images/services/polarizado-3.webp',
+    ],
+    badge: 'Anti-impactos',
   },
   {
     icon: '🔐',

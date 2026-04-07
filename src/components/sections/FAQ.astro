@@ -27,7 +27,10 @@ import { FAQ_ITEMS } from '../../content/faq';
             <span class="faq__icon" aria-hidden="true">+</span>
           </summary>
           <div class="faq__answer">
-            <p>{item.answer}</p>
+            {item.answerHtml
+              ? <Fragment set:html={item.answerHtml} />
+              : <p>{item.answer}</p>
+            }
           </div>
         </details>
       ))}
@@ -107,5 +110,48 @@ import { FAQ_ITEMS } from '../../content/faq';
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
+  }
+
+  .faq__list-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-left: var(--space-5);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .faq__list-items li::marker {
+    color: var(--color-gold);
+  }
+
+  .faq__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    overflow-x: auto;
+    display: block;
+  }
+
+  .faq__table th,
+  .faq__table td {
+    border: 1px solid var(--color-border);
+    padding: var(--space-2) var(--space-3);
+    text-align: center;
+  }
+
+  .faq__table th {
+    background: var(--color-bg-overlay);
+    color: var(--color-gold);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-xs);
+  }
+
+  .faq__table td:first-child {
+    text-align: left;
+    font-weight: var(--weight-medium);
+    color: var(--color-text-primary);
   }
 </style>

@@ -6,14 +6,15 @@
 
 export interface FaqItem {
   question: string;
-  answer: string;
+  answer?: string;
+  answerHtml?: string;
 }
 
 export const FAQ_ITEMS: FaqItem[] = [
   {
     question: '¿El polarizado incluye el certificado legal?',
     answer:
-      'Sí, todos nuestros trabajos de polarizado incluyen el certificado legal exigido por la Ley de Polarizados vigente en Chile. Trabajamos con láminas americanas de alta calidad con protección UV total. Puedes solicitar tu certificado directamente en tienda el mismo día de la instalación.',
+      'Sí, todos nuestros trabajos de polarizado nanocarbón incluyen el certificado legal exigido por la Ley de Polarizados vigente en Chile, más el sello en relieve por vidrio. Más de +10.000 certificados emitidos respaldan nuestra experiencia. Puedes retirar tu certificado directamente en tienda el mismo día de la instalación.',
   },
   {
     question: '¿Las radios Android ZTAudio son compatibles con CarPlay y Android Auto?',
@@ -39,5 +40,125 @@ export const FAQ_ITEMS: FaqItem[] = [
     question: '¿Trabajan con todos los modelos de autos?',
     answer:
       'Trabajamos con la gran mayoría de marcas y modelos disponibles en Chile, incluyendo Toyota, Nissan, Chevrolet, Hyundai, Kia, Suzuki, Volkswagen, Ford, Mazda, Mitsubishi y más. Nuestras radios ZTAudio son compatibles con el 90% del parque vehicular. Contamos con adaptadores específicos por modelo para garantizar una instalación limpia, sin modificaciones en el cableado original.',
+  },
+
+  // ── Ley de Polarizados ──────────────────────────────────────────────────
+  {
+    question: '¿Qué es un film polarizado para vehículos?',
+    answer:
+      'Es una lámina de poliéster de alta resistencia que se adhiere en la cara interior de los vidrios. Están diseñados para protegerse de la Radiación Solar, Rayos UV y Rayos Infrarrojos.',
+  },
+  {
+    question: '¿Desde cuándo rige la Ley de Polarizados?',
+    answer: 'La ley empezó a regir desde el 11 de Marzo de 2020.',
+  },
+  {
+    question: '¿Qué porcentajes de Transmisión de Luz Visible están permitidos por ley?',
+    answerHtml: `
+      <table class="faq__table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Vehículos medianos y livianos</th>
+            <th>Vehículos pesados, buses y camiones</th>
+            <th>Taxis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vidrios laterales delanteros</td>
+            <td>70%</td>
+            <td>70%</td>
+            <td>70%</td>
+          </tr>
+          <tr>
+            <td>Vidrios laterales traseros</td>
+            <td>28%</td>
+            <td>Entre 50% y 70%</td>
+            <td>Entre 50% y 70%</td>
+          </tr>
+          <tr>
+            <td>Luneta trasera</td>
+            <td>28%</td>
+            <td>5%</td>
+            <td>70%</td>
+          </tr>
+        </tbody>
+      </table>
+    `,
+  },
+  {
+    question: '¿Qué pasa con los vehículos que ya tienen film polarizado?',
+    answer: 'Deben ser retirados de circulación si no cumplen con la norma vigente.',
+  },
+  {
+    question: '¿Están prohibidas las láminas de seguridad incoloras?',
+    answer:
+      'No. Las láminas de seguridad incoloras no están prohibidas y tampoco requieren Certificado de Instalación, ya que no tienen tinte que oscurezca la visibilidad.',
+  },
+  {
+    question: '¿Quién realizará las fiscalizaciones?',
+    answer:
+      'Carabineros, Plantas de Revisión Técnica, Inspectores Fiscales y Municipales.',
+  },
+  {
+    question: '¿Qué está prohibido en la Ley de Polarizados?',
+    answerHtml: `
+      <ul class="faq__list-items">
+        <li>Instalación en vehículos de transporte escolar.</li>
+        <li>Láminas de color ámbar, amarillo, rojo, azul o cualquiera de sus matices.</li>
+        <li>Láminas metálicas, espejadas y reflectivas.</li>
+        <li>Instalación en el parabrisas delantero.</li>
+        <li>Film con unión: debe ser en un solo paño por vidrio.</li>
+        <li>Obstaculizar la visibilidad de la tercera luz de freno.</li>
+        <li>Instalación con imperfecciones, burbujas de aire, pliegues u otros defectos visuales.</li>
+      </ul>
+    `,
+  },
+  {
+    question: '¿Las Plantas de Revisión Técnica pueden seguir rechazando el polarizado?',
+    answer:
+      'No pueden rechazarlo si el vehículo cumple con los porcentajes de transparencia permitidos por la norma.',
+  },
+  {
+    question: '¿Puedo transferir el Certificado de Instalación si vendo mi auto?',
+    answer:
+      'Sí, el Certificado de Instalación está asociado al vehículo, por lo que puede transferirse junto con él.',
+  },
+  {
+    question: '¿Puedo instalar film polarizado en todas las ventanas de mi auto?',
+    answer: 'Sí, a excepción del parabrisas delantero.',
+  },
+  {
+    question: '¿Cómo saber si los films que me instalan cumplen con la norma?',
+    answer:
+      'Para un particular es difícil distinguir las tonalidades sin equipos especializados. Algunas empresas instaladoras disponen de equipos digitales (Tint Check) que miden la transparencia del film. El resultado debe arrojar una diferencia de ±2% respecto al porcentaje indicado. En Antocarz trabajamos con láminas certificadas de marcas como Madico (USA) y TechFilms (Corea).',
+  },
+  {
+    question: '¿Qué es el sello en relieve y qué vidrios deben llevarlo?',
+    answer:
+      'Es una exigencia de la norma para los vidrios donde se instalen films polarizados. El sello debe indicar el nombre del instalador, RUT y porcentaje de transparencia del film, y debe leerse perfectamente desde el exterior del vehículo.',
+  },
+  {
+    question: '¿Qué debo considerar al contratar el servicio de polarizado?',
+    answer:
+      'Lo más importante es elegir una empresa con local establecido, que trabaje con productos de calidad y marca reconocida — como Madico (USA) y TechFilms (Corea) — que cuentan con garantía extendida. En Antocarz cumplimos todos estos requisitos y entregamos el Certificado de Instalación legal el mismo día.',
+  },
+  {
+    question: '¿Qué debe contener el Certificado de Instalación?',
+    answerHtml: `
+      <ul class="faq__list-items">
+        <li>Placa patente única del vehículo.</li>
+        <li>Emisor y N° de certificado de flamabilidad de la lámina.</li>
+        <li>Certificación UV, en caso de contar con ese filtro.</li>
+        <li>Factor de transmisión regular de luz del conjunto vidrio/lámina.</li>
+        <li>Razón social o nombre del instalador.</li>
+        <li>RUT o cédula de identidad del instalador.</li>
+        <li>Domicilio, correo electrónico y teléfono del instalador.</li>
+        <li>Fecha de instalación.</li>
+        <li>Vidrios en los que se instaló la lámina.</li>
+        <li>Firma y timbre del instalador.</li>
+      </ul>
+    `,
   },
 ];
