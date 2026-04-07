@@ -7,9 +7,9 @@
 
 export const SITE = {
   name: 'Antocarz',
-  tagline: 'Especialistas en Car Audio, Alarmas y Polarizado en La Serena',
+  tagline: 'Expertos en Seguridad Automotriz, Polarizado y Car Audio en La Serena',
   description:
-    'Expertos en seguridad automotriz en La Serena. Polarizado nanocarbón certificado, láminas de seguridad, rastreadores GPS y car audio Android con CarPlay. Garantía absoluta. Más de +10.000 instalaciones y +10.000 certificados de polarizado emitidos.',
+    'Seguridad automotriz en La Serena: polarizado nanocarbón legal certificado, láminas de seguridad anti-impactos, rastreadores GPS antirrobo y car audio Android con CarPlay. +10.000 instalaciones y +10.000 certificados de polarizado emitidos. Garantía absoluta.',
   url: 'https://www.antocarz.cl',
 
   phone: '+56 9 3125 8163',
