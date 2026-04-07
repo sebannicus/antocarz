@@ -344,21 +344,52 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
       import { initScrollReveal } from '../utils/animations';
       setTimeout(() => initScrollReveal(), 300);
 
-      // --- Lógica del Modal de Sucursales ---
+      // ── Analytics: WhatsApp click tracking ───────────────────────────────
+      function fireEvent(name: string, params: Record<string, string>) {
+        if (typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', name, params);
+        }
+      }
+
+      function fireWaClick(source: string, branch: string) {
+        fireEvent('whatsapp_click', {
+          event_category: 'conversion',
+          wa_source: source,
+          wa_branch: branch,
+        });
+      }
+
+      function getWaSource(element: Element): string {
+        const section = element.closest('section[id]');
+        if (section) return section.id;
+        if (element.closest('header')) return 'header';
+        if (element.closest('footer')) return 'footer';
+        return 'unknown';
+      }
+
+      // ── Modal de Sucursales ───────────────────────────────────────────────
       const branchModal = document.getElementById('branchModal');
       const closeObj = document.getElementById('closeBranchModal');
       const branchBtns = document.querySelectorAll('.branch-btn');
       let pendingWaUrl = '';
+      let pendingWaSource = 'unknown';
 
       document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
         link.addEventListener('click', (e) => {
           const href = (link as HTMLAnchorElement).href;
-          // Si el botón ya tiene texto específico de sucursal (ej. el de LocalMap), no mostramos el popup
+          const source = getWaSource(link);
+
+          // Links con sucursal específica en el texto bypasan el modal
           if (href.toLowerCase().includes('sucursal%20lautaro') || href.toLowerCase().includes('sucursal%20balmaceda')) {
+            const branch = href.toLowerCase().includes('sucursal%20lautaro') ? 'Lautaro' : 'Balmaceda';
+            fireWaClick(source, branch);
             return;
           }
+
           e.preventDefault();
           pendingWaUrl = href;
+          pendingWaSource = source;
+          fireEvent('whatsapp_modal_open', { wa_source: source });
           branchModal?.classList.add('branch-modal-overlay--active');
           branchModal?.setAttribute('aria-hidden', 'false');
         });
@@ -379,8 +410,12 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
 
       branchBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          const branchName = btn.getAttribute('data-branch');
-          const branchWa = btn.getAttribute('data-wa');
+          const branchName = btn.getAttribute('data-branch') || '';
+          const branchWa = btn.getAttribute('data-wa') || '';
+
+          // Trackear selección de sucursal
+          fireWaClick(pendingWaSource, branchName);
+
           try {
             const url = new URL(pendingWaUrl);
             let text = url.searchParams.get('text') || `Hola Antocarz sucursal ${branchName} 👋 Los vi en su página web y quiero cotizar un servicio para mi vehículo. ¿Me pueden ayudar?`;
@@ -390,11 +425,11 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
               text += ` (Sucursal ${branchName})`;
             }
             url.searchParams.set('text', text);
-            
+
             let finalUrl = url.toString();
             // Reemplazamos el número global de la URL por el número específico de la sucursal seleccionada
             finalUrl = finalUrl.replace(/569\d{8}/, branchWa);
-            
+
             window.open(finalUrl, '_blank');
           } catch (error) {
             window.open(pendingWaUrl, '_blank');
