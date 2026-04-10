@@ -163,11 +163,44 @@ const PHP_API_BASE = "https://api.antocarz.cl/api/products.php?key=antocarz_api_
       document.getElementById('pCode').textContent = `Código: ${code}`;
       document.getElementById('pPrice').textContent = priceStr;
       document.getElementById('pDesc').textContent = desc;
-      document.getElementById('pWaLautaro').href   = `https://wa.me/56997371969?text=${waMsgLautaro}`;
-      document.getElementById('pWaBalmaceda').href = `https://wa.me/56931258163?text=${waMsgBalmaceda}`;
+      const waLautaro   = document.getElementById('pWaLautaro');
+      const waBalmaceda = document.getElementById('pWaBalmaceda');
+      waLautaro.href   = `https://wa.me/56997371969?text=${waMsgLautaro}`;
+      waBalmaceda.href = `https://wa.me/56931258163?text=${waMsgBalmaceda}`;
       if (p.masvendido == 1) document.getElementById('pBadge').style.display = 'block';
 
       document.title = `${p.nombre} | Antocarz`;
+
+      // Trackear vista del producto (GA4 view_item)
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'view_item', {
+          currency: 'CLP',
+          value: price,
+          items: [{
+            item_id: code,
+            item_name: p.nombre,
+            item_category: p.categoria || 'General',
+            item_brand: p.marca || 'Sin marca',
+            price: price,
+            quantity: 1,
+          }],
+        });
+      }
+
+      // Trackear clicks a WhatsApp desde página de producto
+      function fireProductWa(branch) {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'whatsapp_click', {
+            event_category: 'conversion',
+            wa_source: 'producto',
+            wa_branch: branch,
+            item_id: code,
+            item_name: p.nombre,
+          });
+        }
+      }
+      waLautaro.addEventListener('click',   () => fireProductWa('Lautaro'));
+      waBalmaceda.addEventListener('click', () => fireProductWa('Balmaceda'));
 
       // Schema BreadcrumbList dinámico
       const schema = {

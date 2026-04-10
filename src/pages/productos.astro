@@ -100,6 +100,21 @@ const breadcrumbSchema = {
 </style>
 
 <script define:vars={{ PHP_API }}>
+  // ── Analytics helper ──────────────────────────────────────────────────────
+  function fireGA(eventName, params) {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', eventName, params);
+    }
+  }
+
+  let filterDebounceTimer;
+  function trackFilter(type, value) {
+    clearTimeout(filterDebounceTimer);
+    filterDebounceTimer = setTimeout(() => {
+      fireGA('catalog_filter', { filter_type: type, filter_value: value });
+    }, 600);
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
   function slugify(str, id) {
     return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + id;
@@ -134,6 +149,21 @@ const breadcrumbSchema = {
           <span class="btn-view">Ver más</span>
         </div>
       </div>`;
+
+    // Trackear click en producto
+    a.addEventListener('click', () => {
+      fireGA('select_item', {
+        item_list_name: 'Catálogo',
+        items: [{
+          item_id: String(p.id_producto),
+          item_name: p.nombre,
+          item_category: p.categoria || 'General',
+          item_brand: p.marca || 'Sin marca',
+          price: price,
+        }],
+      });
+    });
+
     return a;
   }
 
@@ -212,9 +242,37 @@ const breadcrumbSchema = {
       populateSelects(allCards);
       applyFiltersAndSort();
 
-      [searchInput, categorySelect, brandSelect, sortSelect].forEach(el =>
-        el.addEventListener('input', () => applyFiltersAndSort())
-      );
+      // Trackear vista del catálogo con primeros 10 ítems
+      fireGA('view_item_list', {
+        item_list_name: 'Catálogo',
+        items: data.slice(0, 10).map((p, i) => ({
+          item_id: String(p.id_producto),
+          item_name: p.nombre,
+          item_category: p.categoria || 'General',
+          item_brand: p.marca || 'Sin marca',
+          price: p.precio ? Number(p.precio) : 0,
+          index: i,
+        })),
+      });
+
+      // Listeners con tracking de filtros
+      searchInput.addEventListener('input', () => {
+        applyFiltersAndSort();
+        if (searchInput.value.length > 2) trackFilter('busqueda', searchInput.value);
+      });
+      categorySelect.addEventListener('input', () => {
+        applyFiltersAndSort();
+        if (categorySelect.value !== 'all') trackFilter('categoria', categorySelect.value);
+      });
+      brandSelect.addEventListener('input', () => {
+        applyFiltersAndSort();
+        if (brandSelect.value !== 'all') trackFilter('marca', brandSelect.value);
+      });
+      sortSelect.addEventListener('input', () => {
+        applyFiltersAndSort();
+        if (sortSelect.value !== 'default') trackFilter('orden', sortSelect.value);
+      });
+
       btnLoadMore.addEventListener('click', () => {
         currentLimit += 10;
         renderPagination();
