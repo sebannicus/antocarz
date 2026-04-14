@@ -1,12 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../content/site';
 
 // Renderiza un shell estático — el producto se carga client-side
 const { id } = Astro.params;
 const PHP_API_BASE = "https://api.antocarz.cl/api/products.php?key=antocarz_api_2026";
+const canonicalUrl = `${SITE.url}/productos/${id}`;
 ---
 
-<BaseLayout title="Producto | Antocarz" description="Detalle de producto Antocarz">
+<BaseLayout
+  title="Producto | Antocarz"
+  description="Detalle de producto en Antocarz — seguridad automotriz La Serena."
+  canonicalUrl={canonicalUrl}
+>
   <section class="product-detail">
     <div class="container">
 
@@ -169,7 +175,17 @@ const PHP_API_BASE = "https://api.antocarz.cl/api/products.php?key=antocarz_api_
       waBalmaceda.href = `https://wa.me/56931258163?text=${waMsgBalmaceda}`;
       if (p.masvendido == 1) document.getElementById('pBadge').style.display = 'block';
 
+      // Actualizar metadatos SEO dinámicos
       document.title = `${p.nombre} | Antocarz`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        const descShort = desc.length > 155 ? desc.substring(0, 152) + '...' : desc;
+        metaDesc.setAttribute('content', `${p.nombre} — disponible en Antocarz La Serena. ${descShort}`);
+      }
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogTitle) ogTitle.setAttribute('content', `${p.nombre} | Antocarz`);
+      if (ogDesc) ogDesc.setAttribute('content', `${p.nombre} — disponible en Antocarz La Serena.`);
 
       // Trackear vista del producto (GA4 view_item)
       if (typeof window.gtag === 'function') {
