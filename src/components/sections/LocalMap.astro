@@ -75,10 +75,12 @@ const branches = SITE.branches;
             </div>
 
             <Button
-              href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(branch.whatsappMsg)}`}
+              href={`https://wa.me/${branch.whatsappNumber}?text=${encodeURIComponent(branch.whatsappMsg)}`}
               variant="primary"
               size="lg"
               external={true}
+              data-wa-source="sucursales"
+              data-wa-branch={branch.name.replace('Sucursal ', '')}
             >
               Agendar en {branch.name}
             </Button>

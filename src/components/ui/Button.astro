@@ -11,6 +11,7 @@ export interface ButtonProps {
   external?: boolean;
   pulse?: boolean;
   type?: 'button' | 'submit';
+  [key: string]: unknown;
 }
 
 const {
@@ -20,6 +21,7 @@ const {
   external = false,
   pulse = false,
   type = 'button',
+  ...rest
 } = Astro.props as ButtonProps;
 
 const Tag = href ? 'a' : 'button';
@@ -31,6 +33,7 @@ const externalProps = external ? { target: '_blank', rel: 'noopener noreferrer' 
   class:list={['btn', `btn--${variant}`, `btn--${size}`, { 'pulse-gold': pulse }]}
   type={!href ? type : undefined}
   {...externalProps}
+  {...rest}
 >
   <slot />
 </Tag>

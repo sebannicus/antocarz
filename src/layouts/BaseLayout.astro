@@ -355,14 +355,18 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
       function fireWaClick(source: string, branch: string) {
         fireEvent('whatsapp_click', {
           event_category: 'conversion',
-          wa_source: source,
-          wa_branch: branch,
+          wa_source: source || 'unknown',
+          wa_branch: branch || 'unknown',
         });
       }
 
       function getWaSource(element: Element): string {
+        // Primero busca atributo explícito (más confiable)
+        const explicit = (element as HTMLElement).dataset.waSource;
+        if (explicit) return explicit;
+        // Fallback: traversal DOM
         const section = element.closest('section[id]');
-        if (section) return section.id;
+        if (section) return (section as HTMLElement).id;
         if (element.closest('header')) return 'header';
         if (element.closest('footer')) return 'footer';
         return 'unknown';
@@ -380,11 +384,11 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
           const href = (link as HTMLAnchorElement).href;
           const source = getWaSource(link);
 
-          // Links con sucursal específica en el texto bypasan el modal
-          if (href.toLowerCase().includes('sucursal%20lautaro') || href.toLowerCase().includes('sucursal%20balmaceda')) {
-            const branch = href.toLowerCase().includes('sucursal%20lautaro') ? 'Lautaro' : 'Balmaceda';
-            fireWaClick(source, branch);
-            return;
+          // Links con data-wa-branch explícito bypasan el modal (CtaFinal, LocalMap)
+          const directBranch = (link as HTMLElement).dataset.waBranch;
+          if (directBranch) {
+            fireWaClick(source, directBranch);
+            return; // deja que target="_blank" abra el link normalmente
           }
 
           e.preventDefault();
