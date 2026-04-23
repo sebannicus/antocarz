@@ -7,9 +7,9 @@
 
 export const SITE = {
   name: 'Antocarz',
-  tagline: 'Especialistas en Car Audio, Alarmas y Polarizado en La Serena',
+  tagline: 'Expertos en Seguridad Automotriz, Polarizado y Car Audio en La Serena',
   description:
-    'Car audio Android con CarPlay, Android Auto y GPS integrado. Alarmas homologadas, polarizado legal certificado e iluminación LED en La Serena. Garantía absoluta. Más de 1.000 trabajos garantizados y +643 certificados de polarizado emitidos.',
+    'Seguridad automotriz en La Serena: polarizado nanocarbón certificado, láminas anti-impactos, cortacorriente eléctrico, rastreadores GPS antirrobo y car audio Android con CarPlay. +10.000 instalaciones y +10.000 certificados emitidos. Garantía absoluta.',
   url: 'https://www.antocarz.cl',
 
   phone: '+56 9 3125 8163',
@@ -70,7 +70,7 @@ export const SITE = {
     {
       id: 'ztaudio',
       name: 'ZTAudio',
-      logo: '/logos/ztaudio.svg',
+      logo: '/logos/ztaudio.webp',
       image: '/images/products/radio-ztaudio-1.webp',
       images: [
         '/images/products/radio-ztaudio-1.webp',
@@ -78,7 +78,7 @@ export const SITE = {
         '/images/products/radio-ztaudio-3.webp',
       ],
       tagline: 'Radio Android 9" · CarPlay · Android Auto · GPS',
-      description: 'La radio todo en uno que transforma tu vehículo. Pantalla QLED táctil de 9 pulgadas con resolución 1280×720, CarPlay inalámbrico compatible con iOS 18, Android Auto, GPS integrado con mapas globales, WiFi para Spotify, Netflix y YouTube, Bluetooth manos libres y reproducción 4K. Compatible con el 90% de los vehículos del mercado (Toyota, Nissan, Kia, Hyundai, Chevrolet y más). Instalación incluida, garantía absoluta y soporte técnico inmediato.',
+      description: 'La radio todo en uno que transforma tu vehículo. Pantalla QLED táctil de 9 pulgadas con resolución 1280×720, CarPlay inalámbrico compatible con iOS 18, Android Auto, GPS integrado con mapas globales, WiFi para Spotify, Netflix y YouTube, Bluetooth y reproducción 4K. Compatible con el 90% de los vehículos del mercado (Toyota, Nissan, Kia, Hyundai, Chevrolet y más). Gran variedad de biseles (carcasas) para cada modelo. Instalación incluida, garantía absoluta y soporte técnico inmediato.',
       badge: 'Marca propia',
       color: '#C9A227',
       features: [
@@ -87,14 +87,16 @@ export const SITE = {
         'GPS incorporado + mapas globales sin necesidad de celular',
         'WiFi integrado: Spotify, Netflix, YouTube y Waze en ruta',
         'Pantalla QLED 9" táctil multi-touch ultra clara 1280×720',
-        'Bluetooth A2DP · Manos libres y streaming de música',
-        'Android 13 · 8GB RAM + 128GB · Google Play Store',
-        'Reproducción 4K · Radio FM · Cámara de retroceso compatible',
+        'Bluetooth integrado · manos libres y streaming de música',
+        'Android 13 · 4GB RAM · 64GB almacenamiento · Google Play Store',
+        'Reproducción 4K · Radio FM · Cámara de retroceso (opcional, compatible)',
+        'Gran stock de biseles para la mayoría de modelos del mercado',
       ],
     },
     {
       id: 'rastreadores',
-      name: 'rastreadores.cl',
+      name: 'Rastreadores.cl',
+      url: 'https://www.rastreadores.cl',
       logo: '/logos/rastreadores.webp',
       image: '/images/products/rastreador-1.webp',
       images: [
@@ -104,8 +106,8 @@ export const SITE = {
         '/images/products/rastreador-4.webp',
       ],
       tagline: 'Protección Total · GPS · Antiportonazo · Inmovilizador',
-      description: 'Sistemas de seguridad vehicular de última generación para autos y motos. Inmovilizador RFID que bloquea el motor cuando tú no estás, protección antiportonazo activada automáticamente, rastreo GPS en tiempo real y tecnología RF 2.4 GHz de largo alcance. Instalación profesional con soporte técnico inmediato y garantía absoluta. Más de 100 clientes han elegido rastreadores.cl para proteger su vehículo en La Serena.',
-      badge: 'Marca propia',
+      description: 'Distribuidor oficial de Rastreadores.cl en La Serena. Sistemas de seguridad vehicular de última generación para autos y motos: inmovilizador RFID que bloquea el motor cuando tú no estás, protección antiportonazo activada automáticamente y rastreo GPS en tiempo real. Instalación profesional con garantía absoluta y soporte técnico inmediato.',
+      badge: 'Distribuidor oficial',
       color: '#2ECC71',
       features: [
         'Inmovilizador RFID: tu auto no arranca sin ti',

@@ -2,7 +2,7 @@
 /**
  * index.astro — Antocarz
  * Página principal. Solo orquesta secciones — sin lógica de negocio.
- * Estructura: Hero → Authority → Brands → Services → Differentiator → Products → Testimonials → FAQ → LocalMap → CtaFinal
+ * Estructura: Hero → Authority → Brands → Services → CertificadoPolarizado → Differentiator → Products → Testimonials → FAQ → LocalMap → CtaFinal
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -11,6 +11,8 @@ import Authority from '../components/sections/Authority.astro';
 import Brands from '../components/sections/Brands.astro';
 import OwnBrands from '../components/sections/OwnBrands.astro';
 import Services from '../components/sections/Services.astro';
+import CertificadoPolarizado from '../components/sections/CertificadoPolarizado.astro';
+import LaminasSeguridad from '../components/sections/LaminasSeguridad.astro';
 import Differentiator from '../components/sections/Differentiator.astro';
 import ProductsCta from '../components/sections/ProductsCta.astro';
 import Testimonials from '../components/sections/Testimonials.astro';
@@ -28,15 +30,20 @@ import Instagram from '../components/sections/Instagram.astro';
   <div class="hazard-stripes"></div>
   <OwnBrands />
   <Services />
-  
+
+  <div class="hazard-stripes"></div>
+  <CertificadoPolarizado />
+
+  <div class="hazard-stripes"></div>
+  <LaminasSeguridad />
+
   <div class="hazard-stripes"></div>
   <Instagram />
-  
-  <Differentiator />
-  
+
+
   <div class="hazard-stripes"></div>
   <ProductsCta />
-  
+
   <div class="hazard-stripes"></div>
   <FAQ />
   <LocalMap />

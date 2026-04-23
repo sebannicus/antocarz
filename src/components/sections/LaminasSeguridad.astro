@@ -1,0 +1,227 @@
+---
+/**
+ * LaminasSeguridad.astro — Antocarz
+ * Sección high-ticket: Films anti-impactos para vehículos.
+ * SEO: láminas de seguridad auto, films anti-impactos, protección vidrios auto.
+ */
+
+import SectionLabel from '../ui/SectionLabel.astro';
+import Button from '../ui/Button.astro';
+import { SITE } from '../../content/site';
+
+const whatsappMsg = encodeURIComponent('Hola Antocarz 👋 Vi su página web y quiero cotizar láminas de seguridad anti-impactos para mi vehículo. ¿Me pueden ayudar?');
+const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
+---
+
+<section class="laminas section" id="laminas-seguridad" aria-labelledby="laminas-heading">
+  <div class="container">
+    <div class="laminas__layout">
+
+      <!-- Visual izquierda -->
+      <div class="laminas__visual gs-slide-left" aria-hidden="true">
+        <div class="laminas__shield">
+          <div class="laminas__shield-icon">🛡️</div>
+          <div class="laminas__shield-rings">
+            <span class="laminas__ring laminas__ring--1"></span>
+            <span class="laminas__ring laminas__ring--2"></span>
+            <span class="laminas__ring laminas__ring--3"></span>
+          </div>
+        </div>
+
+        <div class="laminas__stats">
+          <div class="laminas__stat">
+            <span class="laminas__stat-value">Anti-impacto</span>
+            <span class="laminas__stat-label">resistencia superior</span>
+          </div>
+          <div class="laminas__stat-divider"></div>
+          <div class="laminas__stat">
+            <span class="laminas__stat-value">Incolora</span>
+            <span class="laminas__stat-label">sin alterar visibilidad</span>
+          </div>
+          <div class="laminas__stat-divider"></div>
+          <div class="laminas__stat">
+            <span class="laminas__stat-value">Sin cert.</span>
+            <span class="laminas__stat-label">no requiere certificado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info derecha -->
+      <div class="laminas__info gs-slide-right">
+        <SectionLabel text="LÁMINAS DE SEGURIDAD" />
+        <h2 class="laminas__title" id="laminas-heading">
+          Protege los vidrios<br />
+          <span class="text-gradient-gold">de tu vehículo.</span>
+        </h2>
+        <p class="laminas__desc">
+          Films anti-impactos de alta resistencia, línea diseñada exclusivamente para automóviles.
+          Protegen ante golpes y tentativas de robo: al romperse, el vidrio queda adherido a la lámina
+          sin dispersarse, dificultando el ingreso al vehículo y protegiendo a los ocupantes.
+        </p>
+
+        <ul class="laminas__checks" role="list">
+          <li class="laminas__check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Fragmentación controlada: el vidrio no se dispersa
+          </li>
+          <li class="laminas__check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Disuade robos al aumentar el tiempo de acceso
+          </li>
+          <li class="laminas__check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Incoloras: no afectan visibilidad ni estética
+          </li>
+          <li class="laminas__check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Compatibles con polarizado existente
+          </li>
+          <li class="laminas__check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            No requieren certificado de instalación
+          </li>
+        </ul>
+
+        <div class="laminas__cta">
+          <Button href={whatsappUrl} variant="whatsapp" size="lg" external={true}>
+            Cotizar láminas →
+          </Button>
+          <Button href="#contacto" variant="ghost" size="lg">
+            Más información
+          </Button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .laminas {
+    background: radial-gradient(circle at 20% 50%, rgba(46, 204, 113, 0.04) 0%, transparent 60%);
+  }
+
+  .laminas__layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .laminas__layout { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── Visual ── */
+  .laminas__visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-10);
+  }
+
+  .laminas__shield {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .laminas__shield-icon {
+    font-size: 5rem;
+    line-height: 1;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 20px rgba(46,204,113,0.3));
+  }
+
+  .laminas__ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    animation: ring-pulse 3s ease-in-out infinite;
+  }
+
+  .laminas__ring--1 { width: 120px; height: 120px; animation-delay: 0s; }
+  .laminas__ring--2 { width: 160px; height: 160px; animation-delay: 0.6s; }
+  .laminas__ring--3 { width: 200px; height: 200px; animation-delay: 1.2s; }
+
+  @keyframes ring-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50%       { opacity: 0.2; transform: scale(1.04); }
+  }
+
+  .laminas__stats {
+    display: flex;
+    gap: var(--space-6);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .laminas__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    text-align: center;
+  }
+
+  .laminas__stat-value {
+    font-family: var(--font-headline);
+    font-size: var(--text-base);
+    font-weight: var(--weight-extrabold);
+    color: #2ECC71;
+  }
+
+  .laminas__stat-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .laminas__stat-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--color-border);
+  }
+
+  /* ── Info ── */
+  .laminas__title {
+    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+    margin-block: var(--space-4);
+    line-height: var(--leading-tight);
+  }
+
+  .laminas__desc {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-6);
+  }
+
+  .laminas__checks {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+
+  .laminas__check {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .laminas__check svg { flex-shrink: 0; }
+
+  .laminas__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+</style>

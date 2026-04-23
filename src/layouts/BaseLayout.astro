@@ -63,13 +63,14 @@ const schemaLocalBusiness = {
   ],
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
-    name: 'Servicios de Equipamiento Automotriz',
+    name: 'Servicios de Seguridad Automotriz',
     itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Polarizado Nanocarbón Legal Certificado La Serena' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Láminas de Seguridad Anti-impactos para Vehículos' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Rastreadores GPS Antirrobo La Serena — Rastreadores.cl' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Alarmas y Cortacorriente Eléctrico para Autos — Inmovilizador RFID' } },
       { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Instalación de Radio Android con CarPlay y GPS' } },
-      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Instalación de Alarmas Homologadas' } },
-      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Polarizado Legal Certificado' } },
-      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Instalación de Cámaras de Retroceso' } },
-      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Iluminación LED Automotriz' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Aire Acondicionado Automotriz La Serena' } },
     ],
   },
   priceRange: '$$',
@@ -138,7 +139,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
     <meta name="ICBM" content="-29.9027, -71.2519" />
 
     <!-- Keywords SEO -->
-    <meta name="keywords" content="car audio La Serena, radio android CarPlay La Serena, Android Auto La Serena, GPS auto La Serena, alarmas homologadas La Serena, polarizado legal La Serena, cámara retroceso La Serena, ZTAudio, rastreadores.cl, inmovilizador RFID, antocarz" />
+    <meta name="keywords" content="seguridad automotriz La Serena, cortacorriente auto La Serena, corta corriente vehículo, cortacorriente eléctrico auto, polarizado nanocarbón La Serena, certificado polarizado La Serena, cómo sacar certificado polarizado, láminas de seguridad auto, láminas anti-impactos vehículos, rastreadores GPS antirrobo La Serena, inmovilizador RFID auto, seguridad vehicular Coquimbo, alarmas homologadas La Serena, car audio La Serena, radio android CarPlay La Serena, Android Auto La Serena, aire acondicionado automotriz La Serena, ZTAudio, rastreadores.cl, antocarz" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -344,21 +345,56 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
       import { initScrollReveal } from '../utils/animations';
       setTimeout(() => initScrollReveal(), 300);
 
-      // --- Lógica del Modal de Sucursales ---
+      // ── Analytics: WhatsApp click tracking ───────────────────────────────
+      function fireEvent(name: string, params: Record<string, string>) {
+        if (typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', name, params);
+        }
+      }
+
+      function fireWaClick(source: string, branch: string) {
+        fireEvent('whatsapp_click', {
+          event_category: 'conversion',
+          wa_source: source || 'unknown',
+          wa_branch: branch || 'unknown',
+        });
+      }
+
+      function getWaSource(element: Element): string {
+        // Primero busca atributo explícito (más confiable)
+        const explicit = (element as HTMLElement).dataset.waSource;
+        if (explicit) return explicit;
+        // Fallback: traversal DOM
+        const section = element.closest('section[id]');
+        if (section) return (section as HTMLElement).id;
+        if (element.closest('header')) return 'header';
+        if (element.closest('footer')) return 'footer';
+        return 'unknown';
+      }
+
+      // ── Modal de Sucursales ───────────────────────────────────────────────
       const branchModal = document.getElementById('branchModal');
       const closeObj = document.getElementById('closeBranchModal');
       const branchBtns = document.querySelectorAll('.branch-btn');
       let pendingWaUrl = '';
+      let pendingWaSource = 'unknown';
 
       document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
         link.addEventListener('click', (e) => {
           const href = (link as HTMLAnchorElement).href;
-          // Si el botón ya tiene texto específico de sucursal (ej. el de LocalMap), no mostramos el popup
-          if (href.toLowerCase().includes('sucursal%20lautaro') || href.toLowerCase().includes('sucursal%20balmaceda')) {
-            return;
+          const source = getWaSource(link);
+
+          // Links con data-wa-branch explícito bypasan el modal (CtaFinal, LocalMap)
+          const directBranch = (link as HTMLElement).dataset.waBranch;
+          if (directBranch) {
+            fireWaClick(source, directBranch);
+            return; // deja que target="_blank" abra el link normalmente
           }
+
           e.preventDefault();
           pendingWaUrl = href;
+          pendingWaSource = source;
+          fireEvent('whatsapp_modal_open', { wa_source: source });
           branchModal?.classList.add('branch-modal-overlay--active');
           branchModal?.setAttribute('aria-hidden', 'false');
         });
@@ -379,8 +415,12 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
 
       branchBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          const branchName = btn.getAttribute('data-branch');
-          const branchWa = btn.getAttribute('data-wa');
+          const branchName = btn.getAttribute('data-branch') || '';
+          const branchWa = btn.getAttribute('data-wa') || '';
+
+          // Trackear selección de sucursal
+          fireWaClick(pendingWaSource, branchName);
+
           try {
             const url = new URL(pendingWaUrl);
             let text = url.searchParams.get('text') || `Hola Antocarz sucursal ${branchName} 👋 Los vi en su página web y quiero cotizar un servicio para mi vehículo. ¿Me pueden ayudar?`;
@@ -390,11 +430,11 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
               text += ` (Sucursal ${branchName})`;
             }
             url.searchParams.set('text', text);
-            
+
             let finalUrl = url.toString();
             // Reemplazamos el número global de la URL por el número específico de la sucursal seleccionada
             finalUrl = finalUrl.replace(/569\d{8}/, branchWa);
-            
+
             window.open(finalUrl, '_blank');
           } catch (error) {
             window.open(pendingWaUrl, '_blank');

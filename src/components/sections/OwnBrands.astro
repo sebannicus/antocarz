@@ -30,18 +30,36 @@ const brands = SITE.partnerBrands;
       {brands.map((brand) => (
         <article class="own-brand-card gs-slide-up" data-brand={brand.id}>
           <div class="own-brand-card__header">
-            <img
-              src={brand.logo}
-              alt={brand.name}
-              class="own-brand-card__logo"
-              width="160"
-              height="48"
-              loading="lazy"
-            />
+            {brand.url ? (
+              <a href={brand.url} target="_blank" rel="noopener noreferrer" class="own-brand-card__logo-link">
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  class="own-brand-card__logo"
+                  width="160"
+                  height="48"
+                  loading="lazy"
+                />
+              </a>
+            ) : (
+              <img
+                src={brand.logo}
+                alt={brand.name}
+                class="own-brand-card__logo"
+                width="160"
+                height="48"
+                loading="lazy"
+              />
+            )}
             <span class="own-brand-card__badge" style={`--brand-color: ${brand.color}`}>
               {brand.badge}
             </span>
           </div>
+          {brand.url && (
+            <a href={brand.url} target="_blank" rel="noopener noreferrer" class="own-brand-card__site-link" style={`color: ${brand.color}`}>
+              Visitar {brand.name} →
+            </a>
+          )}
 
           <p class="own-brand-card__tagline" style={`color: ${brand.color}`}>
             {brand.tagline}
@@ -245,4 +263,20 @@ const brands = SITE.partnerBrands;
     flex-shrink: 0;
     color: var(--brand-color, var(--color-gold));
   }
+
+  .own-brand-card__logo-link {
+    display: inline-flex;
+    transition: opacity var(--transition-fast);
+  }
+  .own-brand-card__logo-link:hover { opacity: 0.8; }
+
+  .own-brand-card__site-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+    transition: opacity var(--transition-fast);
+  }
+  .own-brand-card__site-link:hover { opacity: 0.75; }
 </style>
