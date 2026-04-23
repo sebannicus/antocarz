@@ -116,20 +116,30 @@ Chip bot: +56 9 8289 0047
 Phone Number ID: 1004533332754398
 WABA ID: 1862553081073953
 Verify Token: gautama2026
-Access Token: TEMPORAL — expira ~24hrs desde generación
+Access Token: PERMANENTE ✅ (generado 2026-04-21)
+Data Store Make: antocarz_sessions (11+ campos)
+Google Calendar Lautaro ID: 40fb00b7695dfd20dbb0f493c14a4f1bb189177a1a92a7606434682839d10d5a@group.calendar.google.com
+Google Calendar Balmaceda ID: 137a5769a063ea4aa9799685ee33d381bc2d5e3c535d2bb4bc16ac15aa1c5baf@group.calendar.google.com
+Cuenta Google Calendar: gautamadigital33@gmail.com
 Google Sheet: https://docs.google.com/spreadsheets/d/1pNggz5LiklBNdYGA-gHvWserMoqTWBc0TPA7HiZaQ0E/
 ```
 
-### Estado del escenario Make (2026-04-12)
-1. WhatsApp Business Cloud — Watch Events (activo 24/7)
-2. OpenAI — Generate a completion (GPT-4o mini, system prompt simplificado)
-3. WhatsApp Business Cloud — Send a Message
-4. Google Sheets — Add a Row (log conversaciones)
+### Estado del escenario Make (2026-04-23)
+Flujo principal completo y funcional:
+- Chat con historial conversacional ✅
+- Agendamiento con Google Calendar ✅
+- Confirmación al cliente vía WhatsApp ✅
+- Notificación a sucursal vía WhatsApp Business Cloud nativo ✅
+- Routing Balmaceda en Ramas C y D ✅ (if() en campo Calendar ID)
 
-Bot funcional y respondiendo en tiempo real.
+### Archivos del bot (en .agents/whatsapp-bot/)
+- `system-prompt.md` — prompt v2.0 completo
+- `make-scenario-pro.md` — 4 escenarios Make documentados
+- `service-plan.md` — tiers, precios y márgenes
+- `setup-guide.md` — guía técnica paso a paso
 
-### Pendientes urgentes
-1. **TOKEN PERMANENTE** (URGENTE): El token temporal expira ~24hrs. Generar en business.facebook.com → Configuración del negocio → Usuarios del sistema → Agregar "Make Bot" (Admin) → Generate token con permiso `whatsapp_business_messaging` → actualizar en Make (conexión WhatsApp)
-2. **Bug JSON prefix**: Las respuestas llegan con prefijo JSON visual `{...}texto real`. Bot funcional pero antiestético. Investigar extracción de `choices[].message.content` en Make.
-3. **System prompt completo**: Cargar `system-prompt.md` completo en el módulo OpenAI de Make (actualmente simplificado)
-4. **Memoria de conversación**: Cada mensaje es independiente — el bot olvida el contexto entre turnos
+### Pendientes
+1. **Botones interactivos Rama B** — sucursal por botones reales (Graph API tipo `button`)
+2. **Prueba flujo limpio** — borrar Data Store + test de principio a fin
+3. **Escenarios 2–4** — recordatorios 24h, resumen diario equipo, post-servicio
+4. **Upgrade Make** — plan Core $9 USD/mes (ya contemplado en precio al cliente)
