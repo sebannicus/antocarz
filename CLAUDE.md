@@ -120,16 +120,97 @@ Access Token: TEMPORAL — expira ~24hrs desde generación
 Google Sheet: https://docs.google.com/spreadsheets/d/1pNggz5LiklBNdYGA-gHvWserMoqTWBc0TPA7HiZaQ0E/
 ```
 
-### Estado del escenario Make (2026-04-12)
-1. WhatsApp Business Cloud — Watch Events (activo 24/7)
-2. OpenAI — Generate a completion (GPT-4o mini, system prompt simplificado)
-3. WhatsApp Business Cloud — Send a Message
-4. Google Sheets — Add a Row (log conversaciones)
+### Estado del escenario Make (2026-04-22) — Escenario 1 casi completo
 
-Bot funcional y respondiendo en tiempo real.
+#### Módulos del escenario
+1. WhatsApp Business Cloud — Watch Events [1]
+2. Tools — Set Multiple Variables: `phone`, `message_text`, `is_valid` [11]
+3. Data Store — Get a Record `antocarz_sessions` [14]
+4. Filtro — `is_valid = true` AND `message_text` not empty
+5. OpenAI — Generate a completion (GPT-4o mini, módulo nativo) [32]
+6. JSON Parser — extrae `action`, `response`, `booking` [16]
+7. Router con 5 ramas:
+   - **Rama A** (`action=chat`): WhatsApp Send + Data Store Update
+   - **Rama B** (`action=request_branch`): HTTP → Graph API botones interactivos
+   - **Rama C** (`action=request_calendar`): Search Events Calendar + 2da llamada OpenAI + lista interactiva slots
+   - **Rama D** (`action=create_booking`): Google Calendar Create Event + WhatsApp confirmación cliente + WhatsApp notificación sucursal + Data Store Update
+   - **Rama E** (`action=escalate`): WhatsApp Send mensaje derivación
 
-### Pendientes urgentes
-1. **TOKEN PERMANENTE** (URGENTE): El token temporal expira ~24hrs. Generar en business.facebook.com → Configuración del negocio → Usuarios del sistema → Agregar "Make Bot" (Admin) → Generate token con permiso `whatsapp_business_messaging` → actualizar en Make (conexión WhatsApp)
-2. **Bug JSON prefix**: Las respuestas llegan con prefijo JSON visual `{...}texto real`. Bot funcional pero antiestético. Investigar extracción de `choices[].message.content` en Make.
-3. **System prompt completo**: Cargar `system-prompt.md` completo en el módulo OpenAI de Make (actualmente simplificado)
-4. **Memoria de conversación**: Cada mensaje es independiente — el bot olvida el contexto entre turnos
+#### Qué funciona ✅
+- Memoria conversacional (historial en Data Store como texto plano)
+- Flujo de agendamiento completo: recopilación datos → sucursal → calendario → slots → confirmación
+- Creación de evento en Google Calendar ✅
+- Confirmación al cliente por WhatsApp ✅
+- Booking fields se preservan entre turnos en Data Store ✅
+- **Flujo end-to-end probado con usuario real** ✅ (2026-04-23)
+
+#### Configuración crítica del Data Store Update (Rama A)
+Todos los campos usan lógica de preservación. Ejemplo:
+- `booking_service`: `{{if(16.booking.service != null; 16.booking.service; 14.booking_service)}}`
+- `booking_state`: `{{if(16.action = "request_calendar"; "awaiting_calendar"; if(16.action = "send_slots"; "awaiting_confirmation"; if(16.action = "create_booking"; "idle"; "collecting")))}}`
+- `history`: `{{if(14.history = null; ""; 14.history & "\n")}}Usuario: {{11.message_text}}\nAnto: {{16.response}}`
+
+#### Google Calendar — Create Event (Rama D)
+- **Start Date**: `{{16.confirmed_date}}T{{16.confirmed_time}}:00`
+- **Duration**: `{{round(if(16.service_duration_hours != null; 16.service_duration_hours * 60; 60))}}` — round() evita decimales, fallback 60 min si viene null
+
+#### JSON Parser Data Structure
+Incluye `confirmed_date` (Text) y `confirmed_time` (Text) en el objeto booking — generado con Generator pegando JSON de ejemplo completo.
+
+### Credenciales actualizadas
+```
+App Meta: "Antocarz wsp" | App ID: 1662952501371459
+Chip bot: +56 9 8289 0047
+Phone Number ID: 1004533332754398
+WABA ID: 1862553081073953
+Verify Token: gautama2026
+Access Token: PERMANENTE ✅ (generado 2026-04-21)
+Data Store Make: antocarz_sessions (11+ campos)
+Google Calendar Lautaro ID: 40fb00b7695dfd20dbb0f493c14a4f1bb189177a1a92a7606434682839d10d5a@group.calendar.google.com
+Google Calendar Balmaceda ID: 137a5769a063ea4aa9799685ee33d381bc2d5e3c535d2bb4bc16ac15aa1c5baf@group.calendar.google.com
+Cuenta Google Calendar: gautamadigital33@gmail.com
+```
+
+### Archivos del bot
+- `system-prompt.md` — v2.0 completo actualizado (listo para pegar en módulo 32 campo System)
+- `make-scenario-pro.md` — guía completa de los 4 escenarios
+- `setup-guide.md` — guía técnica original
+
+### Pendientes — próxima sesión
+1. **Notificación sucursal (Rama D)**: cambiar módulo HTTP por WhatsApp Business Cloud nativo — evita problemas de encoding JSON. Pendiente probar.
+2. **Rama B botones interactivos**: actualmente el bot pide sucursal por texto — falta implementar botones reales (HTTP → Graph API con tipo `button`)
+3. **Routing Balmaceda en Rama C y D**: actualmente solo consulta/crea en calendario Lautaro — falta condicionar por `16.booking.branch`
+4. **Prueba flujo limpio**: borrar registro Data Store + probar de principio a fin sin errores
+5. **Escenarios 2-4**: recordatorios 24hrs, resumen diario equipo, post-servicio
+6. **Upgrade Make**: plan Core $9 USD/mes (ya contemplado en precio al cliente)
+
+---
+
+## Panel de Analíticas GA4 — En construcción (2026-04-22)
+
+Rama: `feature/analytics-panel` (no mergear a dev aún)
+
+### Archivos creados
+- `src/lib/ga4.ts` — auth JWT RS256 sin dependencias + 6 reportes GA4 en paralelo
+- `src/pages/analiticas.astro` — dashboard protegido por token, 6 cards, noindex
+
+### Las 6 métricas
+1. Visitas al sitio (sesiones + usuarios únicos)
+2. Tasa de contacto WhatsApp (% con semáforo verde/amarillo/rojo)
+3. Origen del tráfico (top 4 canales con barras)
+4. Páginas más vistas (top 5 rutas)
+5. Nuevos vs recurrentes (barra split)
+6. Dispositivos (móvil / escritorio / tablet)
+
+### Estado env vars en Vercel (production)
+- `ANALYTICS_TOKEN` ✅ agregada → valor: `antocarz2026`
+- `GA4_PROPERTY_ID` ✅ agregada → valor: `530277574`
+- `GA4_SERVICE_ACCOUNT` ⏳ **PENDIENTE** — espera JSON de service account Google
+
+### Pendiente para activar
+1. Crear service account en Google Cloud Console
+   - IAM & Admin → Service Accounts → Crear → descargar JSON
+   - En GA4 Admin → Administración de acceso → agregar `client_email` como Viewer
+2. Subir JSON completo como `GA4_SERVICE_ACCOUNT` en Vercel (via CLI: `cat key.json | vercel env add GA4_SERVICE_ACCOUNT production`)
+3. Mergear `feature/analytics-panel` → `dev` y hacer deploy
+4. URL final: `https://antocarz.cl/analiticas?token=antocarz2026`
