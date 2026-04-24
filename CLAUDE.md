@@ -124,22 +124,25 @@ Cuenta Google Calendar: gautamadigital33@gmail.com
 Google Sheet: https://docs.google.com/spreadsheets/d/1pNggz5LiklBNdYGA-gHvWserMoqTWBc0TPA7HiZaQ0E/
 ```
 
-### Estado del escenario Make (2026-04-23)
-Flujo principal completo y funcional:
+### Estado del escenario Make (2026-04-24) — FLUJO END-TO-END FUNCIONAL ✅
 - Chat con historial conversacional ✅
-- Agendamiento con Google Calendar ✅
+- Agendamiento completo: recopilación datos → sucursal → slots disponibles → confirmación ✅
+- Módulo 44 (slots): sistema de calendario de referencia para evitar errores de día ✅
+- Consulta real de Google Calendar (no slots fijos) ✅
+- Creación de evento en Google Calendar ✅
 - Confirmación al cliente vía WhatsApp ✅
 - Notificación a sucursal vía WhatsApp Business Cloud nativo ✅
 - Routing Balmaceda en Ramas C y D ✅ (if() en campo Calendar ID)
+- **Probado con usuario real — flujo completo de principio a fin ✅**
 
 ### Archivos del bot (en .agents/whatsapp-bot/)
-- `system-prompt.md` — prompt v2.0 completo
+- `system-prompt.md` — prompt v2.0 completo (módulo 32, campo System)
+- `system-prompt-module44.md` — prompt módulo 44 (segunda OpenAI — slots disponibles) ✅
 - `make-scenario-pro.md` — 4 escenarios Make documentados
 - `service-plan.md` — tiers, precios y márgenes
 - `setup-guide.md` — guía técnica paso a paso
 
 ### Pendientes
 1. **Botones interactivos Rama B** — sucursal por botones reales (Graph API tipo `button`)
-2. **Prueba flujo limpio** — borrar Data Store + test de principio a fin
-3. **Escenarios 2–4** — recordatorios 24h, resumen diario equipo, post-servicio
-4. **Upgrade Make** — plan Core $9 USD/mes (ya contemplado en precio al cliente)
+2. **Escenarios 2–4** — recordatorios 24h, resumen diario equipo, post-servicio
+3. **Upgrade Make** — plan Core $9 USD/mes (ya contemplado en precio al cliente)
