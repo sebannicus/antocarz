@@ -423,7 +423,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
 
           try {
             const url = new URL(pendingWaUrl);
-            let text = url.searchParams.get('text') || `Hola Antocarz sucursal ${branchName} 👋 Los vi en su página web y quiero cotizar un servicio para mi vehículo. ¿Me pueden ayudar?`;
+            let text = url.searchParams.get('text') || `Hola Antocarz sucursal ${branchName} 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?`;
             if (text.includes('Hola Antocarz')) {
               text = text.replace('Hola Antocarz', `Hola Antocarz sucursal ${branchName}`);
             } else {
