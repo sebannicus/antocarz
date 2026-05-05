@@ -26,7 +26,6 @@ export const SERVICES: Service[] = [
       'WiFi · Bluetooth · Radio FM · Reproducción 4K',
       'Amplificadores y subwoofers JBL / Pioneer',
       'Gran stock de biseles para la mayoría de modelos del mercado',
-      'Cámara de retroceso (opcional, compatible con la mayoría de radios)',
     ],
     image: '/images/services/car-audio-1.webp',
     images: [
@@ -66,10 +65,10 @@ export const SERVICES: Service[] = [
     icon: '🛡️',
     title: 'Láminas de Seguridad',
     description:
-      'Films de poliéster de alta resistencia grosor 4, 8 y 12 micras, disponibles en tintes 5% al 100%. Refuerzan la estructura del cristal, mantienen los fragmentos unidos ante impactos y protegen a los ocupantes en accidentes. Incluyen Sello y Certificado de instalación para tonos acorde a la ley.',
+      'Films de poliéster de alta resistencia grosor 4 y 8 micras, disponibles en tintes del 5% al 100%. El 100% corresponde a lámina completamente incolora (transparencia total). Refuerzan la estructura del cristal, mantienen los fragmentos unidos ante impactos y protegen a los ocupantes en accidentes. Incluyen Sello y Certificado de instalación para tonos acorde a la ley.',
     features: [
-      'Grosor 4, 8 y 12 micras — alta resistencia',
-      'Tintes disponibles: 5%, 20%, 35%, 50%, 70% y 100%',
+      'Grosor 4 y 8 micras — alta resistencia',
+      'Tintes: 5%, 20%, 35%, 50%, 70% y 100% incoloro (transparencia total)',
       'Rechazo a los rayos del sol 99%',
       'Mantiene fragmentos de vidrio unidos ante impactos',
       'Protege a los ocupantes en accidentes de tránsito',
@@ -107,12 +106,12 @@ export const SERVICES: Service[] = [
     icon: '💡',
     title: 'Iluminación LED',
     description:
-      'Balizas, faros y accesorios LED para mejorar la visibilidad, seguridad y estilo de tu vehículo en ruta y ciudad.',
+      'Balizas, faros y accesorios LED de iluminación exterior para mejorar la visibilidad, seguridad y estilo de tu vehículo en ruta y ciudad.',
     features: [
       'Balizas LED estroboscópicas',
       'Faros LED de largo alcance',
       'Luces de posición y DRL',
-      'Iluminación interior LED',
+      'Kits LED exteriores para todo tipo de vehículo',
     ],
     image: '/images/services/led.webp',
   },
@@ -120,12 +119,12 @@ export const SERVICES: Service[] = [
     icon: '📷',
     title: 'Cámaras de Retroceso',
     description:
-      'Instalación HD integrada con tu radio Android. Maniobra con confianza y visión completa de lo que tienes atrás.',
+      'Instalación HD integrada con tu radio Android. Maniobra con confianza y visión completa de lo que tienes atrás, de noche y de día.',
     features: [
       'Cámaras 720P full HD',
       'Integración con radio existente',
       'Líneas guía de estacionamiento',
-      'Visión nocturna incluida',
+      'Excelente visibilidad de noche y de día',
     ],
     image: '/images/services/camara-2.webp',
     images: [
@@ -138,12 +137,11 @@ export const SERVICES: Service[] = [
     icon: '❄️',
     title: 'Aire Acondicionado',
     description:
-      'Mantención completa, diagnóstico y recarga de gas de tu sistema de climatización automotriz. Viaja cómodo todo el año.',
+      'Recarga de gas refrigerante y diagnóstico de capacidad y fuga en el compresor de tu sistema de aire acondicionado automotriz. Viaja cómodo todo el año.',
     features: [
-      'Diagnóstico del sistema',
       'Recarga de gas refrigerante',
-      'Cambio de filtro de habitáculo',
-      'Revisión de compresor',
+      'Diagnóstico de capacidad del sistema',
+      'Diagnóstico de fuga en el compresor',
     ],
     image: '/images/services/aire-acondicionado.webp',
   },

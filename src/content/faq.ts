@@ -17,6 +17,26 @@ export const FAQ_ITEMS: FaqItem[] = [
       'Sí, todos nuestros trabajos de polarizado nanocarbón incluyen el certificado legal exigido por la Ley de Polarizados vigente en Chile, más el sello en relieve por vidrio. Más de +10.000 certificados emitidos respaldan nuestra experiencia. Puedes retirar tu certificado directamente en tienda el mismo día de la instalación.',
   },
   {
+    question: '¿Puedo comprar solo el certificado de polarizado sin instalar?',
+    answer:
+      'No. Los certificados de polarizado solo se emiten para instalaciones realizadas en Antocarz. No se venden por separado. Si necesitas el certificado legal, debes realizar la instalación con nosotros y lo recibes el mismo día.',
+  },
+  {
+    question: '¿Puedo descargar mi certificado de polarizado después de instalado?',
+    answer:
+      'Sí. El certificado se entrega físicamente el mismo día de la instalación y también puedes descargarlo en cualquier momento desde www.antocarz.cl ingresando los datos de tu vehículo.',
+  },
+  {
+    question: '¿El certificado de polarizado se transfiere si vendo mi auto?',
+    answer:
+      'Sí. El certificado está asociado al vehículo (no a la persona), por lo que se transfiere automáticamente al nuevo dueño junto con el auto. Esto es una ventaja importante al momento de vender.',
+  },
+  {
+    question: '¿Qué pasa si mi auto ya viene con polarizado de fábrica?',
+    answer:
+      'Los polarizados de fábrica muchas veces no incluyen el certificado legal exigido en Chile. Si tu vehículo tiene polarizado de fábrica sin certificado, puedes venir a Antocarz para evaluar si cumple la norma y emitir el certificado correspondiente. En caso de no cumplir, realizamos el cambio con láminas certificadas.',
+  },
+  {
     question: '¿Las radios Android ZTAudio son compatibles con CarPlay y Android Auto?',
     answer:
       'Sí. Las radios ZTAudio son compatibles con CarPlay inalámbrico y cableado (iOS 18 y versiones anteriores) y con Android Auto inalámbrico y cableado. Además incluyen GPS integrado con mapas globales, WiFi, Bluetooth A2DP, radio FM, reproducción 4K y Google Play Store completo para instalar Spotify, Waze, Netflix y más. Son compatibles con el 90% de los modelos del mercado (Toyota, Nissan, Kia, Hyundai, Chevrolet, Ford, Volkswagen y más).',
@@ -32,6 +52,16 @@ export const FAQ_ITEMS: FaqItem[] = [
       'Sí. Ofrecemos garantía absoluta en todos nuestros servicios e instalaciones. Si experimentas cualquier problema derivado de nuestro trabajo, lo resolvemos sin costo adicional. Además contamos con soporte técnico inmediato post-instalación: puedes contactarnos directamente por WhatsApp y un especialista te asiste a la brevedad. Más de 500 instalaciones respaldan nuestra calidad en La Serena.',
   },
   {
+    question: '¿Las radios ZTAudio incluyen cámara de retroceso o parlantes?',
+    answer:
+      'No. Las radios ZTAudio se venden e instalan sin cámara de retroceso ni parlantes. Son equipos separados que puedes agregar según tus necesidades. Si deseas incorporar una cámara de retroceso o parlantes, podemos instalarlo todo en conjunto — consúltanos por el valor adicional.',
+  },
+  {
+    question: '¿Qué tamaños de pantalla tienen las radios ZTAudio?',
+    answer:
+      'Las radios ZTAudio están disponibles en pantallas de 7, 9 y 10 pulgadas, con procesadores Quadcore u Octacore según el modelo. Todas son pantallas QLED táctiles con resolución 1280×720. El tamaño disponible depende del modelo y año de tu vehículo.',
+  },
+  {
     question: '¿Cuánto demora una instalación de alarma o radio Android?',
     answer:
       'La instalación de una radio Android toma entre 1 y 2 horas dependiendo del modelo del vehículo. Una alarma estándar toma entre 2 y 3 horas; si se agrega GPS o inmovilizador RFID puede extenderse hasta 4 horas. Recomendamos agendar con anticipación para garantizarte el horario que prefieras en cualquiera de nuestras 2 sucursales en La Serena.',
@@ -40,6 +70,22 @@ export const FAQ_ITEMS: FaqItem[] = [
     question: '¿Trabajan con todos los modelos de autos?',
     answer:
       'Trabajamos con la gran mayoría de marcas y modelos disponibles en Chile, incluyendo Toyota, Nissan, Chevrolet, Hyundai, Kia, Suzuki, Volkswagen, Ford, Mazda, Mitsubishi y más. Nuestras radios ZTAudio son compatibles con el 90% del parque vehicular. Contamos con adaptadores específicos por modelo para garantizar una instalación limpia, sin modificaciones en el cableado original.',
+  },
+
+  {
+    question: '¿El Inmovilizador RFID Antiasalto incluye controles?',
+    answer:
+      'Sí. El sistema incluye dos controles: uno para el titular del vehículo y uno de repuesto. Ambos funcionan con señal RF 2.4Ghz bidireccional. El vehículo solo arranca cuando el control está presente — si el conductor se aleja más de 2 metros, el motor se bloquea automáticamente.',
+  },
+  {
+    question: '¿A quién se le entrega la información y claves del GPS Rastreadores.cl?',
+    answer:
+      'Las claves de acceso, usuarios y datos de la plataforma GPS se entregan única y exclusivamente al titular del vehículo. No se entrega información de rastreo a terceros sin autorización expresa del titular. Esto protege la privacidad y seguridad de nuestros clientes.',
+  },
+  {
+    question: '¿Las láminas de seguridad tienen tinte o son completamente transparentes?',
+    answer:
+      'Las láminas de seguridad tienen tinte. Los porcentajes indican la transmisión de luz visible: 5% es muy oscuro, 70% es levemente tintado y 100% corresponde a lámina completamente incolora (transparencia total). Las versiones incoloras (100%) no requieren certificado legal.',
   },
 
   // ── Ley de Polarizados ──────────────────────────────────────────────────
