@@ -62,6 +62,7 @@ export const SITE = {
     { label: 'Servicios', href: '#servicios' },
     { label: 'Productos', href: '/productos' },
     { label: 'Polarizado', href: '#polarizado' },
+    { label: 'Preguntas', href: '#faq' },
     { label: 'Cómo llegar', href: '#map-heading' },
     { label: 'Contacto', href: '#contacto' },
   ],
