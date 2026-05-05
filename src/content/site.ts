@@ -13,7 +13,7 @@ export const SITE = {
   url: 'https://www.antocarz.cl',
 
   phone: '+56 9 3125 8163',
-  whatsapp: '56931258163',
+  whatsapp: '56982890047',
   email: 'ventas@antocarz.cl',
 
   location: {
@@ -33,7 +33,7 @@ export const SITE = {
       mapsUrl: 'https://maps.google.com/?q=Lautaro+812+La+Serena+Chile',
       mapsEmbed: 'https://maps.google.com/maps?q=Antocarz+Lautaro+812+La+Serena+Chile&output=embed&hl=es',
       whatsappMsg: 'Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?',
-      whatsappNumber: '56997371969',
+      whatsappNumber: '56982890047',
     },
     {
       id: 'balmaceda',
@@ -43,7 +43,7 @@ export const SITE = {
       mapsUrl: 'https://maps.google.com/?q=Balmaceda+2033+La+Serena+Chile',
       mapsEmbed: 'https://maps.google.com/maps?q=Balmaceda+2033+La+Serena+Chile&output=embed&hl=es',
       whatsappMsg: 'Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?',
-      whatsappNumber: '56931258163',
+      whatsappNumber: '56982890047',
     },
   ],
 
