@@ -207,4 +207,109 @@ export const FAQ_ITEMS: FaqItem[] = [
       </ul>
     `,
   },
+
+  // ── Cuidados post-instalación ───────────────────────────────────────────
+  {
+    question: '¿Qué cuidados debo tener después de instalar el polarizado nanocarbón?',
+    answerHtml: `
+      <p>El polarizado se adhiere con una solución de agua y jabón neutro, por lo que necesita tiempo de secado y curado. Durante los primeros días debes:</p>
+      <ul class="faq__list-items">
+        <li><strong>No bajar los vidrios</strong> durante al menos 2 días.</li>
+        <li><strong>No pasar un paño por el interior</strong> de los vidrios durante 5 días.</li>
+        <li><strong>No activar el desempañante trasero</strong> durante 2 días para evitar burbujas. Si aparecen, desaparecerán solas durante el proceso de secado.</li>
+      </ul>
+      <p>Respetar estos cuidados garantiza una correcta adhesión y un acabado duradero y óptimo.</p>
+    `,
+  },
+  {
+    question: '¿Qué cuidados debo tener después de instalar láminas de seguridad?',
+    answerHtml: `
+      <p>Las láminas de seguridad son más gruesas que el polarizado y requieren mayor tiempo de secado (entre 15 días y 1 mes). Durante ese período debes:</p>
+      <ul class="faq__list-items">
+        <li>Puedes bajar y subir los vidrios con normalidad.</li>
+        <li><strong>No limpiar los vidrios por dentro durante 2 semanas</strong> para evitar manchas por burbujas.</li>
+        <li>Si aparece alguna burbuja por humedad, debería desaparecer sola en el plazo de 15 días a 1 mes.</li>
+        <li>Si después de 1 mes la burbuja no desaparece, debes avisar y acudir a Antocarz para evaluación.</li>
+      </ul>
+    `,
+  },
+  {
+    question: '¿Cuáles son los beneficios del polarizado nanocarbón versus las láminas de seguridad?',
+    answerHtml: `
+      <p><strong>Polarizado Nanocarbón:</strong></p>
+      <ul class="faq__list-items">
+        <li>Filtro UV — bloquea hasta el 99% de los rayos ultravioleta.</li>
+        <li>Reduce la temperatura interior del vehículo.</li>
+        <li>Ahorra entre un 30% y 40% en uso de aire acondicionado al refractar los rayos solares.</li>
+      </ul>
+      <p><strong>Láminas de Seguridad:</strong></p>
+      <ul class="faq__list-items">
+        <li>Filtro UV incluido.</li>
+        <li>Material de mayor espesor y resistencia.</li>
+        <li>Grosor 4 micras: resiste impactos de hasta 20 kg.</li>
+        <li>Grosor 8 micras: resiste impactos de hasta 40 kg.</li>
+        <li>Reduce el riesgo ante quiebre del vidrio: los fragmentos quedan adheridos a la lámina en vez de convertirse en proyectiles.</li>
+      </ul>
+    `,
+  },
+
+  // ── Certificados — detalle por vidrio ───────────────────────────────────
+  {
+    question: '¿Para qué vidrios se emite el certificado si elijo 35% en todos?',
+    answer:
+      'Si eliges tonalidad 35% en todos los vidrios, el certificado legal se emite únicamente para los vidrios laterales traseros y la luneta trasera, ya que la ley exige 70% en los vidrios delanteros. Los vidrios delanteros al 35% no cumplen la norma y no tienen certificado. Si deseas certificado en los delanteros, debes instalar el 70%.',
+  },
+
+  // ── GPS Rastreadores.cl — membresías y políticas ─────────────────────────
+  {
+    question: '¿Cuánto vale renovar la membresía del GPS Rastreadores.cl?',
+    answerHtml: `
+      <ul class="faq__list-items">
+        <li><strong>Semestral:</strong> $60.000 con IVA incluido.</li>
+        <li><strong>Anual:</strong> $100.000 con IVA incluido.</li>
+      </ul>
+      <p>Puedes renovar de forma presencial en Lautaro 812, La Serena, o contactándonos directamente por WhatsApp. Si realizas el pago por transferencia, debes enviar el comprobante por WhatsApp para su registro correcto.</p>
+    `,
+  },
+  {
+    question: '¿Qué pasa si no renuevo la membresía del GPS a tiempo?',
+    answer:
+      'Si la membresía vence, tienes un plazo de 2 meses para renovarla y recuperar tu cuenta. Pasado ese plazo, la cuenta no podrá recuperarse porque la SIM del equipo quedará deshabilitada. Se recomienda renovar antes del vencimiento para evitar la pérdida del servicio y del historial.',
+  },
+  {
+    question: '¿Para qué se puede usar el GPS Rastreadores.cl?',
+    answer:
+      'La plataforma está diseñada para brindar seguridad y respaldo al propietario del vehículo. No debe utilizarse como sistema de rastreo de personas. Las claves de acceso se entregan única y exclusivamente al titular del vehículo, y no se comparte información con terceros sin autorización expresa.',
+  },
+  {
+    question: '¿Cuándo debo usar el cortacorriente del GPS?',
+    answer:
+      'El comando de cortacorriente (apagar motor de forma remota) debe usarse únicamente en emergencias reales o para pruebas periódicas. En algunos sectores puede haber intermitencias en las redes móviles, lo que puede impedir que el comando llegue correctamente al equipo. Además, si el GPS no tiene señal satelital, el cortacorriente no se ejecutará. Si el vehículo está en movimiento, el corte del motor se activará solo cuando la velocidad baje de 20 km/h por razones de seguridad.',
+  },
+  {
+    question: '¿Qué características tiene la app GPS Autorastreo Chile?',
+    answerHtml: `
+      <ul class="faq__list-items">
+        <li>SIM multiplataforma: se conecta a Movistar, Claro y Entel.</li>
+        <li>Multiusuario: varias personas pueden acceder simultáneamente.</li>
+        <li>Seguimiento en tiempo real desde app móvil y plataforma web.</li>
+        <li>Historial de rutas y movimientos.</li>
+        <li>Alertas en tiempo real de motor encendido o apagado.</li>
+        <li>Tráfico en vivo.</li>
+        <li>Cortacorriente remoto: activa y desactiva con un clic desde la app o la web.</li>
+      </ul>
+    `,
+  },
+
+  // ── Inmovilizador RFID Antiasalto ────────────────────────────────────────
+  {
+    question: '¿Cómo funciona exactamente el Inmovilizador RFID Antiasalto?',
+    answer:
+      'El sistema activa el cortacorriente automáticamente cuando detecta que el conductor se encuentra a más de 10 metros del vehículo. A los 70 segundos de pérdida de señal, el vehículo se apaga solo y no puede dar arranque. Para poder encenderlo nuevamente, debes estar dentro del rango de operación (menos de 10 metros) con el control en mano.',
+  },
+  {
+    question: '¿Cuándo debo cambiar la pila del inmovilizador y cómo sé que está baja?',
+    answer:
+      'Se recomienda cambiar las pilas cada 6 meses para evitar problemas de arranque. El sistema avisa cuando la batería baja de 2.3V de la siguiente forma: a los 10 segundos de dar arranque, escucharás 3 pitidos que se repiten a los 3 segundos. Ese sonido es la señal para cambiar las pilas a la brevedad.',
+  },
 ];
