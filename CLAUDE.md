@@ -4,6 +4,12 @@
 Sitio web de Antocarz (antocarz.cl), expertos en **seguridad automotriz** en La Serena, Chile.
 Cliente de Sebastián / Gautama Digital. **Proyecto en producción desde 2026-03-28.**
 
+## Archivos estratégicos (.agents/)
+- `.agents/analisis_posicionamiento_seguridad_automotriz.html` — análisis completo de posicionamiento, competencia local y digital, matriz de capacidades, 30 ideas de contenido (2026-04-28)
+- `.agents/whatsapp-bot/` — todo el bot IA WhatsApp (ver sección Bot más abajo)
+- `.agents/product-marketing-context.md` — copy y contexto de marketing
+- `.agents/content-ideas.md` / `content-calendar.md` — ideas y calendario de contenido
+
 ## Stack
 - Astro 4.16 + TypeScript
 - Modo **SSR** con adaptador `@astrojs/vercel/serverless`
@@ -72,23 +78,32 @@ El hosting cPanel bloquea conexiones desde Vercel US. Solución:
 - Canonical URL auto-referencial en `/productos/[id]` ✅ (fix 2026-04-14 — antes apuntaba al homepage)
 - Meta description dinámica en páginas de producto ✅ (actualizada via JS tras cargar API)
 
-## Analytics — estado (2026-04-14)
+## Analytics — estado (2026-05-05)
 - GA4 Property: `properties/530277574`
 - GSC vinculada: `https://www.antocarz.cl/` (prefijo URL, flujo 14264770398)
 - Dimensiones custom registradas: `wa_source`, `wa_branch`, `item_category`, `item_id`, `item_name`
-- Eventos custom activos: `whatsapp_click`, `whatsapp_modal_open`, `view_item`, `view_item_list`, `select_item`, `catalog_filter`
+- Eventos custom activos: `whatsapp_click`, `view_item`, `view_item_list`, `select_item`, `catalog_filter`
+- `whatsapp_modal_open` ya no aplica — modal eliminado (2026-05-05)
 - **Pendiente manual**: marcar `whatsapp_click` como conversión en GA4 Admin → Eventos
 
-## Tracking WhatsApp (fix 2026-04-14)
-- `Button.astro` soporta `data-*` via `...rest` spread
-- Bypass modal usa `data-wa-branch` (no URL parsing — era el bug original)
+## Tracking WhatsApp (estado 2026-05-05)
+- Modal de sucursales **eliminado** — todos los CTAs van directo al bot (+56 9 8289 0047)
+- `wa_branch` siempre trackea como `'bot'`
 - `getWaSource()` lee `data-wa-source` primero, luego DOM traversal
-- LocalMap: corregido número WA sucursal Lautaro (usaba `SITE.whatsapp` global en vez de `branch.whatsappNumber`)
-- Atributos explícitos: Hero (`inicio`), CtaFinal (`contacto`+branch), LocalMap (`sucursales`+branch), Services (`servicios`)
+- Atributos explícitos: Hero (`inicio`), CtaFinal (`contacto`), LocalMap (`sucursales`), Services (`servicios`)
+
+## Cambios web 2026-05-05 (desplegados ✅)
+- Todos los CTAs WhatsApp apuntan al bot: `SITE.whatsapp = '56982890047'`
+- Modal de selección de sucursal eliminado de BaseLayout + CtaFinal simplificado
+- 11 FAQs nuevas del PPT "cuidados y políticas" añadidas a `faq.ts`
+- Nav header: link "Preguntas" → `#faq` añadido en `site.ts`
+- Sección FAQ: `id="faq"` (antes era `id="contacto"`)
+- **Fix crítico**: `Faq.astro` (era `FAQ.astro` en git — falla case-sensitivity en Linux/Vercel)
 
 ## Datos del cliente
-- WhatsApp Lautaro: 56997371969
-- WhatsApp Balmaceda: 56931258163
+- WhatsApp bot (único número web): 56982890047
+- WhatsApp Lautaro (derivaciones directas): 56997371969
+- WhatsApp Balmaceda / Jonathan: 56931258163
 - Horario: Lun–Vie 09:30–18:00, Sáb 09:30–14:00
 - Sucursales: Lautaro 812 y Balmaceda 2033, La Serena
 
@@ -100,49 +115,66 @@ Servicio productizado de asistente IA para WhatsApp. Piloto construido en Gautam
 
 Documentación completa en `.agents/whatsapp-bot/`:
 - `service-plan.md` — tiers, precios, márgenes, escalabilidad
-- `system-prompt.md` — prompt del bot Anto (Antocarz)
+- `system-prompt-antocarz-solo-info.md` — prompt v2.1 DESPLEGADO (solo info + handoff)
+- `system-prompt.md` — prompt v2.0 con agendamiento completo (reservado para Plan Pro futuro)
 - `setup-guide.md` — guía técnica paso a paso
+- `onboarding-form.html` — formulario HTML para nuevos clientes (glassmorphism, 5 pasos)
 
 ### Stack técnico
 - WhatsApp: Meta Cloud API (oficial — sin riesgo de ban)
 - Automatización: Make.com
-- IA: OpenAI GPT-4o mini
+- IA: OpenAI GPT-4o mini (response_format: json_object)
+- Sesiones/historial: Make Data Store
 - Logs: Google Sheets
 
-### Credenciales del piloto (Gautama Digital)
+### Credenciales Antocarz (producción)
 ```
 App Meta: "Antocarz wsp" | App ID: 1662952501371459
 Chip bot: +56 9 8289 0047
 Phone Number ID: 1004533332754398
 WABA ID: 1862553081073953
-Verify Token: gautama2026
 Access Token: PERMANENTE ✅ (generado 2026-04-21)
-Data Store Make: antocarz_sessions (11+ campos)
-Google Calendar Lautaro ID: 40fb00b7695dfd20dbb0f493c14a4f1bb189177a1a92a7606434682839d10d5a@group.calendar.google.com
-Google Calendar Balmaceda ID: 137a5769a063ea4aa9799685ee33d381bc2d5e3c535d2bb4bc16ac15aa1c5baf@group.calendar.google.com
-Cuenta Google Calendar: gautamadigital33@gmail.com
-Google Sheet: https://docs.google.com/spreadsheets/d/1pNggz5LiklBNdYGA-gHvWserMoqTWBc0TPA7HiZaQ0E/
+Encargado derivaciones: Jonathan — WA: 56931258163
+Google Sheet logs: https://docs.google.com/spreadsheets/d/1pNggz5LiklBNdYGA-gHvWserMoqTWBc0TPA7HiZaQ0E/
 ```
 
-### Estado del escenario Make (2026-04-24) — FLUJO END-TO-END FUNCIONAL ✅
-- Chat con historial conversacional ✅
-- Agendamiento completo: recopilación datos → sucursal → slots disponibles → confirmación ✅
-- Módulo 44 (slots): sistema de calendario de referencia para evitar errores de día ✅
-- Consulta real de Google Calendar (no slots fijos) ✅
-- Creación de evento en Google Calendar ✅
-- Confirmación al cliente vía WhatsApp ✅
-- Notificación a sucursal vía WhatsApp Business Cloud nativo ✅
-- Routing Balmaceda en Ramas C y D ✅ (if() en campo Calendar ID)
-- **Probado con usuario real — flujo completo de principio a fin ✅**
+### Estado del bot (2026-05-05) — EN PRODUCCIÓN ✅ v2.7 Solo Info + Handoff
+- Prompt: `system-prompt-antocarz-solo-info.md` (versión activa: **v2.7**)
+- Bot informa, recopila nombre/vehículo/servicio/localidad y deriva a Jonathan
+- Jonathan recibe WA con contexto completo del lead (📋 NUEVO LEAD)
+- Detección de leads web (`🌐 LLEGÓ DESDE WEB` en handoff_message)
+- Historial acumulativo (Data Store append — no overwrite)
+- Localidad obligatoria antes de preguntar sucursal
+- Formato de respuesta: lista estructurada (OBLIGATORIAMENTE)
+- Precios con IVA incluido y "van desde"
+- Regla anti-alucinación de precios implementada
+- CONTEXTO DINÁMICO: fecha + hora Chile en cada request
+- Opera 24/7 — **timezone fix pendiente en Make módulo 32** (ver más abajo)
+- Estructura Make: Watch Events [1] → Set Variables [11] → Data Store Get [14] → OpenAI [32] → ParseJSON [16] → Router
+  - Rama chat: sendMessage → Google Sheets log → update historial
+  - Rama handoff: sendMessage cliente → sendMessage Jonathan → update historial
+  - Ramas dormidas (conservadas): agendamiento completo con Google Calendar
 
-### Archivos del bot (en .agents/whatsapp-bot/)
-- `system-prompt.md` — prompt v2.0 completo (módulo 32, campo System)
-- `system-prompt-module44.md` — prompt módulo 44 (segunda OpenAI — slots disponibles) ✅
-- `make-scenario-pro.md` — 4 escenarios Make documentados
-- `service-plan.md` — tiers, precios y márgenes
-- `setup-guide.md` — guía técnica paso a paso
+### Formato JSON del bot (v2.7)
+```json
+{ "action": "chat|handoff|escalate", "response": "...", "handoff_message": null, "branch": null }
+```
+- `handoff`: requiere nombre + vehículo + servicio antes de disparar
+- `handoff_message`: incluye `🌐 LLEGÓ DESDE WEB` si cliente llegó via landing
 
-### Pendientes
-1. **Botones interactivos Rama B** — sucursal por botones reales (Graph API tipo `button`)
-2. **Escenarios 2–4** — recordatorios 24h, resumen diario equipo, post-servicio
-3. **Upgrade Make** — plan Core $9 USD/mes (ya contemplado en precio al cliente)
+### ⚠️ Pendiente manual — Make módulo 32
+Actualizar CONTEXTO DINÁMICO con timezone correcto:
+```
+Fecha actual: {{formatDate(now; "YYYY-MM-DD (dddd)"; "America/Santiago")}} — Hora Chile: {{formatDate(now; "HH:mm"; "America/Santiago")}}
+```
+Sin este fix, el bot no detecta correctamente el horario de madrugada en Chile.
+
+### Pendientes bot Antocarz
+1. ✅ Google Sheets log en rama chat (módulos 63, 65, 66, 68)
+2. ✅ Teléfono del cliente en handoff a Jonathan
+3. **Timezone fix** en Make módulo 32 (CONTEXTO DINÁMICO — ver arriba)
+4. Cambio nombre WABA: de "Gautama Digital" → "Antocarz" (Meta Business Manager)
+5. Foto de perfil del bot: logo 500×500px PNG
+6. Chip prepago: convertir a pospago o activar auto-recarga
+7. **Botones interactivos Rama B** — sucursal por botones (cuando retomen agenda)
+8. **Escenarios 2–4** — recordatorios 24h, resumen diario, post-servicio (cuando retomen agenda)
