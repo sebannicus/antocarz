@@ -19,22 +19,29 @@ import { FAQ_ITEMS } from '../../content/faq';
       </h2>
     </div>
 
-    <div class="faq__list">
-      {FAQ_ITEMS.map((item, i) => (
-        <details class="faq__item gs-fade-up" name="faq">
-          <summary class="faq__question">
-            <span>{item.question}</span>
-            <span class="faq__icon" aria-hidden="true">+</span>
-          </summary>
-          <div class="faq__answer">
-            {item.answerHtml
-              ? <Fragment set:html={item.answerHtml} />
-              : <p>{item.answer}</p>
-            }
-          </div>
-        </details>
-      ))}
-    </div>
+    <details class="faq__outer">
+      <summary class="faq__outer-summary">
+        <span>Ver preguntas frecuentes</span>
+        <span class="faq__outer-icon" aria-hidden="true">+</span>
+      </summary>
+
+      <div class="faq__list">
+        {FAQ_ITEMS.map((item) => (
+          <details class="faq__item" name="faq">
+            <summary class="faq__question">
+              <span>{item.question}</span>
+              <span class="faq__icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="faq__answer">
+              {item.answerHtml
+                ? <Fragment set:html={item.answerHtml} />
+                : <p>{item.answer}</p>
+              }
+            </div>
+          </details>
+        ))}
+      </div>
+    </details>
   </div>
 </section>
 
@@ -53,10 +60,53 @@ import { FAQ_ITEMS } from '../../content/faq';
     font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
   }
 
+  .faq__outer {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .faq__outer[open] {
+    border-color: var(--color-border-hover);
+  }
+
+  .faq__outer-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-6);
+    cursor: pointer;
+    font-family: var(--font-subhead);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    color: var(--color-gold);
+    list-style: none;
+    user-select: none;
+    background: var(--color-bg-surface);
+    transition: color var(--transition-fast);
+  }
+
+  .faq__outer-summary::-webkit-details-marker { display: none; }
+  .faq__outer-summary:hover { color: var(--color-text-primary); }
+
+  .faq__outer-icon {
+    font-size: var(--text-2xl);
+    flex-shrink: 0;
+    transition: transform var(--transition-base);
+    line-height: 1;
+  }
+
+  .faq__outer[open] .faq__outer-icon {
+    transform: rotate(45deg);
+  }
+
   .faq__list {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--color-bg-overlay);
   }
 
   .faq__item {

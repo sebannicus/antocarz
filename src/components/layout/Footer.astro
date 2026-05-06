@@ -17,14 +17,22 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
         <img src="/logos/PNG PEQUE LOGO.webp" alt="Antocarz" class="footer__logo-img" />
       </a>
       <p class="footer__tagline">{SITE.tagline}</p>
+      <div class="footer__contact">
+        <a href={`tel:${SITE.phone}`} class="footer__link">📞 {SITE.phone}</a>
+        <a href={`mailto:${SITE.email}`} class="footer__link">✉️ {SITE.email}</a>
+      </div>
     </div>
 
-    <div class="footer__contact">
-      <a href={`tel:${SITE.phone}`} class="footer__link">📞 {SITE.phone}</a>
-      <a href={`mailto:${SITE.email}`} class="footer__link">✉️ {SITE.email}</a>
-      <a href={SITE.location.mapsUrl} target="_blank" rel="noopener noreferrer" class="footer__link">
-        📍 {SITE.location.address}, {SITE.location.city}
-      </a>
+    <div class="footer__branches">
+      <p class="footer__branches-title">Sucursales</p>
+      {SITE.branches.map(branch => (
+        <div class="footer__branch">
+          <p class="footer__branch-name">{branch.name}</p>
+          <a href={branch.mapsUrl} target="_blank" rel="noopener noreferrer" class="footer__link">
+            📍 {branch.address}, {branch.city}
+          </a>
+        </div>
+      ))}
     </div>
 
     <div class="footer__hours">
@@ -95,7 +103,33 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
   .footer__contact {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  .footer__branches {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .footer__branches-title {
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-1);
+  }
+
+  .footer__branch {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .footer__branch-name {
+    font-size: var(--text-sm);
+    color: var(--color-gold);
+    font-weight: var(--weight-medium);
   }
 
   .footer__link {

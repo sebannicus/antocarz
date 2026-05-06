@@ -79,7 +79,7 @@ export const SITE = {
         '/images/products/radio-ztaudio-3.webp',
       ],
       tagline: 'Radio Android 7", 9" y 10" · CarPlay · Android Auto · GPS',
-      description: 'La radio todo en uno que transforma tu vehículo. Disponible en pantallas QLED táctiles de 7, 9 y 10 pulgadas con procesador Quadcore u Octacore. CarPlay inalámbrico compatible con iOS 18, Android Auto, GPS integrado con mapas globales, WiFi para Spotify, Netflix y YouTube, Bluetooth y reproducción 4K. Compatible con el 90% de los vehículos del mercado (Toyota, Nissan, Kia, Hyundai, Chevrolet y más). Gran variedad de biseles (carcasas) para cada modelo. Instalación incluida, garantía absoluta y soporte técnico inmediato.',
+      description: 'La radio Android propia de Antocarz. Compatible con el 90% de los vehículos del mercado, con biseles disponibles para la mayoría de modelos. Instalación profesional y garantía absoluta incluidas.',
       badge: 'Marca propia',
       color: '#C9A227',
       features: [
@@ -107,7 +107,7 @@ export const SITE = {
         '/images/products/rastreador-4.webp',
       ],
       tagline: 'GPS 4G · Plataforma Web y Móvil · Rastreo Mundial 24/7',
-      description: 'Distribuidor oficial de Rastreadores.cl en La Serena. Rastreo GPS 4G en tiempo real desde cualquier parte del mundo, con plataforma web y app móvil. Visualiza historial de movimientos y reportes, activa geocercas, recibe alertas de seguridad y cortacorriente a voluntad. Soporte técnico directo con Antocarz. Instalación profesional con garantía absoluta.',
+      description: 'Distribuidor oficial en La Serena. Rastreo GPS 4G en tiempo real con plataforma web y app móvil. Instalación profesional y soporte técnico directo con Antocarz.',
       badge: 'Distribuidor oficial',
       color: '#2ECC71',
       features: [
