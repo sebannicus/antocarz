@@ -92,6 +92,25 @@ El hosting cPanel bloquea conexiones desde Vercel US. Solución:
 - `getWaSource()` lee `data-wa-source` primero, luego DOM traversal
 - Atributos explícitos: Hero (`inicio`), CtaFinal (`contacto`), LocalMap (`sucursales`), Services (`servicios`)
 
+## Incidente bot + cambio temporal web 2026-06-11 (desplegado ✅ a producción)
+- **Causa raíz:** Sebastián cambió la clave de su cuenta Meta → invalidó el Access Token permanente del bot → Make desactivó el escenario con error `Failed to verify connection 'Gautama Bot' [400]`.
+- **Token nuevo generado** (System User, caducidad Nunca, permisos `whatsapp_business_messaging` + `whatsapp_business_management`). Verificado ✅ vivo (quality GREEN) contra `graph.facebook.com/v21.0/1004533332754398`.
+- **Conexión Make:** la vieja `Gautama Bot` fue **eliminada**. Pendiente crear `Antocarz Bot` y asignarla a TODOS los módulos WhatsApp (escenario principal `Watch Events [1]`, `sendMessage [24]/[63]`, template `[69]` + escenario 24h `[4]`).
+- **Cambio temporal web (commit `47b3242`, deploy prod):** todos los CTAs WhatsApp redirigidos de `56931258163` → **`56997371969`** (Lautaro directo) para no perder leads mientras se repara el bot. Archivos: `site.ts` (phone/whatsapp/2× whatsappNumber), `Services.astro`, `productos.astro`, `productos/[id].astro`.
+- **⚠️ REVERTIR cuando el bot vuelva** — Sebastián definirá si la web vuelve al bot (`56982890047`) o queda en Jonathan (`56931258163`).
+- **⚠️ Discrepancia detectada:** ANTES de este cambio la web ya apuntaba a `56931258163` (Jonathan), NO al bot `56982890047` como decía esta doc. Verificar la verdad al revertir.
+- **Pendiente operativo:** avisar a Jonathan que el bot estuvo caído ~00:05→07:51 — revisar mensajes sin responder.
+
+## Cambios web 2026-05-06 (en rama dev — pendiente aprobación cliente → `vercel deploy --prod`)
+- FAQ: doble acordeón — "Ver preguntas frecuentes" colapsa toda la sección; cada pregunta colapsa su respuesta
+- Testimonios: reducidos de 6 a 2 (Jan Contuliano + Esteban Tapia), grid 2 columnas
+- Footer: muestra ambas sucursales (Lautaro 812 + Balmaceda 2033) con link a Google Maps
+- OwnBrands: descripciones ZTAudio y Rastreadores acortadas — eliminada redundancia con bullets
+- ServiceCard: eliminado párrafo de descripción — tarjetas muestran solo título + bullets
+- Google Sheets bot: columnas Acción (F) y Sucursal (G) agregadas en módulos 67 y 68 de Make
+- Looker Studio: dashboard creado con scorecards, gráfico por día, tabla leads, filtros fecha/sucursal
+  URL dashboard: pendiente compartir con Jonathan
+
 ## Cambios web 2026-05-05 (desplegados ✅)
 - Todos los CTAs WhatsApp apuntan al bot: `SITE.whatsapp = '56982890047'`
 - Modal de selección de sucursal eliminado de BaseLayout + CtaFinal simplificado
@@ -101,7 +120,9 @@ El hosting cPanel bloquea conexiones desde Vercel US. Solución:
 - **Fix crítico**: `Faq.astro` (era `FAQ.astro` en git — falla case-sensitivity en Linux/Vercel)
 
 ## Datos del cliente
-- WhatsApp bot (único número web): 56982890047
+- ⚠️ **Web EN PRODUCCIÓN apunta a 56997371969 (temporal, desde 2026-06-11)** — ver sección incidente arriba. Revertir al reparar el bot.
+- WhatsApp bot (único número web cuando opera): 56982890047
+- WhatsApp Lautaro (derivaciones directas / número web temporal actual): 56997371969
 - WhatsApp Lautaro (derivaciones directas): 56997371969
 - WhatsApp Balmaceda / Jonathan: 56931258163
 - Horario: Lun–Vie 09:30–18:00, Sáb 09:30–14:00
@@ -115,7 +136,7 @@ Servicio productizado de asistente IA para WhatsApp. Piloto construido en Gautam
 
 Documentación completa en `.agents/whatsapp-bot/`:
 - `service-plan.md` — tiers, precios, márgenes, escalabilidad
-- `system-prompt-antocarz-solo-info.md` — prompt v2.1 DESPLEGADO (solo info + handoff)
+- `system-prompt-antocarz-solo-info.md` — prompt **v3.2 LISTO PARA DESPLEGAR** (solo info + handoff)
 - `system-prompt.md` — prompt v2.0 con agendamiento completo (reservado para Plan Pro futuro)
 - `setup-guide.md` — guía técnica paso a paso
 - `onboarding-form.html` — formulario HTML para nuevos clientes (glassmorphism, 5 pasos)
@@ -125,7 +146,7 @@ Documentación completa en `.agents/whatsapp-bot/`:
 - Automatización: Make.com
 - IA: OpenAI GPT-4o mini (response_format: json_object)
 - Sesiones/historial: Make Data Store
-- Logs: Google Sheets
+- Logs: Google Sheets (renombrar a "Antocarz Bot Conversaciones" y compartir con Jonathan)
 
 ### Credenciales Antocarz (producción)
 ```
@@ -138,43 +159,96 @@ Encargado derivaciones: Jonathan — WA: 56931258163
 Google Sheet logs: https://docs.google.com/spreadsheets/d/1pNggz5LiklBNdYGA-gHvWserMoqTWBc0TPA7HiZaQ0E/
 ```
 
-### Estado del bot (2026-05-05) — EN PRODUCCIÓN ✅ v2.7 Solo Info + Handoff
-- Prompt: `system-prompt-antocarz-solo-info.md` (versión activa: **v2.7**)
-- Bot informa, recopila nombre/vehículo/servicio/localidad y deriva a Jonathan
-- Jonathan recibe WA con contexto completo del lead (📋 NUEVO LEAD)
+### Estado del bot (2026-05-17) — EN PRODUCCIÓN ✅ v3.3 en Make y archivo
+- Prompt en Make: **v3.3** ✅ desplegado 2026-05-17
+- Prompt en archivo: `system-prompt-antocarz-solo-info.md` — **v3.3**
+- v3.3 incluye: handoff JSON con campos individuales (`client_name`, `locality`, `vehicle`, `service`) para template Meta
+- v3.2 incluye: aviso temporal Balmaceda (ingreso por calle Las Higueras) + todas las mejoras anteriores
+- Bot informa, recopila nombre/vehículo/servicio/localidad y deriva al equipo
+- Jonathan/Lautaro recibe WA con contexto completo del lead (📋 NUEVO LEAD)
 - Detección de leads web (`🌐 LLEGÓ DESDE WEB` en handoff_message)
 - Historial acumulativo (Data Store append — no overwrite)
-- Localidad obligatoria antes de preguntar sucursal
-- Formato de respuesta: lista estructurada (OBLIGATORIAMENTE)
-- Precios con IVA incluido y "van desde"
-- Regla anti-alucinación de precios implementada
-- CONTEXTO DINÁMICO: fecha + hora Chile en cada request
-- Opera 24/7 — **timezone fix pendiente en Make módulo 32** (ver más abajo)
+- Opera 24/7
 - Estructura Make: Watch Events [1] → Set Variables [11] → Data Store Get [14] → OpenAI [32] → ParseJSON [16] → Router
-  - Rama chat: sendMessage → Google Sheets log → update historial
-  - Rama handoff: sendMessage cliente → sendMessage Jonathan → update historial
+  - Rama chat: sendMessage [24] → Google Sheets log [67] → update historial [53]
+  - Rama handoff: sendMessage cliente [63] → sendMessage sucursal [65] → update historial [66] → Sheets [68]
   - Ramas dormidas (conservadas): agendamiento completo con Google Calendar
 
-### Formato JSON del bot (v2.7)
-```json
-{ "action": "chat|handoff|escalate", "response": "...", "handoff_message": null, "branch": null }
-```
-- `handoff`: requiere nombre + vehículo + servicio antes de disparar
-- `handoff_message`: incluye `🌐 LLEGÓ DESDE WEB` si cliente llegó via landing
+### Data Store antocarz_sessions — campos (2026-05-13)
+Campos base: `phone`, `history`, `client_name`, `booking_state`, `booking_branch`, `booking_service`, `booking_vehicle`, `booking_duration`, `last_interaction`, `booking_slots_json`, `booking_datatime_pref`
+Campos nuevos 2026-05-13: `handoff_done` (Text), `notified_24h` (Text)
+- Módulo 53: `last_interaction` → `{{formatDate(now; "YYYY-MM-DD HH:mm:ss")}}` ✅ corregido
+- Módulo 66: `handoff_done` → `true` ✅ activo
 
-### ⚠️ Pendiente manual — Make módulo 32
-Actualizar CONTEXTO DINÁMICO con timezone correcto:
-```
-Fecha actual: {{formatDate(now; "YYYY-MM-DD (dddd)"; "America/Santiago")}} — Hora Chile: {{formatDate(now; "HH:mm"; "America/Santiago")}}
-```
-Sin este fix, el bot no detecta correctamente el horario de madrugada en Chile.
+### ✅ Templates Meta aprobados y desplegados (2026-05-17)
+1. **`nuevo_lead_antocarz`** — módulo 69 en escenario principal ✅ en producción
+2. **`conversacion_sin_seguimiento`** — escenario 24h independiente ✅ en producción
+
+### Escenario principal — Módulo 69 (Template a Jonathan)
+- Reemplaza módulo 65 (texto libre) — ya no hay problema de ventana 24h Meta
+- Template: `nuevo_lead_antocarz::es_CL`
+- `to`: `{{if(16.branch = "lautaro"; 56997371969; 56931258163)}}`
+- `body_0–5`: client_name, locality, vehicle, service, sucursal dirección, link wa.me
+- Filter: `{{16.handoff_message}}` ≠ `""`
+
+### Escenario 24h — conversacion_sin_seguimiento
+- Schedule: cada 6 horas
+- Módulo 1: Data Store Search `antocarz_sessions` — filtros internos: `handoff_done` ≠ `true` + `notified_24h` ≠ `true`
+- Módulo 4: Send Template Message a Jonathan (56931258163)
+- Módulo 5: Update Record — solo `notified_24h` → `true` (resto SIN MAPEAR — dejar en blanco)
+- Filter entre módulos: `{{1.data.last_interaction}}` no vacío + `parseDate(1.data.last_interaction)` < `addHours(now; -24)` con operador `date:less`
+- ⚠️ Importante: campos en módulo 5 usan prefijo `1.data.` (ej: `{{1.data.phone}}`, `{{1.data.client_name}}`)
+- ⚠️ Fix 2026-05-30: corregidos 4 bugs del blueprint — ver detalle abajo
+
+#### Bugs corregidos en escenario 24h (2026-05-30)
+1. **Módulo 5 borraba todos los campos** — el Update Record mapeaba todos los campos a `""`, borrando `phone`, `history`, etc. Fix: solo `notified_24h: "true"` mapeado, el resto en blanco.
+2. **Filtro usaba `-1h` en vez de `-24h`** — `addHours(now; -1)` corregido a `addHours(now; -24)`.
+3. **`body_0` sin `ifempty`** — `{{1.data.phone}}` → `{{ifempty(1.data.phone; "Sin número")}}`.
+4. **`body_4` sin `ifempty`** — `{{1.data.last_interaction}}` → `{{ifempty(1.data.last_interaction; "Sin fecha")}}`.
+
+#### Regla para Update Record en Make
+En Make, campo mapeado a `""` **sobreescribe** el valor existente. Campo **no mapeado** (en blanco en UI) **preserva** el valor. Nunca mapear campos que no se quieren modificar.
+
+### Otros pendientes Make
+- **Módulo 67 y 68 (Google Sheets Timestamp)**: cambiar a `{{formatDate(now; "YYYY-MM-DD HH:mm:ss"; "America/Santiago")}}`
+- **Router**: corregir doble ejecución — módulos 24/53/67 y 63/65/66/68 corren dos veces
+- **Filtro no-texto**: ruta paralela en Router para `type ≠ text` → sendMessage fijo
+
+### Pendiente futuro — App de visualización de leads
+- **Arquitectura decidida (2026-05-17):**
+  - Capa de datos: Google Sheets hoja "Leads" populada por Make (estado completo del lead)
+  - Visualización pasiva: Looker Studio (ya existe dashboard base)
+  - Visualización activa: página Astro/HTML con tabla + botón de seguimiento
+  - Acción: Make webhook trigger → ejecuta flujo `conversacion_sin_seguimiento` on demand
+- **Orden de construcción:** 1) Expandir Sheets con hoja Leads → 2) Webhook Make → 3) Dashboard HTML
+
+### Catálogo extendido (v3.0)
+El bot ahora reconoce estas categorías aunque no tenga precios detallados — las redirige a www.antocarz.cl/productos:
+- Aire Acondicionado: Carga de A/C, Aceite Compresor, Filtro de Polen
+- Car Audio: Conectores de radio por marca/modelo (Toyota, Hyundai, Kia, Nissan, Chevrolet, Honda, Mazda, Suzuki, Ford, VW, Subaru, Jeep, MG, Daewoo, SsangYong), adaptadores Canbus, arnés
+- Equipamiento: Lonas marítimas
+- Iluminación LED: Festoon, Neblineros, T10, Turbo LED
+- Insumos Eléctricos: Ampolletas
+- Láminas de Seguridad: por tipo de vehículo
+- Mantenimiento
+- Polarizado Americano: por tipo de vehículo
+- Seguridad: Alzavidrios, Bloqueos de Motor, Cierre Centralizado, Control de Flotas, Sensores de Retroceso Hawk (gris plata, negro, blanco, goma)
+- Vinilo
+
+### Detección lead web con código de producto (v3.0)
+Mensajes del sitio tienen formato: `"Hola Antocarz sucursal [X] [emoji] Los vi en su página web y me interesa el producto: [nombre] (Cód: [número])"`
+- Bot extrae: sucursal + producto + código
+- Salta fase de información (cliente ya vio el producto)
+- Pide solo 3 datos: nombre, vehículo, localidad (sucursal ya viene en el mensaje)
+- Handoff incluye código de producto para Jonathan
 
 ### Pendientes bot Antocarz
-1. ✅ Google Sheets log en rama chat (módulos 63, 65, 66, 68)
+1. ✅ Google Sheets log en rama chat
 2. ✅ Teléfono del cliente en handoff a Jonathan
-3. **Timezone fix** en Make módulo 32 (CONTEXTO DINÁMICO — ver arriba)
+3. ✅ Timezone fix — incorporado en v3.1, pendiente desplegar en Make módulo 32
 4. Cambio nombre WABA: de "Gautama Digital" → "Antocarz" (Meta Business Manager)
 5. Foto de perfil del bot: logo 500×500px PNG
 6. Chip prepago: convertir a pospago o activar auto-recarga
 7. **Botones interactivos Rama B** — sucursal por botones (cuando retomen agenda)
 8. **Escenarios 2–4** — recordatorios 24h, resumen diario, post-servicio (cuando retomen agenda)
+9. **RAG endpoint** (futuro): PHP search endpoint en `api.antocarz.cl` + módulo HTTP en Make para consultar DB de productos en tiempo real — arquitectura: mensaje usuario → HTTP GET api.antocarz.cl/buscar?q=[query] → JSON productos → inyectar en contexto OpenAI
