@@ -12,8 +12,8 @@ export const SITE = {
     'Seguridad automotriz en La Serena: polarizado nanocarbón certificado, láminas anti-impactos, cortacorriente eléctrico, rastreadores GPS antirrobo y car audio Android con CarPlay. +10.000 instalaciones y +10.000 certificados emitidos. Garantía absoluta.',
   url: 'https://www.antocarz.cl',
 
-  phone: '+56 9 3125 8163',
-  whatsapp: '56931258163',
+  phone: '+56 9 9737 1969',
+  whatsapp: '56997371969',
   email: 'ventas@antocarz.cl',
 
   location: {
@@ -33,7 +33,7 @@ export const SITE = {
       mapsUrl: 'https://maps.google.com/?q=Lautaro+812+La+Serena+Chile',
       mapsEmbed: 'https://maps.google.com/maps?q=Antocarz+Lautaro+812+La+Serena+Chile&output=embed&hl=es',
       whatsappMsg: 'Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?',
-      whatsappNumber: '56931258163',
+      whatsappNumber: '56997371969',
     },
     {
       id: 'balmaceda',
@@ -43,7 +43,7 @@ export const SITE = {
       mapsUrl: 'https://maps.google.com/?q=Balmaceda+2033+La+Serena+Chile',
       mapsEmbed: 'https://maps.google.com/maps?q=Balmaceda+2033+La+Serena+Chile&output=embed&hl=es',
       whatsappMsg: 'Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?',
-      whatsappNumber: '56931258163',
+      whatsappNumber: '56997371969',
     },
   ],
 
