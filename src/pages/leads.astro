@@ -251,16 +251,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   let allLeads = [];
   let selectedLead = null;
 
-  async function loadLeads() {
-    try {
-      const res = await fetch('/api/leads-make');
-      allLeads = await res.json();
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7w_kc0uuCoSgP1v7VTDstr2b7WUDQRw7X0AGgojRs5uLm4M23uharx5eSiQugOv_m2g/exec';
+
+  function loadLeads() {
+    const callbackName = 'leadsCallback_' + Date.now();
+    const script = document.createElement('script');
+
+    window[callbackName] = function(data) {
+      script.remove();
+      delete window[callbackName];
+      if (data.error) {
+        document.getElementById('contactsList').innerHTML =
+          `<div style="padding: 20px; color: #f44336;">Error: ${data.error}</div>`;
+        return;
+      }
+      allLeads = data;
       renderContacts();
-    } catch (error) {
-      console.error('Error loading leads:', error);
+    };
+
+    script.onerror = function() {
+      script.remove();
+      delete window[callbackName];
       document.getElementById('contactsList').innerHTML =
         '<div style="padding: 20px; color: #f44336;">Error cargando leads</div>';
-    }
+    };
+
+    script.src = `${APPS_SCRIPT_URL}?callback=${callbackName}`;
+    document.head.appendChild(script);
   }
 
   function renderContacts() {
