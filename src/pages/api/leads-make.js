@@ -1,4 +1,6 @@
-const MAKE_API_TOKEN = process.env.MAKE_API_TOKEN;
+const MAKE_API_TOKEN = (process.env.MAKE_API_TOKEN || '')
+  .trim()
+  .replace(/^[﻿]/, ''); // Remove BOM
 const DATA_STORE_ID = '93687'; // antocarz_sessions
 const MAKE_API_BASE = 'https://api.make.com/v2';
 

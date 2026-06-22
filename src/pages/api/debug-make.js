@@ -1,10 +1,13 @@
-const MAKE_API_TOKEN = process.env.MAKE_API_TOKEN;
+const MAKE_API_TOKEN = (process.env.MAKE_API_TOKEN || '')
+  .trim()
+  .replace(/^﻿/, ''); // Remove BOM
 const DATA_STORE_ID = '93687';
 const MAKE_API_BASE = 'https://api.make.com/v2';
 
 export async function GET(context) {
   console.log('[debug-make] Token exists:', !!MAKE_API_TOKEN);
   console.log('[debug-make] Token length:', MAKE_API_TOKEN?.length);
+  console.log('[debug-make] First char code:', MAKE_API_TOKEN?.charCodeAt(0));
 
   const url = `${MAKE_API_BASE}/data-stores/${DATA_STORE_ID}/records`;
   console.log('[debug-make] URL:', url);
