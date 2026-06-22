@@ -16,3 +16,4 @@ public/videos/
 
 # PHP API (contiene credenciales, subir manualmente al hosting)
 php-api/
+antocarz-analytics-*.json

@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find /c/Users/crman/Downloads/Claude/antocarz -name robots.txt -o -name sitemap.xml -o -name astro.config.*)",
+      "Bash(find /d/dev/clientes/antocarz -name robots.txt -o -name sitemap.xml -o -name astro.config.*)",
       "Bash(npm run:*)",
       "WebSearch",
       "WebFetch(domain:videos.feedspot.com)",
