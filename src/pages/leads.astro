@@ -1,0 +1,397 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Leads - Antocarz">
+  <main id="leads-app">
+    <div class="container">
+      <div class="sidebar">
+        <div class="header">
+          <h1>📱 Leads</h1>
+          <div class="filters">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Buscar por nombre o teléfono..."
+            />
+            <select id="sucursalFilter">
+              <option value="">Todas las sucursales</option>
+              <option value="Lautaro">Lautaro</option>
+              <option value="Balmaceda">Balmaceda</option>
+            </select>
+            <select id="dateFilter">
+              <option value="all">Todos</option>
+              <option value="today">Hoy</option>
+              <option value="7days">Últimos 7 días</option>
+              <option value="30days">Últimos 30 días</option>
+            </select>
+          </div>
+        </div>
+        <div id="contactsList" class="contacts-list"></div>
+      </div>
+
+      <div class="chat-view">
+        <div id="chatEmpty" class="chat-empty">
+          <p>Selecciona un contacto para ver la conversación</p>
+        </div>
+        <div id="chatContainer" class="chat-container" style="display: none;">
+          <div class="chat-header">
+            <button id="backBtn">← Atrás</button>
+            <div>
+              <h2 id="chatName"></h2>
+              <p id="chatPhone"></p>
+            </div>
+          </div>
+          <div id="chatMessages" class="chat-messages"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  #leads-app {
+    height: 100vh;
+    background: #f5f5f5;
+  }
+
+  .container {
+    display: flex;
+    height: 100%;
+  }
+
+  .sidebar {
+    width: 35%;
+    background: white;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .header h1 {
+    margin: 0 0 15px 0;
+    font-size: 24px;
+  }
+
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filters input,
+  .filters select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .contacts-list {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .contact-card {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .contact-card:hover {
+    background: #f9f9f9;
+  }
+
+  .contact-card.active {
+    background: #e3f2fd;
+    border-left: 4px solid #0066cc;
+  }
+
+  .contact-name {
+    font-weight: 600;
+    margin: 0 0 4px 0;
+  }
+
+  .contact-phone {
+    font-size: 12px;
+    color: #666;
+    margin: 0 0 4px 0;
+  }
+
+  .contact-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #999;
+  }
+
+  .chat-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+  }
+
+  .chat-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .chat-header {
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .chat-header h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .chat-header p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+  }
+
+  #backBtn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .message {
+    display: flex;
+    margin-bottom: 8px;
+  }
+
+  .message.user {
+    justify-content: flex-end;
+  }
+
+  .message.bot {
+    justify-content: flex-start;
+  }
+
+  .message-bubble {
+    max-width: 60%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+  }
+
+  .message.user .message-bubble {
+    background: #e8e8e8;
+    color: #000;
+  }
+
+  .message.bot .message-bubble {
+    background: #0066cc;
+    color: white;
+  }
+
+  .message-time {
+    font-size: 11px;
+    color: #999;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+    }
+
+    .chat-view {
+      display: none;
+    }
+
+    .chat-view.active {
+      display: flex;
+    }
+
+    #backBtn {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  let allLeads = [];
+  let selectedLead = null;
+
+  async function loadLeads() {
+    try {
+      const res = await fetch('/api/leads');
+      allLeads = await res.json();
+      renderContacts();
+    } catch (error) {
+      console.error('Error loading leads:', error);
+      document.getElementById('contactsList').innerHTML =
+        '<div style="padding: 20px; color: #f44336;">Error cargando leads</div>';
+    }
+  }
+
+  function renderContacts() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const sucursal = document.getElementById('sucursalFilter').value;
+    const dateFilter = document.getElementById('dateFilter').value;
+
+    let filtered = allLeads.filter(lead => {
+      const matchesSearch =
+        lead.nombre.toLowerCase().includes(search) ||
+        lead.numero.includes(search);
+      const matchesSucursal = !sucursal || lead.sucursal === sucursal;
+      const matchesDate = checkDateFilter(lead.ultimoMensaje, dateFilter);
+
+      return matchesSearch && matchesSucursal && matchesDate;
+    });
+
+    const contactsList = document.getElementById('contactsList');
+    if (filtered.length === 0) {
+      contactsList.innerHTML = '<div style="padding: 20px; color: #999;">No hay resultados</div>';
+      return;
+    }
+
+    contactsList.innerHTML = filtered
+      .map(
+        lead => `
+      <div class="contact-card" data-numero="${lead.numero}">
+        <p class="contact-name">${lead.nombre}</p>
+        <p class="contact-phone">${lead.numero}</p>
+        <div class="contact-meta">
+          <span>${lead.sucursal}</span>
+          <span>${lead.ultimaAccion || '-'}</span>
+        </div>
+      </div>
+    `
+      )
+      .join('');
+
+    document.querySelectorAll('.contact-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const numero = card.getAttribute('data-numero');
+        selectLead(numero);
+      });
+    });
+  }
+
+  function selectLead(numero) {
+    selectedLead = allLeads.find(l => l.numero === numero);
+
+    document.querySelectorAll('.contact-card').forEach(card => {
+      card.classList.remove('active');
+    });
+    document
+      .querySelector(`[data-numero="${numero}"]`)
+      .classList.add('active');
+
+    renderChat();
+  }
+
+  function renderChat() {
+    if (!selectedLead) return;
+
+    document.getElementById('chatEmpty').style.display = 'none';
+    document.getElementById('chatContainer').style.display = 'flex';
+
+    document.getElementById('chatName').textContent = selectedLead.nombre;
+    document.getElementById('chatPhone').textContent = selectedLead.numero;
+
+    const messagesContainer = document.getElementById('chatMessages');
+    messagesContainer.innerHTML = selectedLead.conversacion
+      .map(
+        msg => `
+      <div class="message user">
+        <div>
+          <div class="message-bubble">${escapeHtml(msg.mensaje)}</div>
+          <div class="message-time">${formatTime(msg.timestamp)}</div>
+        </div>
+      </div>
+      <div class="message bot">
+        <div>
+          <div class="message-bubble">${escapeHtml(msg.respuesta)}</div>
+          <div class="message-time">${formatTime(msg.timestamp)}</div>
+        </div>
+      </div>
+    `
+      )
+      .join('');
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  function checkDateFilter(date, filter) {
+    const now = new Date();
+    const msgDate = new Date(date);
+
+    if (filter === 'today') {
+      return msgDate.toDateString() === now.toDateString();
+    } else if (filter === '7days') {
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      return msgDate >= sevenDaysAgo;
+    } else if (filter === '30days') {
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      return msgDate >= thirtyDaysAgo;
+    }
+
+    return true;
+  }
+
+  function formatTime(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString('es-CL', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  document.getElementById('searchInput').addEventListener('input', renderContacts);
+  document.getElementById('sucursalFilter').addEventListener('change', renderContacts);
+  document.getElementById('dateFilter').addEventListener('change', renderContacts);
+  document.getElementById('backBtn').addEventListener('click', () => {
+    selectedLead = null;
+    document.getElementById('chatContainer').style.display = 'none';
+    document.getElementById('chatEmpty').style.display = 'flex';
+  });
+
+  loadLeads();
+</script>
