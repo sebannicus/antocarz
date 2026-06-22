@@ -251,11 +251,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   let allLeads = [];
   let selectedLead = null;
 
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7w_kc0uuCoSgP1v7VTDstr2b7WUDQRw7X0AGgojRs5uLm4M23uharx5eSiQugOv_m2g/exec';
-
   async function loadLeads() {
     try {
-      const res = await fetch(APPS_SCRIPT_URL);
+      const res = await fetch('/api/leads-make');
       allLeads = await res.json();
       renderContacts();
     } catch (error) {
