@@ -253,7 +253,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   async function loadLeads() {
     try {
-      const res = await fetch('/api/leads');
+      const res = await fetch('/api/leads-test');
       allLeads = await res.json();
       renderContacts();
     } catch (error) {
