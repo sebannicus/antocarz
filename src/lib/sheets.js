@@ -4,26 +4,42 @@ import { JWT } from 'google-auth-library';
 const SHEET_ID = '1pNggz5LiklBNdYGA-gHvWserMoqTWBc0TPA7HiZaQ0E';
 
 export async function getSheetData() {
-  const privateKey = (process.env.GOOGLE_PRIVATE_KEY || '')
-    .replace(/\\n/g, '\n')
-    .trim();
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  let key = process.env.GOOGLE_PRIVATE_KEY || '';
 
-  if (!privateKey || !process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL) {
+  if (!email || !key) {
     throw new Error(
-      'Missing Google credentials. Check GOOGLE_PRIVATE_KEY and GOOGLE_SERVICE_ACCOUNT_EMAIL env vars.'
+      `Missing credentials: email=${!!email}, key=${!!key}`
     );
   }
 
+  // Fix escapes: convert \n strings to actual newlines
+  key = key.includes('\\n') ? key.replace(/\\n/g, '\n') : key;
+
+  console.log('[sheets.js] Initializing Google Sheets auth...');
+
   const serviceAccountAuth = new JWT({
-    email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    key: privateKey,
+    email,
+    key,
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   });
 
+  console.log('[sheets.js] Creating GoogleSpreadsheet instance...');
   const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
+
+  console.log('[sheets.js] Loading sheet info...');
   await doc.loadInfo();
+
+  console.log('[sheets.js] Getting first sheet...');
   const sheet = doc.sheetsByIndex[0];
+
+  if (!sheet) {
+    throw new Error('No sheets found in spreadsheet');
+  }
+
+  console.log('[sheets.js] Fetching rows...');
   const rows = await sheet.getRows();
+  console.log('[sheets.js] Fetched rows:', rows?.length);
 
   const leads = rows.map(row => ({
     timestamp: row.get('Timestamp') || '',
@@ -61,5 +77,6 @@ export async function getSheetData() {
     grouped[lead.numero].ultimaAccion = lead.accion;
   });
 
+  console.log('[sheets.js] Returning leads:', Object.keys(grouped).length);
   return Object.values(grouped);
 }
