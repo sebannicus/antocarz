@@ -44,6 +44,29 @@ const breadcrumbSchema = {
         </div>
       </div>
 
+      <!-- Marquee marcas Car Audio — visible solo al filtrar esa categoría -->
+      <div id="audio-brands-marquee" class="audio-marquee" aria-hidden="true">
+        <p class="audio-marquee__label">Marcas en Car Audio</p>
+        <div class="marquee">
+          <div class="marquee__track audio-marquee__track">
+            <span class="audio-brand-item">ZTAudio</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">JBL</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Pioneer</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Boss Audio</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Hertz</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Recoil</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Lanzar</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">ZTAudio</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">JBL</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Pioneer</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Boss Audio</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Hertz</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Recoil</span><span class="audio-brand-sep">✦</span>
+            <span class="audio-brand-item">Lanzar</span><span class="audio-brand-sep">✦</span>
+          </div>
+        </div>
+      </div>
+
       <div id="loadingState" class="loading-state">
         <div class="loading-spinner"></div>
         <p>Cargando productos...</p>
@@ -93,6 +116,12 @@ const breadcrumbSchema = {
   .price { font-size: 1.3rem; font-weight: 800; color: #fff; }
   .btn-view { font-size: 0.85rem; color: var(--color-primary); font-weight: 700; text-transform: uppercase; }
   .load-more-container { text-align: center; margin-top: 50px; }
+  .audio-marquee { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.45s ease, opacity 0.35s ease, margin-bottom 0.35s ease; margin-bottom: 0; }
+  .audio-marquee.visible { max-height: 90px; opacity: 1; margin-bottom: 30px; }
+  .audio-marquee__label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.3); text-align: center; padding: 10px 0 6px; }
+  .audio-marquee__track { animation-duration: 20s; }
+  .audio-brand-item { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; white-space: nowrap; color: #fff; padding: 0 28px; opacity: 0.95; }
+  .audio-brand-sep { color: var(--color-primary); font-size: 0.55rem; opacity: 0.6; flex-shrink: 0; }
   .btn-load-more { background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary); padding: 14px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; transition: all 0.3s ease; }
   .btn-load-more:hover { background: var(--color-primary); color: #000; }
   @media (max-width: 992px) { .filter-controls { grid-template-columns: 1fr 1fr; } .catalog-stats { text-align: center; } }
@@ -182,6 +211,7 @@ const breadcrumbSchema = {
   const categorySelect = document.getElementById('categorySelect');
   const brandSelect = document.getElementById('brandSelect');
   const sortSelect = document.getElementById('sortProducts');
+  const audioBrandsMarquee = document.getElementById('audio-brands-marquee');
 
   // ── Filtros y paginación ──────────────────────────────────────────────────
   function populateSelects(cards) {
@@ -215,6 +245,10 @@ const breadcrumbSchema = {
     matchingCards.forEach(c => grid.appendChild(c));
     currentLimit = 10;
     renderPagination();
+
+    if (audioBrandsMarquee) {
+      audioBrandsMarquee.classList.toggle('visible', cat === 'Car Audio');
+    }
   }
 
   function renderPagination() {
