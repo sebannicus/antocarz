@@ -92,14 +92,16 @@ El hosting cPanel bloquea conexiones desde Vercel US. Solución:
 - `getWaSource()` lee `data-wa-source` primero, luego DOM traversal
 - Atributos explícitos: Hero (`inicio`), CtaFinal (`contacto`), LocalMap (`sucursales`), Services (`servicios`)
 
-## Incidente bot + cambio temporal web 2026-06-11 (desplegado ✅ a producción)
-- **Causa raíz:** Sebastián cambió la clave de su cuenta Meta → invalidó el Access Token permanente del bot → Make desactivó el escenario con error `Failed to verify connection 'Gautama Bot' [400]`.
-- **Token nuevo generado** (System User, caducidad Nunca, permisos `whatsapp_business_messaging` + `whatsapp_business_management`). Verificado ✅ vivo (quality GREEN) contra `graph.facebook.com/v21.0/1004533332754398`.
-- **Conexión Make:** la vieja `Gautama Bot` fue **eliminada**. Pendiente crear `Antocarz Bot` y asignarla a TODOS los módulos WhatsApp (escenario principal `Watch Events [1]`, `sendMessage [24]/[63]`, template `[69]` + escenario 24h `[4]`).
-- **Cambio temporal web (commit `47b3242`, deploy prod):** todos los CTAs WhatsApp redirigidos de `56931258163` → **`56997371969`** (Lautaro directo) para no perder leads mientras se repara el bot. Archivos: `site.ts` (phone/whatsapp/2× whatsappNumber), `Services.astro`, `productos.astro`, `productos/[id].astro`.
-- **⚠️ REVERTIR cuando el bot vuelva** — Sebastián definirá si la web vuelve al bot (`56982890047`) o queda en Jonathan (`56931258163`).
-- **⚠️ Discrepancia detectada:** ANTES de este cambio la web ya apuntaba a `56931258163` (Jonathan), NO al bot `56982890047` como decía esta doc. Verificar la verdad al revertir.
-- **Pendiente operativo:** avisar a Jonathan que el bot estuvo caído ~00:05→07:51 — revisar mensajes sin responder.
+## Incidente bot 2026-06-11 — RESUELTO ✅
+- **Causa raíz:** Sebastián cambió la clave de su cuenta Meta → invalidó el Access Token permanente → Make desactivó el escenario.
+- **Resolución web (commit `07cf699`):** CTAs restaurados al bot `56982890047`. Confirmado en código el 2026-06-24.
+- **Pendiente Make:** crear conexión `Antocarz Bot` (System User token nuevo, caducidad Nunca) y asignarla a TODOS los módulos WhatsApp del escenario principal + escenario 24h.
+
+## Cambios web 2026-06-24 (en rama dev — pendiente deploy a prod)
+- **Estandarización tarjetas `/productos`** (commit `e6473a9`): `object-fit: contain` + `padding: 10px` en imágenes, `aspect-ratio: 4/3`, h3 con `-webkit-line-clamp: 2` + `min-height: 2.57em`, code con `text-overflow: ellipsis`. Solo afecta `src/pages/productos.astro` (scoped).
+- **Marquee marcas Car Audio** (commit `417498a`): strip de marcas animado que aparece entre los filtros y la grilla al seleccionar categoría "Car Audio". Marcas: ZTAudio · JBL · Pioneer · Boss Audio · Hertz · Recoil · Lanzar. Reutiliza `@keyframes marquee` de `animations.css`. Lógica en `applyFiltersAndSort()` via `classList.toggle('visible', cat === 'Car Audio')`.
+- **⚠️ Bug pendiente:** `src/pages/leads.astro` línea 50 tiene `</Layout>` en lugar de `</BaseLayout>` — rompe el build si se activa esa ruta.
+- **Dashboard `/leads`:** existe en `src/pages/leads.astro`, usa JSONP → Google Apps Script → Google Sheets para mostrar conversaciones del bot. URL Apps Script incrustada en el cliente.
 
 ## Cambios web 2026-05-06 (en rama dev — pendiente aprobación cliente → `vercel deploy --prod`)
 - FAQ: doble acordeón — "Ver preguntas frecuentes" colapsa toda la sección; cada pregunta colapsa su respuesta
@@ -120,9 +122,8 @@ El hosting cPanel bloquea conexiones desde Vercel US. Solución:
 - **Fix crítico**: `Faq.astro` (era `FAQ.astro` en git — falla case-sensitivity en Linux/Vercel)
 
 ## Datos del cliente
-- ⚠️ **Web EN PRODUCCIÓN apunta a 56997371969 (temporal, desde 2026-06-11)** — ver sección incidente arriba. Revertir al reparar el bot.
-- WhatsApp bot (único número web cuando opera): 56982890047
-- WhatsApp Lautaro (derivaciones directas / número web temporal actual): 56997371969
+- **Web en rama dev apunta al bot: `56982890047`** ✅ (restaurado commit `07cf699`, confirmado 2026-06-24)
+- WhatsApp bot (número web): 56982890047
 - WhatsApp Lautaro (derivaciones directas): 56997371969
 - WhatsApp Balmaceda / Jonathan: 56931258163
 - Horario: Lun–Vie 09:30–18:00, Sáb 09:30–14:00
