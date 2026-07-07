@@ -34,10 +34,11 @@ const canonicalUrl = `${SITE.url}/productos/${id}`;
       <div id="productContent" style="display:none;">
         <div class="product-grid">
           <div class="product-gallery">
-            <div class="image-wrapper">
+            <div class="gallery-main">
               <img id="pImg" src="" alt="" class="main-image" />
               <span id="pBadge" class="badge" style="display:none">Destacado</span>
             </div>
+            <div id="galleryThumbs" class="gallery-thumbs" style="display:none"></div>
           </div>
           <div class="product-info">
             <span id="pBrand" class="brand"></span>
@@ -108,8 +109,16 @@ const canonicalUrl = `${SITE.url}/productos/${id}`;
   .loading-spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-bottom: 80px; }
-  .image-wrapper { position: relative; border-radius: 24px; overflow: hidden; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); }
-  .main-image { width: 100%; height: auto; display: block; }
+  .gallery-main { position: relative; border-radius: 24px; overflow: hidden; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; }
+  .main-image { width: 100%; height: 100%; object-fit: contain; padding: 12px; display: block; transition: opacity 0.2s ease; }
+  .main-image.switching { opacity: 0; }
+  .gallery-thumbs { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; }
+  .gallery-thumbs::-webkit-scrollbar { height: 4px; }
+  .gallery-thumbs::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+  .gallery-thumb { flex-shrink: 0; width: 72px; height: 72px; border-radius: 10px; overflow: hidden; background: #1a1a1a; border: 2px solid rgba(255,255,255,0.1); cursor: pointer; transition: border-color 0.2s ease; display: flex; align-items: center; justify-content: center; }
+  .gallery-thumb img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+  .gallery-thumb.active { border-color: var(--color-primary); }
+  .gallery-thumb:hover:not(.active) { border-color: rgba(255,255,255,0.35); }
   .badge { position: absolute; top: 20px; left: 20px; background: var(--color-primary); color: #000; padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
   .brand { color: var(--color-primary); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 10px; }
   h1 { font-size: 3rem; margin-bottom: 10px; line-height: 1.1; }
@@ -155,15 +164,57 @@ const canonicalUrl = `${SITE.url}/productos/${id}`;
 
       const price = p.precio ? Number(p.precio) : 0;
       const priceStr = price > 0 ? '$' + price.toLocaleString('es-CL') : 'Consultar';
-      const img = p.imagen ? `https://api.antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
       const code = p.codigo_antocarz || p.codigo_producto || `ANT-${p.id_producto}`;
+
+      // Construir array de imágenes — soporta campo imagenes (array o pipe-sep) y fallback a imagen
+      const IMGBASE = 'https://api.antocarz.cl/imgprod/';
+      const FALLBACK = '/images/products/radio-ztaudio-1.webp';
+      let images = [];
+      if (p.imagenes) {
+        const list = Array.isArray(p.imagenes)
+          ? p.imagenes
+          : String(p.imagenes).split('|').filter(Boolean);
+        images = list.map(i => IMGBASE + i.trim());
+      }
+      if (images.length === 0) {
+        images = [p.imagen ? IMGBASE + p.imagen : FALLBACK];
+      }
+      const img = images[0];
       const desc = p.descripcion ? p.descripcion.replace(/<[^>]*>/g, '') : 'Sin descripción detallada.';
       const waMsgLautaro   = encodeURIComponent(`Hola Antocarz sucursal Lautaro 👋 Los vi en su página web y me interesa el producto: ${p.nombre} (Cód: ${code}). ¿Pueden darme más información?`);
       const waMsgBalmaceda = encodeURIComponent(`Hola Antocarz sucursal Balmaceda 👋 Los vi en su página web y me interesa el producto: ${p.nombre} (Cód: ${code}). ¿Pueden darme más información?`);
 
       document.getElementById('bcCategory').textContent = p.categoria || 'Productos';
-      document.getElementById('pImg').src = img;
-      document.getElementById('pImg').alt = p.nombre;
+
+      const mainImg = document.getElementById('pImg');
+      mainImg.src = img;
+      mainImg.alt = p.nombre;
+
+      // Galería: mostrar thumbnails si hay más de una imagen
+      if (images.length > 1) {
+        const thumbsEl = document.getElementById('galleryThumbs');
+        thumbsEl.style.display = 'flex';
+        images.forEach((src, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'gallery-thumb' + (i === 0 ? ' active' : '');
+          btn.setAttribute('aria-label', `Imagen ${i + 1}`);
+          const thumbImg = document.createElement('img');
+          thumbImg.src = src;
+          thumbImg.alt = `${p.nombre} — imagen ${i + 1}`;
+          thumbImg.loading = 'lazy';
+          btn.appendChild(thumbImg);
+          btn.addEventListener('click', () => {
+            mainImg.classList.add('switching');
+            setTimeout(() => {
+              mainImg.src = src;
+              mainImg.classList.remove('switching');
+            }, 180);
+            thumbsEl.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+          });
+          thumbsEl.appendChild(btn);
+        });
+      }
       document.getElementById('pBrand').textContent = p.marca || '';
       document.getElementById('pName').textContent = p.nombre;
       document.getElementById('pCode').textContent = `Código: ${code}`;
