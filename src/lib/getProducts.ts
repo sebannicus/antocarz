@@ -61,28 +61,28 @@ async function fetchRows(params?: string): Promise<any[]> {
   if (params?.startsWith('id=')) {
     const id = params.split('=')[1];
     return query(`
-      SELECT p.id_producto, p.nombre, p.codigo_antocarz, p.codigo_producto, p.stock, p.masvendido,
+      SELECT p.id_producto, p.nombre, p.codigo_antocarz, p.codigo_producto, p.stock, p.stock_b, p.masvendido,
         m.nombre AS marca,
         (SELECT cat2.nombre FROM anto_productos_categorias pc2 JOIN anto_categorias cat2 ON pc2.id_categoria = cat2.id_categoria WHERE pc2.id_producto = p.id_producto LIMIT 1) AS categoria,
         (SELECT sub2.nombre FROM anto_productos_categoriasub pcs2 JOIN anto_categoriasub sub2 ON pcs2.id_categoriasub = sub2.id_categoriasub WHERE pcs2.id_producto = p.id_producto LIMIT 1) AS subcategoria,
         (SELECT mg2.venta FROM anto_margenes mg2 WHERE mg2.id_producto = p.id_producto ORDER BY mg2.fecha DESC, mg2.hora DESC LIMIT 1) AS precio,
         (SELECT pd2.descripcion FROM anto_productos_descripcion pd2 WHERE pd2.id_producto = p.id_producto LIMIT 1) AS descripcion,
-        (SELECT pi.imagen FROM anto_productos_imagenes pi WHERE pi.id_producto = p.id_producto LIMIT 1) AS imagen
+        (SELECT GROUP_CONCAT(pi.imagen ORDER BY pi.id_producto_imagen ASC SEPARATOR '|') FROM anto_productos_imagenes pi WHERE pi.id_producto = p.id_producto) AS imagenes
       FROM anto_productos p LEFT JOIN anto_marcas m ON p.id_marca = m.id_marca
       WHERE p.id_producto = ?
     `, [id]) as any[];
   }
 
   return query(`
-    SELECT p.id_producto, p.nombre, p.codigo_antocarz, p.codigo_producto, p.stock, p.masvendido,
+    SELECT p.id_producto, p.nombre, p.codigo_antocarz, p.codigo_producto, p.stock, p.stock_b, p.masvendido,
       m.nombre AS marca,
       (SELECT cat2.nombre FROM anto_productos_categorias pc2 JOIN anto_categorias cat2 ON pc2.id_categoria = cat2.id_categoria WHERE pc2.id_producto = p.id_producto LIMIT 1) AS categoria,
       (SELECT sub2.nombre FROM anto_productos_categoriasub pcs2 JOIN anto_categoriasub sub2 ON pcs2.id_categoriasub = sub2.id_categoriasub WHERE pcs2.id_producto = p.id_producto LIMIT 1) AS subcategoria,
       (SELECT mg2.venta FROM anto_margenes mg2 WHERE mg2.id_producto = p.id_producto ORDER BY mg2.fecha DESC, mg2.hora DESC LIMIT 1) AS precio,
       (SELECT pd2.descripcion FROM anto_productos_descripcion pd2 WHERE pd2.id_producto = p.id_producto LIMIT 1) AS descripcion,
-      (SELECT pi.imagen FROM anto_productos_imagenes pi WHERE pi.id_producto = p.id_producto LIMIT 1) AS imagen
+      (SELECT GROUP_CONCAT(pi.imagen ORDER BY pi.id_producto_imagen ASC SEPARATOR '|') FROM anto_productos_imagenes pi WHERE pi.id_producto = p.id_producto) AS imagenes
     FROM anto_productos p LEFT JOIN anto_marcas m ON p.id_marca = m.id_marca
-    WHERE p.oculto = 0 AND p.obsoleto = 0 AND p.stock > 0
+    WHERE p.oculto = 0 AND p.obsoleto = 0 AND (p.stock > 0 OR p.stock_b > 0)
     ORDER BY p.masvendido DESC, p.nombre ASC
   `) as any[];
 }
