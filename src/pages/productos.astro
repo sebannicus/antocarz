@@ -178,7 +178,8 @@ const breadcrumbSchema = {
 
   .chips-row { display: flex; flex-wrap: wrap; gap: 8px; }
 
-  .chip {
+  /* :global porque los chips se insertan via JS y no reciben el attr de scope de Astro */
+  :global(.chip) {
     flex-shrink: 0;
     padding: 10px 18px;
     border-radius: 10px;
@@ -192,13 +193,13 @@ const breadcrumbSchema = {
     transition: color 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.15s;
     line-height: 1;
   }
-  .chip:hover {
+  :global(.chip:hover) {
     border-color: var(--color-primary);
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(0,0,0,0.35);
     transform: translateY(-1px);
   }
-  .chip--active {
+  :global(.chip--active) {
     border-color: var(--color-primary);
     background: rgba(201,162,39,0.15);
     color: var(--color-primary);
