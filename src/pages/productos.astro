@@ -122,19 +122,30 @@ const breadcrumbSchema = {
 
   .chip {
     flex-shrink: 0;
-    padding: 8px 18px;
-    border-radius: 50px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: transparent;
-    color: rgba(255,255,255,0.6);
-    font-size: 0.8rem;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: #ffffff;
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
-    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: color 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.15s;
     line-height: 1;
   }
-  .chip:hover { border-color: var(--color-primary); color: #fff; }
-  .chip--active { border-color: var(--color-primary); background: rgba(201,162,39,0.15); color: var(--color-primary); }
+  .chip:hover {
+    border-color: var(--color-primary);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    transform: translateY(-1px);
+  }
+  .chip--active {
+    border-color: var(--color-primary);
+    background: rgba(201,162,39,0.15);
+    color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary), 0 4px 12px rgba(201,162,39,0.15);
+  }
 
   .catalog-stats { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; font-size: 0.9rem; color: var(--color-primary); font-weight: bold; text-align: right; }
 
@@ -298,7 +309,7 @@ const breadcrumbSchema = {
     activeCategory = 'all';
   }
 
-  function onBrandClick(value, btn) {
+  function onBrandClick(value) {
     activeBrand = value;
     setActiveChip(brandChipsEl, value);
     trackFilter('marca', value);
@@ -314,7 +325,7 @@ const breadcrumbSchema = {
     applyFiltersAndSort();
   }
 
-  function onCategoryClick(value, btn) {
+  function onCategoryClick(value) {
     activeCategory = value;
     setActiveChip(categoryChipsEl, value);
     trackFilter('categoria', value);
