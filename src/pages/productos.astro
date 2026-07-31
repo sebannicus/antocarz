@@ -109,15 +109,73 @@ const breadcrumbSchema = {
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ── Barra de filtros ── */
-  .filters-topbar { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-bottom: 40px; display: flex; flex-direction: column; gap: 20px; }
-  .filter-row-top { display: grid; grid-template-columns: 1fr auto; gap: 15px; }
-  .filter-input, .filter-select { width: 100%; padding: 14px 20px; border-radius: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 0.95rem; outline: none; transition: border-color 0.3s; }
-  .filter-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.653C1.822 4.908 2.355 3.8 3.321 3.8h9.358c.966 0 1.499 1.108.87 1.853l-4.796 5.487a1.23 1.23 0 0 1-1.928 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: calc(100% - 15px) center; padding-right: 40px; }
-  .filter-input:focus, .filter-select:focus { border-color: var(--color-primary); }
+  .filters-topbar {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+  }
+
+  .filter-row-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    padding-bottom: 20px;
+  }
+
+  .filter-input, .filter-select {
+    width: 100%;
+    padding: 13px 18px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 0.92rem;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+
+  .filter-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.653C1.822 4.908 2.355 3.8 3.321 3.8h9.358c.966 0 1.499 1.108.87 1.853l-4.796 5.487a1.23 1.23 0 0 1-1.928 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 14px) center;
+    padding-right: 38px;
+  }
+
+  .filter-input:focus, .filter-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary), 0 2px 8px rgba(201,162,39,0.12);
+  }
 
   /* ── Sección de chips ── */
-  .filter-section { display: flex; flex-direction: column; gap: 10px; }
-  .filter-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin: 0; }
+  .filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 0 0;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin-top: 2px;
+  }
+
+  .filter-section + .filter-section { margin-top: 0; padding-top: 16px; }
+
+  .filter-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin: 0;
+  }
+
   .chips-row { display: flex; flex-wrap: wrap; gap: 8px; }
 
   .chip {
@@ -147,7 +205,7 @@ const breadcrumbSchema = {
     box-shadow: 0 0 0 1px var(--color-primary), 0 4px 12px rgba(201,162,39,0.15);
   }
 
-  .catalog-stats { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; font-size: 0.9rem; color: var(--color-primary); font-weight: bold; text-align: right; }
+  .catalog-stats { border-top: 1px solid rgba(255,255,255,0.07); margin-top: 4px; padding-top: 14px; font-size: 0.85rem; color: var(--color-primary); font-weight: 700; text-align: right; letter-spacing: 0.02em; }
 
   /* ── Grid de productos ── */
   .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
@@ -177,7 +235,10 @@ const breadcrumbSchema = {
   .btn-load-more { background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary); padding: 14px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; transition: all 0.3s ease; }
   .btn-load-more:hover { background: var(--color-primary); color: #000; }
 
-  @media (max-width: 768px) { .filter-row-top { grid-template-columns: 1fr; } }
+  @media (max-width: 768px) {
+    .filter-row-top { grid-template-columns: 1fr; }
+    .filters-topbar { padding: 18px; }
+  }
 </style>
 
 <script define:vars={{ PHP_API }}>
