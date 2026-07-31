@@ -29,16 +29,28 @@ const breadcrumbSchema = {
     <div class="container">
 
       <div class="filters-topbar">
-        <div class="filter-controls">
+        <!-- Fila superior: búsqueda + orden -->
+        <div class="filter-row-top">
           <input type="text" id="productSearch" placeholder="🔍 Buscar producto..." class="filter-input" />
-          <select id="categorySelect" class="filter-select"><option value="all">Todas las Categorías</option></select>
-          <select id="brandSelect" class="filter-select"><option value="all">Todas las Marcas</option></select>
           <select id="sortProducts" class="filter-select">
             <option value="default">Recomendados</option>
             <option value="price-low">Precio: Menor a Mayor</option>
             <option value="price-high">Precio: Mayor a Menor</option>
           </select>
         </div>
+
+        <!-- Chips de marca -->
+        <div class="filter-section">
+          <p class="filter-label">Marca</p>
+          <div class="chips-row" id="brandChips" role="group" aria-label="Filtrar por marca"></div>
+        </div>
+
+        <!-- Chips de categoría — aparecen al seleccionar marca -->
+        <div class="filter-section" id="categorySection" style="display:none">
+          <p class="filter-label">Categoría</p>
+          <div class="chips-row" id="categoryChips" role="group" aria-label="Filtrar por categoría"></div>
+        </div>
+
         <div class="catalog-stats">
           <span id="productCount">Cargando catálogo...</span>
         </div>
@@ -95,12 +107,38 @@ const breadcrumbSchema = {
   .loading-state { text-align: center; padding: 80px 0; color: var(--color-text-secondary); }
   .loading-spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .filters-topbar { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-bottom: 40px; }
-  .filter-controls { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+
+  /* ── Barra de filtros ── */
+  .filters-topbar { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-bottom: 40px; display: flex; flex-direction: column; gap: 20px; }
+  .filter-row-top { display: grid; grid-template-columns: 1fr auto; gap: 15px; }
   .filter-input, .filter-select { width: 100%; padding: 14px 20px; border-radius: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 0.95rem; outline: none; transition: border-color 0.3s; }
-  .filter-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.653C1.822 4.908 2.355 3.8 3.321 3.8h9.358c.966 0 1.499 1.108.87 1.853l-4.796 5.487a1.23 1.23 0 0 1-1.928 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: calc(100% - 15px) center; }
+  .filter-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.653C1.822 4.908 2.355 3.8 3.321 3.8h9.358c.966 0 1.499 1.108.87 1.853l-4.796 5.487a1.23 1.23 0 0 1-1.928 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: calc(100% - 15px) center; padding-right: 40px; }
   .filter-input:focus, .filter-select:focus { border-color: var(--color-primary); }
+
+  /* ── Sección de chips ── */
+  .filter-section { display: flex; flex-direction: column; gap: 10px; }
+  .filter-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin: 0; }
+  .chips-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .chip {
+    flex-shrink: 0;
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    line-height: 1;
+  }
+  .chip:hover { border-color: var(--color-primary); color: #fff; }
+  .chip--active { border-color: var(--color-primary); background: rgba(201,162,39,0.15); color: var(--color-primary); }
+
   .catalog-stats { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; font-size: 0.9rem; color: var(--color-primary); font-weight: bold; text-align: right; }
+
+  /* ── Grid de productos ── */
   .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
   .product-card { background: rgba(255,255,255,0.02); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); text-decoration: none; color: inherit; display: none; flex-direction: column; }
   .product-card:hover { transform: translateY(-8px); background: rgba(255,255,255,0.04); border-color: var(--color-primary); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
@@ -116,16 +154,19 @@ const breadcrumbSchema = {
   .price { font-size: 1.3rem; font-weight: 800; color: #fff; }
   .btn-view { font-size: 0.85rem; color: var(--color-primary); font-weight: 700; text-transform: uppercase; }
   .load-more-container { text-align: center; margin-top: 50px; }
+
+  /* ── Marquee Car Audio ── */
   .audio-marquee { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.45s ease, opacity 0.35s ease, margin-bottom 0.35s ease; margin-bottom: 0; }
   .audio-marquee.visible { max-height: 90px; opacity: 1; margin-bottom: 30px; }
   .audio-marquee__label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.3); text-align: center; padding: 10px 0 6px; }
   .audio-marquee__track { animation-duration: 20s; }
   .audio-brand-item { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; white-space: nowrap; color: #fff; padding: 0 28px; opacity: 0.95; }
   .audio-brand-sep { color: var(--color-primary); font-size: 0.55rem; opacity: 0.6; flex-shrink: 0; }
+
   .btn-load-more { background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary); padding: 14px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; transition: all 0.3s ease; }
   .btn-load-more:hover { background: var(--color-primary); color: #000; }
-  @media (max-width: 992px) { .filter-controls { grid-template-columns: 1fr 1fr; } .catalog-stats { text-align: center; } }
-  @media (max-width: 768px) { .filter-controls { grid-template-columns: 1fr; } }
+
+  @media (max-width: 768px) { .filter-row-top { grid-template-columns: 1fr; } }
 </style>
 
 <script define:vars={{ PHP_API }}>
@@ -146,7 +187,7 @@ const breadcrumbSchema = {
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   function slugify(str, id) {
-    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + id;
+    return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + id;
   }
   function formatPrice(n) {
     return '$' + Number(n).toLocaleString('es-CL');
@@ -179,7 +220,6 @@ const breadcrumbSchema = {
         </div>
       </div>`;
 
-    // Trackear click en producto
     a.addEventListener('click', () => {
       fireGA('select_item', {
         item_list_name: 'Catálogo',
@@ -200,6 +240,8 @@ const breadcrumbSchema = {
   let allCards = [];
   let matchingCards = [];
   let currentLimit = 10;
+  let activeBrand = 'all';
+  let activeCategory = 'all';
 
   const grid = document.getElementById('productGrid');
   const loadingState = document.getElementById('loadingState');
@@ -208,28 +250,85 @@ const breadcrumbSchema = {
   const loadMoreContainer = document.getElementById('loadMoreContainer');
   const btnLoadMore = document.getElementById('btnLoadMore');
   const searchInput = document.getElementById('productSearch');
-  const categorySelect = document.getElementById('categorySelect');
-  const brandSelect = document.getElementById('brandSelect');
   const sortSelect = document.getElementById('sortProducts');
   const audioBrandsMarquee = document.getElementById('audio-brands-marquee');
+  const brandChipsEl = document.getElementById('brandChips');
+  const categoryChipsEl = document.getElementById('categoryChips');
+  const categorySectionEl = document.getElementById('categorySection');
 
-  // ── Filtros y paginación ──────────────────────────────────────────────────
-  function populateSelects(cards) {
-    const cats = [...new Set(cards.map(c => c.dataset.category).filter(Boolean))].sort();
-    const brands = [...new Set(cards.map(c => c.dataset.brand).filter(Boolean))].sort();
-    cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; categorySelect.appendChild(o); });
-    brands.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; brandSelect.appendChild(o); });
+  // ── Chips ─────────────────────────────────────────────────────────────────
+  function makeChip(label, value, onClick) {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = label;
+    btn.dataset.value = value;
+    btn.addEventListener('click', () => onClick(value, btn));
+    return btn;
   }
 
+  function setActiveChip(container, value) {
+    container.querySelectorAll('.chip').forEach((c) => {
+      c.classList.toggle('chip--active', c.dataset.value === value);
+    });
+  }
+
+  function populateBrandChips(cards) {
+    const brands = [...new Set(cards.map(c => c.dataset.brand).filter(Boolean))].sort();
+    brandChipsEl.innerHTML = '';
+
+    // "Todas" chip
+    brandChipsEl.appendChild(makeChip('Todas', 'all', onBrandClick));
+
+    brands.forEach(b => brandChipsEl.appendChild(makeChip(b, b, onBrandClick)));
+
+    // Activar "Todas" por defecto
+    setActiveChip(brandChipsEl, 'all');
+  }
+
+  function populateCategoryChips(brandValue) {
+    // Categorías disponibles para la marca seleccionada
+    const source = brandValue === 'all' ? allCards : allCards.filter(c => c.dataset.brand === brandValue);
+    const cats = [...new Set(source.map(c => c.dataset.category).filter(Boolean))].sort();
+
+    categoryChipsEl.innerHTML = '';
+    categoryChipsEl.appendChild(makeChip('Todas', 'all', onCategoryClick));
+    cats.forEach(cat => categoryChipsEl.appendChild(makeChip(cat, cat, onCategoryClick)));
+
+    setActiveChip(categoryChipsEl, 'all');
+    activeCategory = 'all';
+  }
+
+  function onBrandClick(value, btn) {
+    activeBrand = value;
+    setActiveChip(brandChipsEl, value);
+    trackFilter('marca', value);
+
+    if (value === 'all') {
+      categorySectionEl.style.display = 'none';
+      activeCategory = 'all';
+    } else {
+      populateCategoryChips(value);
+      categorySectionEl.style.display = 'flex';
+    }
+
+    applyFiltersAndSort();
+  }
+
+  function onCategoryClick(value, btn) {
+    activeCategory = value;
+    setActiveChip(categoryChipsEl, value);
+    trackFilter('categoria', value);
+    applyFiltersAndSort();
+  }
+
+  // ── Filtros y paginación ──────────────────────────────────────────────────
   function applyFiltersAndSort() {
     const search = searchInput.value.toLowerCase();
-    const cat = categorySelect.value;
-    const brand = brandSelect.value;
     const sort = sortSelect.value;
 
     matchingCards = allCards.filter(c =>
-      (cat === 'all' || c.dataset.category === cat) &&
-      (brand === 'all' || c.dataset.brand === brand) &&
+      (activeBrand === 'all' || c.dataset.brand === activeBrand) &&
+      (activeCategory === 'all' || c.dataset.category === activeCategory) &&
       c.dataset.name.includes(search)
     );
 
@@ -247,7 +346,7 @@ const breadcrumbSchema = {
     renderPagination();
 
     if (audioBrandsMarquee) {
-      audioBrandsMarquee.classList.toggle('visible', cat === 'Car Audio');
+      audioBrandsMarquee.classList.toggle('visible', activeCategory === 'Car Audio');
     }
   }
 
@@ -273,10 +372,9 @@ const breadcrumbSchema = {
       allCards = data.map(buildCard);
       allCards.forEach(c => grid.appendChild(c));
 
-      populateSelects(allCards);
+      populateBrandChips(allCards);
       applyFiltersAndSort();
 
-      // Trackear vista del catálogo con primeros 10 ítems
       fireGA('view_item_list', {
         item_list_name: 'Catálogo',
         items: data.slice(0, 10).map((p, i) => ({
@@ -289,19 +387,11 @@ const breadcrumbSchema = {
         })),
       });
 
-      // Listeners con tracking de filtros
       searchInput.addEventListener('input', () => {
         applyFiltersAndSort();
         if (searchInput.value.length > 2) trackFilter('busqueda', searchInput.value);
       });
-      categorySelect.addEventListener('input', () => {
-        applyFiltersAndSort();
-        if (categorySelect.value !== 'all') trackFilter('categoria', categorySelect.value);
-      });
-      brandSelect.addEventListener('input', () => {
-        applyFiltersAndSort();
-        if (brandSelect.value !== 'all') trackFilter('marca', brandSelect.value);
-      });
+
       sortSelect.addEventListener('input', () => {
         applyFiltersAndSort();
         if (sortSelect.value !== 'default') trackFilter('orden', sortSelect.value);
