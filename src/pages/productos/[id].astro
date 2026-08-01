@@ -128,6 +128,15 @@ const canonicalUrl = `${SITE.url}/productos/${id}`;
   .price-box { margin-bottom: 40px; padding: 30px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
   .price { font-size: 2.5rem; font-weight: 800; color: #fff; display: block; }
   /* :global porque se insertan via innerHTML y no reciben el attr de scope */
+  :global(.price-offer-label) {
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #e03040;
+    display: block;
+    margin-bottom: 4px;
+  }
   :global(.price-offer-lg) {
     font-size: 2.6rem;
     font-weight: 900;
@@ -280,7 +289,8 @@ const canonicalUrl = `${SITE.url}/productos/${id}`;
       const savings = hasOffer ? price - oferta : 0;
       const savingsStr = savings > 0 ? '$' + savings.toLocaleString('es-CL') : '';
       document.getElementById('priceDisplay').innerHTML = hasOffer
-        ? `<span class="price-offer-lg">${ofertaStr}</span>
+        ? `<span class="price-offer-label">Precio Oferta</span>
+           <span class="price-offer-lg">${ofertaStr}</span>
            <span class="price-before-label">Precio regular</span>
            <span class="price-crossed">${priceStr}</span>
            <span class="price-savings">Ahorras ${savingsStr}</span>`

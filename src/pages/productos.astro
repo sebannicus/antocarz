@@ -220,9 +220,10 @@ const breadcrumbSchema = {
   .product-card:hover .card-image img { transform: scale(1.05); }
   .badge { position: absolute; top: 12px; right: 12px; background: var(--color-primary); padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color:#000; }
   .badge--offer { background: #e03040; color: #fff; }
-  .price-group { display: flex; flex-direction: column; gap: 1px; }
+  .price-group { display: flex; flex-direction: column; gap: 2px; }
+  .price-offer-tag { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #e03040; line-height: 1; }
   .price-offer { font-size: 1.3rem; font-weight: 800; color: #e03040; line-height: 1; }
-  .price-regular { font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.4); text-decoration: line-through; line-height: 1; }
+  .price-regular { font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.4); text-decoration: line-through; line-height: 1; }
   .card-body { padding: 20px 20px 20px; flex-grow: 1; display: flex; flex-direction: column; }
   .brand { font-size: 0.7rem; text-transform: uppercase; color: var(--color-primary); font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
   .product-card h3 { font-size: 0.95rem; margin-bottom: 8px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.57em; }
@@ -300,6 +301,7 @@ const breadcrumbSchema = {
         <div class="card-footer">
           ${hasOffer
             ? `<div class="price-group">
+                 <span class="price-offer-tag">Precio Oferta</span>
                  <span class="price-offer">${ofertaStr}</span>
                  <span class="price-regular">${priceStr}</span>
                </div>`
