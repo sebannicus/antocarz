@@ -45,7 +45,9 @@ const canonicalUrl = `${SITE.url}/productos/${id}`;
             <h1 id="pName"></h1>
             <p id="pCode" class="code"></p>
             <div class="price-box">
-              <span id="pPrice" class="price"></span>
+              <div id="priceDisplay">
+                <span id="pPrice" class="price"></span>
+              </div>
               <p class="iva-note">Precio no incluye instalación*</p>
             </div>
             <div class="description">
@@ -125,6 +127,8 @@ const canonicalUrl = `${SITE.url}/productos/${id}`;
   .code { color: var(--color-text-muted); font-size: 0.9rem; margin-bottom: 30px; }
   .price-box { margin-bottom: 40px; padding: 30px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
   .price { font-size: 2.5rem; font-weight: 800; color: #fff; display: block; }
+  .price-offer-lg { font-size: 2.5rem; font-weight: 800; color: #e03040; display: block; line-height: 1; }
+  .price-crossed { font-size: 1rem; font-weight: 500; color: rgba(255,255,255,0.4); text-decoration: line-through; display: block; margin-top: 6px; }
   .iva-note { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px; }
   .description h3 { margin-bottom: 15px; font-size: 1.2rem; }
   .description p { line-height: 1.6; color: var(--color-text-muted); }
@@ -165,8 +169,11 @@ const canonicalUrl = `${SITE.url}/productos/${id}`;
       const p = await res.json();
       if (!p) throw new Error('not found');
 
-      const price = p.precio ? Number(p.precio) : 0;
-      const priceStr = price > 0 ? '$' + price.toLocaleString('es-CL') : 'Consultar';
+      const price  = p.precio  ? Number(p.precio)  : 0;
+      const oferta = p.oferta  ? Number(p.oferta)  : 0;
+      const hasOffer = oferta > 0 && oferta < price;
+      const priceStr  = price  > 0 ? '$' + price.toLocaleString('es-CL')  : 'Consultar';
+      const ofertaStr = oferta > 0 ? '$' + oferta.toLocaleString('es-CL') : '';
       const code = p.codigo_antocarz || p.codigo_producto || `ANT-${p.id_producto}`;
 
       // Construir array de imágenes — soporta campo imagenes (array o pipe-sep) y fallback a imagen
@@ -235,13 +242,23 @@ const canonicalUrl = `${SITE.url}/productos/${id}`;
       document.getElementById('pBrand').textContent = p.marca || '';
       document.getElementById('pName').textContent = p.nombre;
       document.getElementById('pCode').textContent = `Código: ${code}`;
-      document.getElementById('pPrice').textContent = priceStr;
+      document.getElementById('priceDisplay').innerHTML = hasOffer
+        ? `<span class="price-offer-lg">${ofertaStr}</span><span class="price-crossed">${priceStr}</span>`
+        : `<span class="price">${priceStr}</span>`;
       document.getElementById('pDesc').textContent = desc;
       const waLautaro   = document.getElementById('pWaLautaro');
       const waBalmaceda = document.getElementById('pWaBalmaceda');
       waLautaro.href   = `https://wa.me/56982890047?text=${waMsgLautaro}`;
       waBalmaceda.href = `https://wa.me/56982890047?text=${waMsgBalmaceda}`;
-      if (p.masvendido == 1) document.getElementById('pBadge').style.display = 'block';
+      const badgeEl = document.getElementById('pBadge');
+      if (hasOffer) {
+        badgeEl.textContent = 'Oferta';
+        badgeEl.style.display = 'block';
+        badgeEl.style.background = '#e03040';
+        badgeEl.style.color = '#fff';
+      } else if (p.masvendido == 1) {
+        badgeEl.style.display = 'block';
+      }
 
       // Actualizar metadatos SEO dinámicos
       document.title = `${p.nombre} | Antocarz`;

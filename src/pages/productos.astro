@@ -219,6 +219,10 @@ const breadcrumbSchema = {
   .card-image img { width: 100%; height: 100%; object-fit: contain; padding: 10px; transition: transform 0.6s ease; }
   .product-card:hover .card-image img { transform: scale(1.05); }
   .badge { position: absolute; top: 12px; right: 12px; background: var(--color-primary); padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color:#000; }
+  .badge--offer { background: #e03040; color: #fff; }
+  .price-group { display: flex; flex-direction: column; gap: 1px; }
+  .price-offer { font-size: 1.3rem; font-weight: 800; color: #e03040; line-height: 1; }
+  .price-regular { font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.4); text-decoration: line-through; line-height: 1; }
   .card-body { padding: 20px 20px 20px; flex-grow: 1; display: flex; flex-direction: column; }
   .brand { font-size: 0.7rem; text-transform: uppercase; color: var(--color-primary); font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
   .product-card h3 { font-size: 0.95rem; margin-bottom: 8px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.57em; }
@@ -271,7 +275,10 @@ const breadcrumbSchema = {
   function buildCard(p) {
     const slug = slugify(p.nombre, p.id_producto);
     const price = p.precio ? Number(p.precio) : 0;
+    const oferta = p.oferta ? Number(p.oferta) : 0;
+    const hasOffer = oferta > 0 && oferta < price;
     const priceStr = price > 0 ? formatPrice(price) : 'Consultar';
+    const ofertaStr = hasOffer ? formatPrice(oferta) : '';
     const img = p.imagen ? `https://api.antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
     const code = p.codigo_antocarz || p.codigo_producto || `ANT-${p.id_producto}`;
     const a = document.createElement('a');
@@ -279,19 +286,25 @@ const breadcrumbSchema = {
     a.className = 'product-card';
     a.dataset.category = p.categoria || 'General';
     a.dataset.brand = p.marca || 'Sin marca';
-    a.dataset.price = price;
+    a.dataset.price = hasOffer ? oferta : price;
     a.dataset.name = p.nombre.toLowerCase();
     a.innerHTML = `
       <div class="card-image">
         <img src="${img}" alt="${p.nombre}" loading="lazy" />
-        ${p.masvendido == 1 ? '<span class="badge">Destacado</span>' : ''}
+        ${hasOffer ? '<span class="badge badge--offer">Oferta</span>' : p.masvendido == 1 ? '<span class="badge">Destacado</span>' : ''}
       </div>
       <div class="card-body">
         <span class="brand">${p.marca || 'Sin marca'}</span>
         <h3>${p.nombre}</h3>
         <p class="code">${code}</p>
         <div class="card-footer">
-          <span class="price">${priceStr}</span>
+          ${hasOffer
+            ? `<div class="price-group">
+                 <span class="price-offer">${ofertaStr}</span>
+                 <span class="price-regular">${priceStr}</span>
+               </div>`
+            : `<span class="price">${priceStr}</span>`
+          }
           <span class="btn-view">Ver más</span>
         </div>
       </div>`;
