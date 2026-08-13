@@ -45,8 +45,8 @@ const breadcrumbSchema = {
           <div class="chips-row" id="brandChips" role="group" aria-label="Filtrar por marca"></div>
         </div>
 
-        <!-- Chips de categoría — aparecen al seleccionar marca -->
-        <div class="filter-section" id="categorySection" style="display:none">
+        <!-- Chips de categoría -->
+        <div class="filter-section" id="categorySection">
           <p class="filter-label">Categoría</p>
           <div class="chips-row" id="categoryChips" role="group" aria-label="Filtrar por categoría"></div>
         </div>
@@ -155,6 +155,13 @@ const breadcrumbSchema = {
     box-shadow: 0 0 0 1px var(--color-primary), 0 2px 8px rgba(201,162,39,0.12);
   }
 
+  /* El navegador renderiza el listado desplegado de <option> con sus propios colores;
+     sin esto queda texto oscuro sobre fondo oscuro y no se lee. */
+  .filter-select option {
+    background: #1a1a1a;
+    color: #ffffff;
+  }
+
   /* ── Sección de chips ── */
   .filter-section {
     display: flex;
@@ -207,6 +214,14 @@ const breadcrumbSchema = {
     background: rgba(201, 162, 39, 0.15);
     color: var(--color-gold, #C9A227);
     box-shadow: 0 0 0 1px var(--color-gold, #C9A227), 0 4px 12px rgba(201, 162, 39, 0.15);
+  }
+  :global(.chip--toggle) {
+    background: transparent;
+    border-style: dashed;
+    color: var(--color-gold, #C9A227);
+  }
+  :global(.chip--toggle:hover) {
+    background: rgba(201, 162, 39, 0.1);
   }
 
   .catalog-stats { border-top: 1px solid rgba(255,255,255,0.07); margin-top: 4px; padding-top: 14px; font-size: 0.85rem; color: var(--color-primary); font-weight: 700; text-align: right; letter-spacing: 0.02em; }
@@ -345,7 +360,6 @@ const breadcrumbSchema = {
   const audioBrandsMarquee = document.getElementById('audio-brands-marquee');
   const brandChipsEl = document.getElementById('brandChips');
   const categoryChipsEl = document.getElementById('categoryChips');
-  const categorySectionEl = document.getElementById('categorySection');
 
   // ── Chips ─────────────────────────────────────────────────────────────────
   function makeChip(label, value, onClick) {
@@ -363,45 +377,48 @@ const breadcrumbSchema = {
     });
   }
 
-  function populateBrandChips(cards) {
-    const brands = [...new Set(cards.map(c => c.dataset.brand).filter(Boolean))].sort();
-    brandChipsEl.innerHTML = '';
+  // Renderiza chips "Todas" + valores, colapsando el resto detrás de un chip "+N más"
+  // cuando la lista supera `limit` (evita listas gigantes como las 50+ marcas de Car Audio).
+  function renderChips(container, values, activeValue, onClick, limit) {
+    container.innerHTML = '';
+    container.appendChild(makeChip('Todas', 'all', onClick));
 
-    // "Todas" chip
-    brandChipsEl.appendChild(makeChip('Todas', 'all', onBrandClick));
+    const shouldCollapse = limit && values.length > limit;
+    const visible = shouldCollapse ? values.slice(0, limit) : values;
+    const hidden = shouldCollapse ? values.slice(limit) : [];
 
-    brands.forEach(b => brandChipsEl.appendChild(makeChip(b, b, onBrandClick)));
+    visible.forEach(v => container.appendChild(makeChip(v, v, onClick)));
 
-    // Activar "Todas" por defecto
-    setActiveChip(brandChipsEl, 'all');
+    if (hidden.length) {
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'chip chip--toggle';
+      toggle.textContent = `+${hidden.length} más ↓`;
+      toggle.addEventListener('click', () => {
+        hidden.forEach(v => container.insertBefore(makeChip(v, v, onClick), toggle));
+        toggle.remove();
+        setActiveChip(container, activeValue);
+      });
+      container.appendChild(toggle);
+    }
+
+    setActiveChip(container, activeValue);
   }
 
-  function populateCategoryChips(brandValue) {
-    // Categorías disponibles para la marca seleccionada
-    const source = brandValue === 'all' ? allCards : allCards.filter(c => c.dataset.brand === brandValue);
-    const cats = [...new Set(source.map(c => c.dataset.category).filter(Boolean))].sort();
+  function populateBrandChips(cards) {
+    const brands = [...new Set(cards.map(c => c.dataset.brand).filter(Boolean))].sort();
+    renderChips(brandChipsEl, brands, activeBrand, onBrandClick, 12);
+  }
 
-    categoryChipsEl.innerHTML = '';
-    categoryChipsEl.appendChild(makeChip('Todas', 'all', onCategoryClick));
-    cats.forEach(cat => categoryChipsEl.appendChild(makeChip(cat, cat, onCategoryClick)));
-
-    setActiveChip(categoryChipsEl, 'all');
-    activeCategory = 'all';
+  function populateCategoryChips(cards) {
+    const cats = [...new Set(cards.map(c => c.dataset.category).filter(Boolean))].sort();
+    renderChips(categoryChipsEl, cats, activeCategory, onCategoryClick, 12);
   }
 
   function onBrandClick(value) {
     activeBrand = value;
     setActiveChip(brandChipsEl, value);
     trackFilter('marca', value);
-
-    if (value === 'all') {
-      categorySectionEl.style.display = 'none';
-      activeCategory = 'all';
-    } else {
-      populateCategoryChips(value);
-      categorySectionEl.style.display = 'flex';
-    }
-
     applyFiltersAndSort();
   }
 
@@ -464,6 +481,7 @@ const breadcrumbSchema = {
       allCards.forEach(c => grid.appendChild(c));
 
       populateBrandChips(allCards);
+      populateCategoryChips(allCards);
       applyFiltersAndSort();
 
       fireGA('view_item_list', {

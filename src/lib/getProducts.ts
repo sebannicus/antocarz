@@ -82,7 +82,11 @@ async function fetchRows(params?: string): Promise<any[]> {
       (SELECT pd2.descripcion FROM anto_productos_descripcion pd2 WHERE pd2.id_producto = p.id_producto LIMIT 1) AS descripcion,
       (SELECT GROUP_CONCAT(pi.imagen ORDER BY pi.id_producto_imagen ASC SEPARATOR '|') FROM anto_productos_imagenes pi WHERE pi.id_producto = p.id_producto) AS imagenes
     FROM anto_productos p LEFT JOIN anto_marcas m ON p.id_marca = m.id_marca
-    WHERE p.oculto = 0 AND p.obsoleto = 0 AND (p.stock > 0 OR p.stock_b > 0)
+    WHERE p.oculto = 0 AND p.obsoleto = 0
+      AND (
+        p.stock > 0 OR p.stock_b > 0
+        OR EXISTS (SELECT 1 FROM anto_productos_categorias pc3 WHERE pc3.id_producto = p.id_producto AND pc3.id_categoria IN (13, 16))
+      )
     ORDER BY p.masvendido DESC, p.nombre ASC
   `) as any[];
 }
