@@ -9,7 +9,6 @@
     { "source": "/productos.php", "destination": "/productos", "permanent": true },
     { "source": "/servicios",     "destination": "/#servicios", "permanent": true },
     { "source": "/leypolarizado", "destination": "/",           "permanent": true },
-    { "source": "/verificador",   "destination": "/",           "permanent": true },
     { "source": "/contacto",      "destination": "/#contacto",  "permanent": true },
     { "source": "/clientes",      "destination": "/",           "permanent": true },
     { "source": "/panel",         "destination": "/",           "permanent": true },
