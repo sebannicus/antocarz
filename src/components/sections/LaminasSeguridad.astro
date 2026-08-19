@@ -35,13 +35,13 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
           </div>
           <div class="laminas__stat-divider"></div>
           <div class="laminas__stat">
-            <span class="laminas__stat-value">Incolora</span>
-            <span class="laminas__stat-label">sin alterar visibilidad</span>
+            <span class="laminas__stat-value">4, 8 y 12</span>
+            <span class="laminas__stat-label">micras de grosor</span>
           </div>
           <div class="laminas__stat-divider"></div>
           <div class="laminas__stat">
-            <span class="laminas__stat-value">Sin cert.</span>
-            <span class="laminas__stat-label">no requiere certificado</span>
+            <span class="laminas__stat-value">Certificada</span>
+            <span class="laminas__stat-label">empresa y particular</span>
           </div>
         </div>
       </div>
@@ -54,31 +54,44 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
           <span class="text-gradient-gold">de tu vehículo.</span>
         </h2>
         <p class="laminas__desc">
-          Films anti-impactos de alta resistencia, línea diseñada exclusivamente para automóviles.
-          Protegen ante golpes y tentativas de robo: al romperse, el vidrio queda adherido a la lámina
-          sin dispersarse, dificultando el ingreso al vehículo y protegiendo a los ocupantes.
+          Viaja con tranquilidad. Nuestra línea de láminas anti-impactos está diseñada exclusivamente
+          para automóviles, ofreciendo una barrera de alta resistencia contra golpes y robos. Si el
+          vidrio se rompe, la lámina lo mantiene unido, protegiendo a los pasajeros y evitando el
+          ingreso de intrusos.
         </p>
 
         <ul class="laminas__checks" role="list">
           <li class="laminas__check">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Fragmentación controlada: el vidrio no se dispersa
+            Aumenta la resistencia a golpes e impactos
           </li>
           <li class="laminas__check">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Disuade robos al aumentar el tiempo de acceso
+            Evita considerablemente el robo express
           </li>
           <li class="laminas__check">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Incoloras: no afectan visibilidad ni estética
+            Disponible en grosor 4, 8 y 12 micras
           </li>
           <li class="laminas__check">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Compatibles con polarizado existente
+            Tintes 5%, 20%, 35%, 50%, 70% y 100% Clear <span class="laminas__check-note">(legalizados: revisar reglamento)</span>
           </li>
           <li class="laminas__check">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            No requieren certificado de instalación
+            Certificados para empresa y particulares
+          </li>
+          <li class="laminas__check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Certificadas para minería
+          </li>
+          <li class="laminas__check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Instalación profesional con retiro de vidrios
+          </li>
+          <li class="laminas__check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="9" fill="#2ECC71" opacity="0.15"/><path d="M5 9l3 3 5-5" stroke="#2ECC71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Certificado en formato digital e impreso
           </li>
         </ul>
 
@@ -86,9 +99,20 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
           <Button href={whatsappUrl} variant="whatsapp" size="lg" external={true}>
             Cotizar láminas →
           </Button>
-          <Button href="#contacto" variant="ghost" size="lg">
-            Más información
+          <Button href="/verificador" variant="ghost" size="lg">
+            Verificar mi certificado
           </Button>
+        </div>
+
+        <p class="laminas__note">
+          * Los certificados no se venden por separado.<br />
+          * Los sellos y el certificado se entregan solo si se instalan los porcentajes de visibilidad correspondientes a la Ley N°21.147.
+        </p>
+
+        <div class="laminas__legal-links">
+          <a href="/legal/decreto-70-reglamento-polarizados.pdf" target="_blank" rel="noopener noreferrer">Ver Reglamento (Decreto 70) ↗</a>
+          <span class="laminas__legal-sep">·</span>
+          <a href="/legal/decreto-70-reglamento-polarizados-firmado-cgr.pdf" target="_blank" rel="noopener noreferrer">Ver documento firmado por Contraloría ↗</a>
         </div>
       </div>
 
@@ -219,9 +243,37 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
 
   .laminas__check svg { flex-shrink: 0; }
 
+  .laminas__check-note {
+    color: var(--color-text-muted);
+    font-size: 0.9em;
+  }
+
   .laminas__cta {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .laminas__note {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    line-height: var(--leading-relaxed);
+  }
+
+  .laminas__legal-links {
+    margin-top: var(--space-3);
+    font-size: var(--text-xs);
+  }
+
+  .laminas__legal-links a {
+    color: var(--color-gold);
+    text-decoration: none;
+  }
+  .laminas__legal-links a:hover { text-decoration: underline; }
+
+  .laminas__legal-sep {
+    color: var(--color-text-muted);
+    margin-inline: var(--space-2);
   }
 </style>
