@@ -2,7 +2,9 @@
 /**
  * Hero.astro — Antocarz
  * Desktop: texto izquierda + slider derecha grande (58% viewport).
- * Mobile: sin slider, fondo oscuro limpio. Texto primero, luego entra.
+ * Mobile: slider arriba (bloque normal, no absoluto) + texto debajo.
+ * Cada slide es un link a /productos?categoria=Ofertas (filtro virtual de
+ * productos con precio de oferta activo — ver productos.astro).
  */
 
 import Button from '../ui/Button.astro';
@@ -10,31 +12,35 @@ import { SITE } from '../../content/site';
 
 const whatsappMsg = encodeURIComponent('Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?');
 const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
+
+const OFFERS_URL = '/productos?categoria=Ofertas';
+
+const slides = [
+  { src: '/slides hero/oferta-septiembre-1.webp', alt: 'Super ofertas en todo — Hertz, Pioneer, Recoil, Kenwood, JBL — Antocarz' },
+  { src: '/slides hero/oferta-septiembre-2.webp', alt: 'Viva Chile — Antocarz Seguridad Automotriz, La Serena' },
+  { src: '/slides hero/oferta-septiembre-3.webp', alt: 'Protege tu vehículo — Alarmas y seguridad antirrobo Antocarz' },
+  { src: '/slides hero/oferta-septiembre-4.webp', alt: 'La seguridad en tus manos — Cortacorriente y alarmas Antocarz' },
+  { src: '/slides hero/oferta-septiembre-5.webp', alt: 'La seguridad en tus manos — Rastreadores GPS Antocarz' },
+];
 ---
 
 <section class="hero" id="inicio" aria-label="Inicio">
 
-  <!-- ── Slider — panel derecho en desktop, oculto en mobile ── -->
-  <div class="hero__slider" id="hero-slider" aria-hidden="true">
-    <div class="hero__slide hero__slide--active">
-      <img src="/slides hero/BANNER POLARIZADOS.webp" alt="Instalación de polarizado nanocarbón certificado en vehículo — Antocarz La Serena" class="hero__slide-img" loading="eager" fetchpriority="high" />
-    </div>
-    <div class="hero__slide">
-      <img src="/slides hero/SLIDE AUDIO.webp" alt="Car audio Android con CarPlay y GPS instalado en auto — ZTAudio Antocarz La Serena" class="hero__slide-img" loading="lazy" />
-    </div>
-    <div class="hero__slide">
-      <img src="/slides hero/SLIDE INMOB.webp" alt="Inmovilizador RFID y rastreador GPS antirrobo para vehículos — Antocarz La Serena" class="hero__slide-img" loading="lazy" />
-    </div>
-    <div class="hero__slide">
-      <img src="/slides hero/SLIDE LOGO.webp" alt="Antocarz — Especialistas en seguridad automotriz en La Serena" class="hero__slide-img" loading="lazy" />
-    </div>
+  <!-- ── Slider de ofertas — panel derecho en desktop, bloque superior en mobile ── -->
+  <div class="hero__slider" id="hero-slider">
+    {slides.map((slide, i) => (
+      <div class="hero__slide" class:list={{ 'hero__slide--active': i === 0 }}>
+        <a href={OFFERS_URL} data-wa-source="hero-slider">
+          <img src={slide.src} alt={slide.alt} class="hero__slide-img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+        </a>
+      </div>
+    ))}
 
     <!-- Dots dentro del panel del slider -->
     <div class="hero__dots">
-      <button class="hero__dot hero__dot--active" data-slide="0" aria-label="Slide 1"></button>
-      <button class="hero__dot" data-slide="1" aria-label="Slide 2"></button>
-      <button class="hero__dot" data-slide="2" aria-label="Slide 3"></button>
-      <button class="hero__dot" data-slide="3" aria-label="Slide 4"></button>
+      {slides.map((_, i) => (
+        <button class="hero__dot" class:list={{ 'hero__dot--active': i === 0 }} data-slide={i} aria-label={`Slide ${i + 1}`}></button>
+      ))}
     </div>
   </div>
 
@@ -207,19 +213,32 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     overflow: hidden;
   }
 
-  /* ── Slider: panel derecho fijo (solo desktop) ── */
+  @media (max-width: 1023px) {
+    /* El slider de ofertas ahora suma altura arriba del texto — con min-height
+       fijo a 100dvh todo quedaba apretado o se cortaba. Se deja crecer segun
+       el contenido y la pagina hace scroll normal, como cualquier hero mas alto. */
+    .hero { min-height: auto; }
+  }
+
+  /* ── Slider de ofertas ── */
   .hero__slider {
-    display: none; /* oculto en mobile */
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 12 / 5; /* proporcion real de las piezas del cliente */
+    margin-top: 84px; /* despeja el header fijo (72px) */
+    z-index: 1;
   }
 
   @media (min-width: 1024px) {
     .hero__slider {
-      display: block;
       position: absolute;
       top: 0;
       right: 0;
       bottom: 0;
       width: 58%;
+      aspect-ratio: auto;
+      margin-top: 0;
       z-index: 1;
     }
   }
@@ -228,9 +247,25 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     position: absolute;
     inset: 0;
     opacity: 0;
+    z-index: 0;
+    /* Sin esto, un slide inactivo (invisible) que cae despues en el DOM
+       pinta por encima del activo y se roba los clics de su link -- no
+       importaba antes porque los slides eran solo decorativos (aria-hidden,
+       sin <a>), pero ahora cada uno linkea a /productos?categoria=Ofertas. */
+    pointer-events: none;
     transition: opacity 1s ease;
   }
-  .hero__slide--active { opacity: 1; }
+  .hero__slide--active {
+    opacity: 1;
+    z-index: 1;
+    pointer-events: auto;
+  }
+
+  .hero__slide a {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 
   .hero__slide-img {
     width: 100%;
@@ -288,6 +323,12 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     z-index: 3;
     padding-top: 100px;
     padding-bottom: 130px;
+  }
+
+  @media (max-width: 1023px) {
+    /* El despeje del header ya lo hace el margin-top del slider — aca solo
+       hace falta un respiro entre la imagen y el texto, no otros 100px. */
+    .hero__inner { padding-top: var(--space-8, 32px); }
   }
 
   .hero__content {
@@ -402,6 +443,17 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     border-bottom: 1px solid rgba(255,255,255,0.07);
     background: rgba(13,13,13,0.55);
     backdrop-filter: blur(8px);
+  }
+
+  @media (max-width: 1023px) {
+    /* Con .hero ahora de altura variable (min-height:auto), un marquee
+       position:absolute quedaria flotando sobre el texto en vez de despues.
+       Pasa a flujo normal, como el resto del contenido mobile. */
+    .hero__marquee {
+      position: relative;
+      bottom: auto;
+      margin-top: var(--space-8);
+    }
   }
 
   @media (min-width: 1024px) {

@@ -7,7 +7,6 @@
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
-import PromoBanner from '../components/sections/PromoBanner.astro';
 import Authority from '../components/sections/Authority.astro';
 import Brands from '../components/sections/Brands.astro';
 import OwnBrands from '../components/sections/OwnBrands.astro';
@@ -25,15 +24,6 @@ import Instagram from '../components/sections/Instagram.astro';
 
 <BaseLayout>
   <Hero />
-  <PromoBanner
-    slides={[
-      { src: '/banners/oferta-septiembre-1.webp', alt: 'Super ofertas en todo — Hertz, Pioneer, Recoil, Kenwood, JBL — Fiestas Patrias', href: '/productos', fit: 'contain' },
-      { src: '/banners/oferta-septiembre-2.webp', alt: 'Viva Chile — Antocarz Seguridad Automotriz' },
-      { src: '/banners/oferta-septiembre-3.webp', alt: 'Protege tu vehículo — Alarmas y seguridad antirrobo', href: '#servicios' },
-      { src: '/banners/oferta-septiembre-4.webp', alt: 'La seguridad en tus manos — Cortacorriente y alarmas', href: '#servicios' },
-      { src: '/banners/oferta-septiembre-5.webp', alt: 'La seguridad en tus manos — Rastreadores GPS', href: '#servicios' },
-    ]}
-  />
   <Testimonials />
   <Authority />
   <Brands />

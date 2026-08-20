@@ -304,6 +304,7 @@ const breadcrumbSchema = {
     a.dataset.brand = p.marca || 'Sin marca';
     a.dataset.price = hasOffer ? oferta : price;
     a.dataset.name = p.nombre.toLowerCase();
+    a.dataset.offer = hasOffer ? '1' : '0';
     a.innerHTML = `
       <div class="card-image">
         <img src="${img}" alt="${p.nombre}" loading="lazy" />
@@ -343,11 +344,15 @@ const breadcrumbSchema = {
   }
 
   // ── Estado ────────────────────────────────────────────────────────────────
+  // Permite llegar con un filtro pre-aplicado via URL, ej. /productos?categoria=Ofertas
+  // (usado por los slides del Hero para linkear directo a los productos en oferta).
+  const initialParams = new URLSearchParams(window.location.search);
+
   let allCards = [];
   let matchingCards = [];
   let currentLimit = 10;
   let activeBrand = 'all';
-  let activeCategory = 'all';
+  let activeCategory = initialParams.get('categoria') || 'all';
 
   const grid = document.getElementById('productGrid');
   const loadingState = document.getElementById('loadingState');
@@ -412,7 +417,11 @@ const breadcrumbSchema = {
 
   function populateCategoryChips(cards) {
     const cats = [...new Set(cards.map(c => c.dataset.category).filter(Boolean))].sort();
-    renderChips(categoryChipsEl, cats, activeCategory, onCategoryClick, 12);
+    // "Ofertas" es una categoria virtual: no vive en el ERP, se arma sola con
+    // los productos que ya tienen precio de oferta cargado (dataset.offer).
+    const hasOffers = cards.some(c => c.dataset.offer === '1');
+    const finalCats = hasOffers ? ['Ofertas', ...cats] : cats;
+    renderChips(categoryChipsEl, finalCats, activeCategory, onCategoryClick, 12);
   }
 
   function onBrandClick(value) {
@@ -436,7 +445,7 @@ const breadcrumbSchema = {
 
     matchingCards = allCards.filter(c =>
       (activeBrand === 'all' || c.dataset.brand === activeBrand) &&
-      (activeCategory === 'all' || c.dataset.category === activeCategory) &&
+      (activeCategory === 'all' || (activeCategory === 'Ofertas' ? c.dataset.offer === '1' : c.dataset.category === activeCategory)) &&
       c.dataset.name.includes(search)
     );
 

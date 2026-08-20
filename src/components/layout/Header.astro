@@ -245,17 +245,25 @@ const resolveHref = (href: string) =>
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-    padding: var(--space-6);
+    /* Padding vertical solo cuando esta abierto -- con max-height:0 el padding
+       fijo seguia sumando ~49px reales al alto del header (content-box no
+       encoge el padding), lo que hacia que el header intersectara e
+       interceptara clics del contenido de debajo (ej. el slider del Hero)
+       bastante mas abajo de sus 72px visibles. */
+    padding: 0 var(--space-6);
     background: var(--color-bg-surface);
     border-top: 1px solid var(--color-border);
     max-height: 0;
     overflow: hidden;
     opacity: 0;
-    transition: max-height var(--transition-slow), opacity var(--transition-base);
+    pointer-events: none;
+    transition: max-height var(--transition-slow), opacity var(--transition-base), padding var(--transition-slow);
   }
   .header__mobile-nav--open {
+    padding: var(--space-6);
     max-height: 400px;
     opacity: 1;
+    pointer-events: auto;
   }
 
   .header__mobile-link {
