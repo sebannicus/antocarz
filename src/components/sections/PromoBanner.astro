@@ -10,6 +10,9 @@ export interface PromoSlide {
   src: string;
   alt: string;
   href?: string;
+  /** 'cover' (default) para banners full-bleed que llenan el marco 12:5.
+   *  'contain' para piezas con otra proporción o margen propio (no se recortan, quedan con franjas). */
+  fit?: 'cover' | 'contain';
 }
 
 const { slides } = Astro.props as { slides: PromoSlide[] };
@@ -22,10 +25,10 @@ const { slides } = Astro.props as { slides: PromoSlide[] };
         <div class="promo__slide" class:list={{ 'promo__slide--active': i === 0 }} data-index={i}>
           {slide.href ? (
             <a href={slide.href} data-wa-source="promo-banner">
-              <img src={slide.src} alt={slide.alt} class="promo__img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+              <img src={slide.src} alt={slide.alt} class="promo__img" style={slide.fit === 'contain' ? 'object-fit:contain' : undefined} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
             </a>
           ) : (
-            <img src={slide.src} alt={slide.alt} class="promo__img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+            <img src={slide.src} alt={slide.alt} class="promo__img" style={slide.fit === 'contain' ? 'object-fit:contain' : undefined} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
           )}
         </div>
       ))}
@@ -55,21 +58,20 @@ const { slides } = Astro.props as { slides: PromoSlide[] };
   .promo__track {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 5;
+    aspect-ratio: 12 / 5; /* proporcion real de las piezas del cliente (1427x593) */
     overflow: hidden;
   }
 
   @media (max-width: 640px) {
-    /* object-fit:cover recorta texto/logos en banners anchos tipo 16:5 sobre
-       una caja angosta — object-fit:contain muestra el banner completo
-       (con franjas del color de fondo arriba/abajo) en vez de cortar contenido. */
     .promo__track { aspect-ratio: 2 / 1; }
-    .promo__img { object-fit: contain; }
   }
 
   .promo__slide {
     position: absolute;
     inset: 0;
+    /* Fondo solido propio: sin esto, en slides con object-fit:contain (letterbox)
+       se alcanza a ver el slide anterior de fondo durante el crossfade. */
+    background: #0D0D0D;
     opacity: 0;
     transition: opacity 0.8s ease;
   }
@@ -83,6 +85,15 @@ const { slides } = Astro.props as { slides: PromoSlide[] };
     object-fit: cover;
     object-position: center;
     display: block;
+  }
+
+  @media (max-width: 640px) {
+    /* object-fit:cover recorta texto/logos en banners anchos sobre una caja
+       angosta — object-fit:contain muestra el banner completo (con franjas
+       del color de fondo arriba/abajo) en vez de cortar contenido.
+       Va DESPUES de la regla base .promo__img: con la misma especificidad,
+       en CSS gana la ultima declarada en el archivo, no la del media query. */
+    .promo__img { object-fit: contain; }
   }
 
   .promo__arrow {
