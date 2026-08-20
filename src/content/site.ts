@@ -59,6 +59,7 @@ export const SITE = {
   },
 
   nav: [
+    { label: 'Ofertas', href: '/productos?categoria=Ofertas' },
     { label: 'Servicios', href: '#servicios' },
     { label: 'Productos', href: '/productos' },
     { label: 'Polarizado', href: '#polarizado' },

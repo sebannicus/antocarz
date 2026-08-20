@@ -2,7 +2,9 @@
 /**
  * Hero.astro — Antocarz
  * Desktop: texto izquierda + slider derecha grande (58% viewport).
- * Mobile: slider arriba (bloque normal, no absoluto) + texto debajo.
+ * Mobile: texto primero, slider debajo (bloque normal, no absoluto).
+ * El banner fijo de "Ofertas Septiembre" vive aparte, en OfertaFija.astro,
+ * justo debajo del header — este slider solo rota las otras 4 imágenes.
  * Cada slide es un link a /productos?categoria=Ofertas (filtro virtual de
  * productos con precio de oferta activo — ver productos.astro).
  */
@@ -16,7 +18,6 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
 const OFFERS_URL = '/productos?categoria=Ofertas';
 
 const slides = [
-  { src: '/slides hero/oferta-septiembre-1.webp', alt: 'Super ofertas en todo — Hertz, Pioneer, Recoil, Kenwood, JBL — Antocarz' },
   { src: '/slides hero/oferta-septiembre-2.webp', alt: 'Viva Chile — Antocarz Seguridad Automotriz, La Serena' },
   { src: '/slides hero/oferta-septiembre-3.webp', alt: 'Protege tu vehículo — Alarmas y seguridad antirrobo Antocarz' },
   { src: '/slides hero/oferta-septiembre-4.webp', alt: 'La seguridad en tus manos — Cortacorriente y alarmas Antocarz' },
@@ -25,24 +26,6 @@ const slides = [
 ---
 
 <section class="hero" id="inicio" aria-label="Inicio">
-
-  <!-- ── Slider de ofertas — panel derecho en desktop, bloque superior en mobile ── -->
-  <div class="hero__slider" id="hero-slider">
-    {slides.map((slide, i) => (
-      <div class="hero__slide" class:list={{ 'hero__slide--active': i === 0 }}>
-        <a href={OFFERS_URL} data-wa-source="hero-slider">
-          <img src={slide.src} alt={slide.alt} class="hero__slide-img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
-        </a>
-      </div>
-    ))}
-
-    <!-- Dots dentro del panel del slider -->
-    <div class="hero__dots">
-      {slides.map((_, i) => (
-        <button class="hero__dot" class:list={{ 'hero__dot--active': i === 0 }} data-slide={i} aria-label={`Slide ${i + 1}`}></button>
-      ))}
-    </div>
-  </div>
 
   <!-- Degradado de transición texto→slider (solo desktop) -->
   <div class="hero__fade" aria-hidden="true"></div>
@@ -91,6 +74,24 @@ const slides = [
           <span class="hero__proof-label">soporte técnico inmediato</span>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ── Slider de ofertas — panel derecho en desktop, bloque debajo del texto en mobile ── -->
+  <div class="hero__slider" id="hero-slider">
+    {slides.map((slide, i) => (
+      <div class="hero__slide" class:list={{ 'hero__slide--active': i === 0 }}>
+        <a href={OFFERS_URL} data-wa-source="hero-slider">
+          <img src={slide.src} alt={slide.alt} class="hero__slide-img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+        </a>
+      </div>
+    ))}
+
+    <!-- Dots dentro del panel del slider -->
+    <div class="hero__dots">
+      {slides.map((_, i) => (
+        <button class="hero__dot" class:list={{ 'hero__dot--active': i === 0 }} data-slide={i} aria-label={`Slide ${i + 1}`}></button>
+      ))}
     </div>
   </div>
 
@@ -205,19 +206,17 @@ const slides = [
   /* ── Base ── */
   .hero {
     position: relative;
-    min-height: 100dvh;
+    /* Antes ocupaba 100dvh porque era lo primero bajo el header transparente.
+       Ahora OfertaFija.astro va primero y ya suma su propia altura -- forzar
+       otro 100dvh completo dejaba un hueco enorme y desalineaba el carrusel
+       (position:absolute; top:0; bottom:0) respecto del texto. Se deja crecer
+       segun el contenido, como cualquier seccion normal. */
+    min-height: auto;
     background: #0D0D0D;
     display: flex;
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
-  }
-
-  @media (max-width: 1023px) {
-    /* El slider de ofertas ahora suma altura arriba del texto — con min-height
-       fijo a 100dvh todo quedaba apretado o se cortaba. Se deja crecer segun
-       el contenido y la pagina hace scroll normal, como cualquier hero mas alto. */
-    .hero { min-height: auto; }
   }
 
   /* ── Slider de ofertas ── */
@@ -226,7 +225,7 @@ const slides = [
     position: relative;
     width: 100%;
     aspect-ratio: 12 / 5; /* proporcion real de las piezas del cliente */
-    margin-top: 84px; /* despeja el header fijo (72px) */
+    margin-top: var(--space-8, 32px); /* ya no despeja el header -- va debajo del texto */
     z-index: 1;
   }
 
@@ -321,14 +320,19 @@ const slides = [
   .hero__inner {
     position: relative;
     z-index: 3;
-    padding-top: 100px;
+    /* Ya no hace falta despejar el header fijo aca -- ahora OfertaFija.astro
+       va justo antes en el flujo y se encarga de eso. Solo un respiro normal. */
+    padding-top: var(--space-10, 48px);
+    /* Este padding-bottom es para el marquee, que en desktop sigue siendo
+       position:absolute pegado abajo del Hero (ver mas abajo). */
     padding-bottom: 130px;
   }
 
   @media (max-width: 1023px) {
-    /* El despeje del header ya lo hace el margin-top del slider — aca solo
-       hace falta un respiro entre la imagen y el texto, no otros 100px. */
-    .hero__inner { padding-top: var(--space-8, 32px); }
+    /* En mobile el marquee ya no es absolute (va en flujo, despues del
+       slider) -- ese padding-bottom de 130px solo dejaba un hueco vacio
+       entre el texto y el carrusel. */
+    .hero__inner { padding-bottom: 0; }
   }
 
   .hero__content {
@@ -509,7 +513,6 @@ const slides = [
   /* ── Mobile ── */
   @media (max-width: 640px) {
     .hero__scroll { display: none; }
-    .hero__inner  { padding-bottom: 110px; }
     .hero__cta { flex-direction: column; align-items: flex-start; }
     .hero__cta :global(.btn) { width: 100%; justify-content: center; }
   }

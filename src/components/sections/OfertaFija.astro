@@ -1,0 +1,37 @@
+---
+/**
+ * OfertaFija.astro — Antocarz
+ * Banner fijo (no carrusel) justo debajo del header, con la pieza de
+ * "Ofertas Septiembre" que el cliente quiere siempre visible — a diferencia
+ * del slider del Hero, que sigue rotando las otras 4 imágenes.
+ */
+---
+
+<a class="oferta-fija" href="/productos?categoria=Ofertas" data-wa-source="oferta-fija" aria-label="Ver productos en oferta">
+  <img
+    src="/slides hero/oferta-septiembre-1.webp"
+    alt="Super ofertas en todo — Hertz, Pioneer, Recoil, Kenwood, JBL — Antocarz"
+    class="oferta-fija__img"
+    loading="eager"
+    fetchpriority="high"
+  />
+</a>
+
+<style>
+  .oferta-fija {
+    display: block;
+    width: 100%;
+    /* Header fijo mide 72px + su borde; el margen despeja eso. */
+    margin-top: 73px;
+    background: #0D0D0D;
+    aspect-ratio: 4631 / 1016; /* proporcion nativa de la pieza del cliente */
+    overflow: hidden;
+  }
+
+  .oferta-fija__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+</style>
