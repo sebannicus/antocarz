@@ -7,25 +7,32 @@
  */
 ---
 
-<a class="oferta-fija" href="/productos?categoria=Ofertas" data-wa-source="oferta-fija" aria-label="Ver productos en oferta">
-  <img
-    src="/slides hero/oferta-septiembre-1.webp"
-    alt="Super ofertas en todo — Hertz, Pioneer, Recoil, Kenwood, JBL — Antocarz"
-    class="oferta-fija__img"
-    loading="eager"
-    fetchpriority="high"
-  />
-</a>
+<div class="container oferta-fija-wrap">
+  <a class="oferta-fija" href="/productos?categoria=Ofertas" data-wa-source="oferta-fija" aria-label="Ver productos en oferta">
+    <img
+      src="/slides hero/oferta-septiembre-1.webp"
+      alt="Super ofertas en todo — Hertz, Pioneer, Recoil, Kenwood, JBL — Antocarz"
+      class="oferta-fija__img"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </a>
+</div>
 
 <style>
+  .oferta-fija-wrap {
+    /* El cliente pidió que el banner respete el mismo ancho que el resto
+       del contenido (como el header), no que vaya de borde a borde. */
+    margin-top: 73px; /* Header fijo mide 72px + su borde. */
+  }
+
   .oferta-fija {
     display: block;
     width: 100%;
-    /* Header fijo mide 72px + su borde; el margen despeja eso. */
-    margin-top: 73px;
     background: #0D0D0D;
     aspect-ratio: 4631 / 1016; /* proporcion nativa de la pieza del cliente */
     overflow: hidden;
+    border-radius: var(--radius-lg, 12px);
   }
 
   .oferta-fija__img {
