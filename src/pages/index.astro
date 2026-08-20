@@ -7,6 +7,7 @@
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
+import PromoBanner from '../components/sections/PromoBanner.astro';
 import Authority from '../components/sections/Authority.astro';
 import Brands from '../components/sections/Brands.astro';
 import OwnBrands from '../components/sections/OwnBrands.astro';
@@ -24,6 +25,13 @@ import Instagram from '../components/sections/Instagram.astro';
 
 <BaseLayout>
   <Hero />
+  <PromoBanner
+    slides={[
+      { src: '/banners/promo-super-ofertas.jpg', alt: 'Super ofertas en Car Audio esta semana', href: '/productos' },
+      { src: '/banners/promo-polarizado.jpg', alt: 'Polarizado nanocarbón certificado con descuento', href: '#polarizado' },
+      { src: '/banners/promo-laminas.jpg', alt: 'Láminas de seguridad certificadas para proteger tus vidrios', href: '#laminas-seguridad' },
+    ]}
+  />
   <Testimonials />
   <Authority />
   <Brands />

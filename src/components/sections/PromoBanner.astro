@@ -1,0 +1,174 @@
+---
+/**
+ * PromoBanner.astro — Antocarz
+ * Carrusel de banners promocionales full-bleed (imágenes provistas por el cliente,
+ * estilo Canva — ver medidas recomendadas en .agents/promo-banner-specs.md).
+ * Patrón de slider igual al de Hero.astro (dots + autoplay), pero en formato
+ * horizontal ancho en vez de panel grande.
+ */
+export interface PromoSlide {
+  src: string;
+  alt: string;
+  href?: string;
+}
+
+const { slides } = Astro.props as { slides: PromoSlide[] };
+---
+
+{slides.length > 0 && (
+  <section class="promo" aria-label="Ofertas destacadas">
+    <div class="promo__track" id="promo-track">
+      {slides.map((slide, i) => (
+        <div class="promo__slide" class:list={{ 'promo__slide--active': i === 0 }} data-index={i}>
+          {slide.href ? (
+            <a href={slide.href} data-wa-source="promo-banner">
+              <img src={slide.src} alt={slide.alt} class="promo__img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+            </a>
+          ) : (
+            <img src={slide.src} alt={slide.alt} class="promo__img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+          )}
+        </div>
+      ))}
+
+      {slides.length > 1 && (
+        <>
+          <button class="promo__arrow promo__arrow--prev" id="promo-prev" aria-label="Oferta anterior">‹</button>
+          <button class="promo__arrow promo__arrow--next" id="promo-next" aria-label="Oferta siguiente">›</button>
+
+          <div class="promo__dots">
+            {slides.map((_, i) => (
+              <button class="promo__dot" class:list={{ 'promo__dot--active': i === 0 }} data-slide={i} aria-label={`Oferta ${i + 1}`}></button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </section>
+)}
+
+<style>
+  .promo {
+    width: 100%;
+    background: #0D0D0D;
+  }
+
+  .promo__track {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 5;
+    overflow: hidden;
+  }
+
+  @media (max-width: 640px) {
+    /* object-fit:cover recorta texto/logos en banners anchos tipo 16:5 sobre
+       una caja angosta — object-fit:contain muestra el banner completo
+       (con franjas del color de fondo arriba/abajo) en vez de cortar contenido. */
+    .promo__track { aspect-ratio: 2 / 1; }
+    .promo__img { object-fit: contain; }
+  }
+
+  .promo__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .promo__slide--active { opacity: 1; z-index: 1; }
+
+  .promo__slide a { display: block; width: 100%; height: 100%; }
+
+  .promo__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .promo__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+  }
+  .promo__arrow:hover { background: rgba(0,0,0,0.7); }
+  .promo__arrow--prev { left: var(--space-4, 16px); }
+  .promo__arrow--next { right: var(--space-4, 16px); }
+
+  @media (max-width: 640px) {
+    /* En mobile las flechas quedan encima del propio contenido del banner
+       (object-fit:contain dejó texto pegado a los bordes) — se navega con
+       los puntos o esperando el autoplay, como en la mayoría de carruseles mobile. */
+    .promo__arrow { display: none; }
+  }
+
+  .promo__dots {
+    position: absolute;
+    bottom: var(--space-4, 16px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: var(--space-2, 8px);
+  }
+
+  .promo__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .promo__dot--active {
+    background: var(--color-gold, #E30613);
+    transform: scale(1.3);
+  }
+</style>
+
+<script>
+  const SLIDE_DURATION = 6000;
+  const track = document.getElementById('promo-track');
+  if (track) {
+    const slides = Array.from(track.querySelectorAll<HTMLElement>('.promo__slide'));
+    const dots = Array.from(track.querySelectorAll<HTMLButtonElement>('.promo__dot'));
+    const prevBtn = document.getElementById('promo-prev');
+    const nextBtn = document.getElementById('promo-next');
+    let current = 0;
+    let timer: ReturnType<typeof setInterval>;
+
+    function goTo(index: number) {
+      slides[current].classList.remove('promo__slide--active');
+      dots[current]?.classList.remove('promo__dot--active');
+      current = (index + slides.length) % slides.length;
+      slides[current].classList.add('promo__slide--active');
+      dots[current]?.classList.add('promo__dot--active');
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+    function restart() { clearInterval(timer); timer = setInterval(next, SLIDE_DURATION); }
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { goTo(i); restart(); }));
+    nextBtn?.addEventListener('click', () => { next(); restart(); });
+    prevBtn?.addEventListener('click', () => { prev(); restart(); });
+
+    if (slides.length > 1) restart();
+  }
+</script>
