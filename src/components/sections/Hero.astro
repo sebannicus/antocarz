@@ -22,6 +22,10 @@ const slides = [
   { src: '/slides hero/oferta-septiembre-3.webp', alt: 'Protege tu vehículo — Alarmas y seguridad antirrobo Antocarz' },
   { src: '/slides hero/oferta-septiembre-4.webp', alt: 'La seguridad en tus manos — Cortacorriente y alarmas Antocarz' },
   { src: '/slides hero/oferta-septiembre-5.webp', alt: 'La seguridad en tus manos — Rastreadores GPS Antocarz' },
+  { src: '/slides hero/oferta-septiembre-6.webp', alt: 'La seguridad en tus manos — Polarizado y láminas Antocarz' },
+  { src: '/slides hero/oferta-septiembre-7.webp', alt: 'La seguridad en tus manos — Instalación de láminas Antocarz' },
+  { src: '/slides hero/oferta-septiembre-8.webp', alt: 'Disfruta el viaje — Radio Android ZTAudio CarPlay Waze Netflix' },
+  { src: '/slides hero/oferta-septiembre-9.webp', alt: 'Protege tu vehículo — Alarmas Hawk instalador autorizado Antocarz' },
 ];
 ---
 
@@ -77,21 +81,26 @@ const slides = [
     </div>
   </div>
 
-  <!-- ── Slider de ofertas — panel derecho en desktop, bloque debajo del texto en mobile ── -->
-  <div class="hero__slider" id="hero-slider">
-    {slides.map((slide, i) => (
-      <div class="hero__slide" class:list={{ 'hero__slide--active': i === 0 }}>
-        <a href={OFFERS_URL} data-wa-source="hero-slider">
-          <img src={slide.src} alt={slide.alt} class="hero__slide-img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
-        </a>
-      </div>
-    ))}
-
-    <!-- Dots dentro del panel del slider -->
-    <div class="hero__dots">
-      {slides.map((_, i) => (
-        <button class="hero__dot" class:list={{ 'hero__dot--active': i === 0 }} data-slide={i} aria-label={`Slide ${i + 1}`}></button>
+  <!-- ── Slider de ofertas — panel derecho en desktop, bloque debajo del texto en mobile ──
+       El wrapper "container" en desktop hace que el borde derecho del carrusel calce
+       exacto con el del header y el banner fijo (OfertaFija.astro), en vez de ir a
+       borde de pantalla como antes. -->
+  <div class="hero__slider-frame container">
+    <div class="hero__slider" id="hero-slider">
+      {slides.map((slide, i) => (
+        <div class="hero__slide" class:list={{ 'hero__slide--active': i === 0 }}>
+          <a href={OFFERS_URL} data-wa-source="hero-slider">
+            <img src={slide.src} alt={slide.alt} class="hero__slide-img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+          </a>
+        </div>
       ))}
+
+      <!-- Dots dentro del panel del slider -->
+      <div class="hero__dots">
+        {slides.map((_, i) => (
+          <button class="hero__dot" class:list={{ 'hero__dot--active': i === 0 }} data-slide={i} aria-label={`Slide ${i + 1}`}></button>
+        ))}
+      </div>
     </div>
   </div>
 
@@ -220,6 +229,10 @@ const slides = [
   }
 
   /* ── Slider de ofertas ── */
+  .hero__slider-frame {
+    display: block;
+  }
+
   .hero__slider {
     display: block;
     position: relative;
@@ -230,10 +243,22 @@ const slides = [
   }
 
   @media (min-width: 1024px) {
+    .hero__slider-frame {
+      /* inset:0 + max-width + margin-inline:auto (heredado de .container) hace
+         que este frame se centre exactamente igual que un .container normal,
+         incluso siendo position:absolute -- así el slider calza con el header
+         y con OfertaFija.astro en vez de ir a borde de pantalla. */
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
     .hero__slider {
       position: absolute;
       top: 0;
-      right: 0;
+      /* right:0 se alinea al borde EXTERIOR del padding-box del frame (ignora
+         el padding-inline del .container) -- hay que restarlo a mano para que
+         calce con el contenido real de OfertaFija/el header. */
+      right: var(--section-padding-x);
       bottom: 0;
       width: 58%;
       aspect-ratio: auto;
