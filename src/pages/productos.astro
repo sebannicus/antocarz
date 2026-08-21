@@ -298,6 +298,11 @@ const breadcrumbSchema = {
     const price = p.precio ? Number(p.precio) : 0;
     const oferta = p.oferta ? Number(p.oferta) : 0;
     const hasOffer = oferta > 0 && oferta < price;
+    // Categoria "OFERTAS SEPTIEMBRE" (id 32 en el ERP) es una lista curada a mano
+    // por el cliente, aparte del precio de oferta. Un producto puede aparecer en
+    // el filtro "Ofertas" por cualquiera de las dos razones.
+    const inOfertasCategory = Number(p.oferta_septiembre) === 1;
+    const isOffer = hasOffer || inOfertasCategory;
     const priceStr = price > 0 ? formatPrice(price) : 'Consultar';
     const ofertaStr = hasOffer ? formatPrice(oferta) : '';
     const img = p.imagen ? `https://api.antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
@@ -309,11 +314,11 @@ const breadcrumbSchema = {
     a.dataset.brand = p.marca || 'Sin marca';
     a.dataset.price = hasOffer ? oferta : price;
     a.dataset.name = p.nombre.toLowerCase();
-    a.dataset.offer = hasOffer ? '1' : '0';
+    a.dataset.offer = isOffer ? '1' : '0';
     a.innerHTML = `
       <div class="card-image">
         <img src="${img}" alt="${p.nombre}" loading="lazy" />
-        ${hasOffer ? '<span class="badge badge--offer">Oferta</span>' : p.masvendido == 1 ? '<span class="badge">Destacado</span>' : ''}
+        ${isOffer ? '<span class="badge badge--offer">Oferta</span>' : p.masvendido == 1 ? '<span class="badge">Destacado</span>' : ''}
       </div>
       <div class="card-body">
         <span class="brand">${p.marca || 'Sin marca'}</span>
