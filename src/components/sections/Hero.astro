@@ -24,7 +24,7 @@ const slides = [
   { src: '/slides hero/oferta-septiembre-5.webp', alt: 'La seguridad en tus manos — Rastreadores GPS Antocarz' },
   { src: '/slides hero/oferta-septiembre-6.webp', alt: 'La seguridad en tus manos — Polarizado y láminas Antocarz' },
   { src: '/slides hero/oferta-septiembre-7.webp', alt: 'La seguridad en tus manos — Instalación de láminas Antocarz' },
-  { src: '/slides hero/oferta-septiembre-8.webp', alt: 'Disfruta el viaje — Radio Android ZTAudio CarPlay Waze Netflix' },
+  { src: '/slides hero/oferta-septiembre-8.webp', alt: 'Disfruta el viaje — Radio Android ZTAudio CarPlay Waze Netflix', href: '/ztaudio' },
   { src: '/slides hero/oferta-septiembre-9.webp', alt: 'Protege tu vehículo — Alarmas Hawk instalador autorizado Antocarz' },
 ];
 ---
@@ -89,7 +89,7 @@ const slides = [
     <div class="hero__slider" id="hero-slider">
       {slides.map((slide, i) => (
         <div class="hero__slide" class:list={{ 'hero__slide--active': i === 0 }}>
-          <a href={OFFERS_URL} data-wa-source="hero-slider">
+          <a href={slide.href ?? OFFERS_URL} data-wa-source="hero-slider">
             <img src={slide.src} alt={slide.alt} class="hero__slide-img" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
           </a>
         </div>

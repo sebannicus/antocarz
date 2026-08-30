@@ -1,4 +1,8 @@
 {
+  "rewrites": [
+    { "source": "/ztaudio", "destination": "https://ztaudio.vercel.app/ztaudio" },
+    { "source": "/ztaudio/:match*", "destination": "https://ztaudio.vercel.app/ztaudio/:match*" }
+  ],
   "redirects": [
     {
       "source": "/dproducto.php",
