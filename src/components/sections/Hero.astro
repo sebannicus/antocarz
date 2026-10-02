@@ -27,6 +27,40 @@ const slides = [
   { src: '/slides hero/oferta-septiembre-8.webp', alt: 'Disfruta el viaje — Radio Android ZTAudio CarPlay Waze Netflix', href: '/ztaudio' },
   { src: '/slides hero/oferta-septiembre-9.webp', alt: 'Protege tu vehículo — Alarmas Hawk instalador autorizado Antocarz' },
 ];
+
+// Franja animada inferior. El bloque se renderiza 2 veces para el loop
+// infinito (keyframes marquee = translateX(-50%)).
+// Logos *-blanco.webp: versiones con texto blanco para fondo oscuro.
+// h: altura en px ajustada al ancho de cada logo para igualar su peso visual.
+const ZT = SITE.ztaudioUrl;
+type MarqueeLogo = { name: string; src: string; h: number; href?: string };
+type MarqueeItem =
+  | { type: 'text'; text: string; href?: string }
+  | { type: 'logos'; logos: MarqueeLogo[] };
+const marqueeItems: MarqueeItem[] = [
+  { type: 'text', text: 'Polarizado Nanocarbón' },
+  { type: 'text', text: 'Láminas Anti-Impactos' },
+  { type: 'text', text: 'Rastreadores GPS' },
+  { type: 'text', text: 'Inmovilizador RFID' },
+  { type: 'text', text: 'Radio Android CarPlay', href: ZT },
+  { type: 'text', text: 'Android Auto', href: ZT },
+  { type: 'logos', logos: [
+    { name: 'ZTAudio',         src: '/logos/ztaudio.webp',         h: 32, href: ZT },
+    { name: 'JBL',             src: '/logos/jbl.webp',             h: 32, href: ZT },
+    { name: 'Pioneer',         src: '/logos/pioneer.webp',         h: 20, href: ZT },
+    { name: 'Kenwood',         src: '/logos/kenwood-blanco.webp',  h: 21, href: ZT },
+    { name: 'Hertz',           src: '/logos/hertz-blanco.webp',    h: 26, href: ZT },
+  ] },
+  { type: 'logos', logos: [
+    { name: 'Hawk',            src: '/logos/hawk-blanco.webp',     h: 28 },
+    { name: 'K-9 Car Alarm',   src: '/logos/k9.webp',              h: 32 },
+    { name: 'Rastreadores.cl', src: '/logos/rastreadores.webp',    h: 27 },
+    { name: 'GPS Autorastreo', src: '/logos/gps-autorastreo.webp', h: 25 },
+  ] },
+  { type: 'text', text: 'La Serena' },
+  { type: 'text', text: '+10.000 Instalaciones' },
+  { type: 'text', text: 'Garantía Absoluta' },
+];
 ---
 
 <section class="hero" id="inicio" aria-label="Inicio">
@@ -104,75 +138,32 @@ const slides = [
     </div>
   </div>
 
-  <!-- Marquee -->
+  <!-- Marquee: textos de servicio + logos de marcas (logos de audio linkean a /ztaudio) -->
   <div class="hero__marquee marquee" aria-hidden="true">
     <div class="marquee__track">
-      <span class="hero__marquee-item">Polarizado Nanocarbón</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Láminas Anti-Impactos</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Rastreadores GPS</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Inmovilizador RFID</span>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Radio Android CarPlay</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Android Auto</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">ZTAudio</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">JBL</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Pioneer</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Boss Audio</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Hertz</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Recoil</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Lanzar</a>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Rastreadores.cl</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">La Serena</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">+10.000 Instalaciones</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Garantía Absoluta</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Polarizado Nanocarbón</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Láminas Anti-Impactos</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Rastreadores GPS</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Inmovilizador RFID</span>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Radio Android CarPlay</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Android Auto</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">ZTAudio</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">JBL</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Pioneer</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Boss Audio</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Hertz</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Recoil</a>
-      <span class="hero__marquee-sep">·</span>
-      <a href="/ztaudio" class="hero__marquee-item hero__marquee-link" tabindex="-1">Lanzar</a>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Rastreadores.cl</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">La Serena</span>
-      <span class="hero__marquee-sep">·</span>
-      <span class="hero__marquee-item">Garantía Absoluta</span>
-      <span class="hero__marquee-sep">·</span>
+      {[0, 1].map(() => marqueeItems.map((item) =>
+        item.type === 'logos' ? (
+          <>
+            <span class="hero__marquee-logos">
+              {item.logos.map((l) => l.href ? (
+                <a href={l.href} class="hero__marquee-logo-link" tabindex="-1">
+                  <img src={l.src} alt={l.name} class="hero__marquee-logo" height={l.h} style={`height: ${l.h}px`} loading="lazy" draggable="false" />
+                </a>
+              ) : (
+                <img src={l.src} alt={l.name} class="hero__marquee-logo" height={l.h} style={`height: ${l.h}px`} loading="lazy" draggable="false" />
+              ))}
+            </span>
+            <span class="hero__marquee-sep">·</span>
+          </>
+        ) : (
+          <>
+            {item.href
+              ? <a href={item.href} class="hero__marquee-item hero__marquee-link" tabindex="-1">{item.text}</a>
+              : <span class="hero__marquee-item">{item.text}</span>}
+            <span class="hero__marquee-sep">·</span>
+          </>
+        )
+      ))}
     </div>
   </div>
 
@@ -499,6 +490,10 @@ const slides = [
     color: rgba(255,255,255,0.60);
     flex-shrink: 0;
   }
+  .hero__marquee-logos { display: inline-flex; align-items: center; gap: var(--space-8); flex-shrink: 0; }
+  .hero__marquee-logo-link { display: inline-flex; flex-shrink: 0; transition: opacity var(--transition-fast); }
+  .hero__marquee-logo-link:hover { opacity: 0.75; }
+  .hero__marquee-logo { width: auto; flex-shrink: 0; display: block; }
   .hero__marquee-link { text-decoration: none; transition: color var(--transition-fast); }
   .hero__marquee-link:hover { color: var(--color-gold); }
   .hero__marquee-sep { color: var(--color-gold); opacity: 0.40; font-size: var(--text-base); flex-shrink: 0; }

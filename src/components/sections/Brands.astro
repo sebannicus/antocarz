@@ -2,18 +2,25 @@
 /**
  * Brands.astro — Antocarz
  * Logos de marcas que instalan en marquee infinito.
+ * Logos *-blanco.webp: versión con texto blanco para el fondo oscuro.
+ * h: altura en px ajustada al ancho de cada logo para igualar su peso visual.
  */
 
 const brands = [
-  { name: 'JBL',            src: '/logos/jbl.webp',          w: 80,  href: '/ztaudio' },
-  { name: 'Pioneer',        src: '/logos/pioneer.webp',      w: 120, href: '/ztaudio' },
-  { name: 'ZTAudio',        src: '/logos/ztaudio.svg',       w: 130, href: '/ztaudio' },
-  { name: 'Hawk',           src: '/logos/hawk.webp',         w: 95  },
-  { name: 'rastreadores.cl',src: '/logos/rastreadores.webp', w: 160 },
+  { name: 'ZTAudio',          src: '/logos/ztaudio.webp',           w: 73, h: 44, href: '/ztaudio' },
+  { name: 'JBL',              src: '/logos/jbl.webp',               w: 52, h: 44, href: '/ztaudio' },
+  { name: 'Pioneer',          src: '/logos/pioneer.webp',           w: 181, h: 27, href: '/ztaudio' },
+  { name: 'Kenwood',          src: '/logos/kenwood-blanco.webp',    w: 171, h: 28, href: '/ztaudio' },
+  { name: 'Hertz',            src: '/logos/hertz-blanco.webp',      w: 136, h: 35, href: '/ztaudio' },
+  { name: 'Hawk',             src: '/logos/hawk-blanco.webp',       w: 126, h: 38 },
+  { name: 'K-9 Car Alarm',    src: '/logos/k9.webp',                w: 71, h: 44 },
+  { name: 'rastreadores.cl',  src: '/logos/rastreadores.webp',      w: 131, h: 37 },
+  { name: 'GPS Autorastreo',  src: '/logos/gps-autorastreo.webp',   w: 139, h: 34 },
 ];
 
-// Triplicar para que el loop sea fluido en pantallas anchas
-const items = [...brands, ...brands, ...brands];
+// 4 copias: el keyframe marquee desplaza -50% (= 2 copias exactas), así el loop
+// no salta y cubre pantallas anchas.
+const items = [...brands, ...brands, ...brands, ...brands];
 ---
 
 <section class="brands" aria-label="Marcas que instalamos">
@@ -29,7 +36,8 @@ const items = [...brands, ...brands, ...brands];
             src={b.src}
             alt={b.name}
             width={b.w}
-            height={50}
+            height={b.h}
+            style={`height: ${b.h}px`}
             class="brands__logo"
             loading="lazy"
             draggable="false"
@@ -62,8 +70,8 @@ const items = [...brands, ...brands, ...brands];
     margin-bottom: var(--space-6);
   }
 
-  .brands__marquee {
-    animation: marquee 18s linear infinite;
+  .brands__marquee .marquee__track {
+    animation-duration: 40s;
   }
 
   .brands__logo {
