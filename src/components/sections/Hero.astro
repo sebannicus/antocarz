@@ -32,24 +32,23 @@ const slides = [
 // infinito (keyframes marquee = translateX(-50%)).
 // Logos *-blanco.webp: versiones con texto blanco para fondo oscuro.
 // h: altura en px ajustada al ancho de cada logo para igualar su peso visual.
-const ZT = SITE.ztaudioUrl;
-type MarqueeLogo = { name: string; src: string; h: number; href?: string };
+type MarqueeLogo = { name: string; src: string; h: number };
 type MarqueeItem =
-  | { type: 'text'; text: string; href?: string }
+  | { type: 'text'; text: string }
   | { type: 'logos'; logos: MarqueeLogo[] };
 const marqueeItems: MarqueeItem[] = [
   { type: 'text', text: 'Polarizado Nanocarbón' },
   { type: 'text', text: 'Láminas Anti-Impactos' },
   { type: 'text', text: 'Rastreadores GPS' },
   { type: 'text', text: 'Inmovilizador RFID' },
-  { type: 'text', text: 'Radio Android CarPlay', href: ZT },
-  { type: 'text', text: 'Android Auto', href: ZT },
+  { type: 'text', text: 'Radio Android CarPlay' },
+  { type: 'text', text: 'Android Auto' },
   { type: 'logos', logos: [
-    { name: 'ZTAudio',         src: '/logos/ztaudio.webp',         h: 32, href: ZT },
-    { name: 'JBL',             src: '/logos/jbl.webp',             h: 32, href: ZT },
-    { name: 'Pioneer',         src: '/logos/pioneer.webp',         h: 20, href: ZT },
-    { name: 'Kenwood',         src: '/logos/kenwood-blanco.webp',  h: 21, href: ZT },
-    { name: 'Hertz',           src: '/logos/hertz-blanco.webp',    h: 26, href: ZT },
+    { name: 'ZTAudio',         src: '/logos/ztaudio.webp',         h: 32 },
+    { name: 'JBL',             src: '/logos/jbl.webp',             h: 32 },
+    { name: 'Pioneer',         src: '/logos/pioneer.webp',         h: 20 },
+    { name: 'Kenwood',         src: '/logos/kenwood-blanco.webp',  h: 21 },
+    { name: 'Hertz',           src: '/logos/hertz-blanco.webp',    h: 26 },
   ] },
   { type: 'logos', logos: [
     { name: 'Hawk',            src: '/logos/hawk-blanco.webp',     h: 28 },
@@ -138,18 +137,14 @@ const marqueeItems: MarqueeItem[] = [
     </div>
   </div>
 
-  <!-- Marquee: textos de servicio + logos de marcas (logos de audio linkean a /ztaudio) -->
+  <!-- Marquee: textos de servicio + logos de marcas -->
   <div class="hero__marquee marquee" aria-hidden="true">
     <div class="marquee__track">
       {[0, 1].map(() => marqueeItems.map((item) =>
         item.type === 'logos' ? (
           <>
             <span class="hero__marquee-logos">
-              {item.logos.map((l) => l.href ? (
-                <a href={l.href} class="hero__marquee-logo-link" tabindex="-1">
-                  <img src={l.src} alt={l.name} class="hero__marquee-logo" height={l.h} style={`height: ${l.h}px`} loading="lazy" draggable="false" />
-                </a>
-              ) : (
+              {item.logos.map((l) => (
                 <img src={l.src} alt={l.name} class="hero__marquee-logo" height={l.h} style={`height: ${l.h}px`} loading="lazy" draggable="false" />
               ))}
             </span>
@@ -157,9 +152,7 @@ const marqueeItems: MarqueeItem[] = [
           </>
         ) : (
           <>
-            {item.href
-              ? <a href={item.href} class="hero__marquee-item hero__marquee-link" tabindex="-1">{item.text}</a>
-              : <span class="hero__marquee-item">{item.text}</span>}
+            <span class="hero__marquee-item">{item.text}</span>
             <span class="hero__marquee-sep">·</span>
           </>
         )
@@ -491,11 +484,7 @@ const marqueeItems: MarqueeItem[] = [
     flex-shrink: 0;
   }
   .hero__marquee-logos { display: inline-flex; align-items: center; gap: var(--space-8); flex-shrink: 0; }
-  .hero__marquee-logo-link { display: inline-flex; flex-shrink: 0; transition: opacity var(--transition-fast); }
-  .hero__marquee-logo-link:hover { opacity: 0.75; }
   .hero__marquee-logo { width: auto; flex-shrink: 0; display: block; }
-  .hero__marquee-link { text-decoration: none; transition: color var(--transition-fast); }
-  .hero__marquee-link:hover { color: var(--color-gold); }
   .hero__marquee-sep { color: var(--color-gold); opacity: 0.40; font-size: var(--text-base); flex-shrink: 0; }
 
   /* ── Scroll hint ── */

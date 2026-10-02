@@ -273,7 +273,7 @@ const breadcrumbSchema = {
   }
 </style>
 
-<script define:vars={{ PHP_API, ztaudioUrl }}>
+<script define:vars={{ PHP_API }}>
   // ── Analytics helper ──────────────────────────────────────────────────────
   function fireGA(eventName, params) {
     if (typeof window.gtag === 'function') {
@@ -296,11 +296,6 @@ const breadcrumbSchema = {
   function formatPrice(n) {
     return '$' + Number(n).toLocaleString('es-CL');
   }
-  // Productos de audio (categoría "Car Audio", "KIT RADIOS ZTAUDIO", marca ZTAudio)
-  // no van a la ficha/WhatsApp genérico: linkean a la landing de audio /ztaudio.
-  function isAudioProduct(p) {
-    return /audio/i.test(p.categoria || '') || /ztaudio/i.test(`${p.marca || ''} ${p.nombre || ''}`);
-  }
   function buildCard(p) {
     const slug = slugify(p.nombre, p.id_producto);
     const price = p.precio ? Number(p.precio) : 0;
@@ -315,9 +310,8 @@ const breadcrumbSchema = {
     const ofertaStr = hasOffer ? formatPrice(oferta) : '';
     const img = p.imagen ? `https://api.antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
     const code = p.codigo_antocarz || p.codigo_producto || `ANT-${p.id_producto}`;
-    const isAudio = isAudioProduct(p);
     const a = document.createElement('a');
-    a.href = isAudio ? ztaudioUrl : `/productos/${slug}`;
+    a.href = `/productos/${slug}`;
     a.className = 'product-card';
     a.dataset.category = p.categoria || 'General';
     a.dataset.brand = p.marca || 'Sin marca';
@@ -342,7 +336,7 @@ const breadcrumbSchema = {
                </div>`
             : `<span class="price">${priceStr}</span>`
           }
-          <span class="btn-view">${isAudio ? 'Ver en ZTAudio' : 'Ver más'}</span>
+          <span class="btn-view">Ver más</span>
         </div>
       </div>`;
 

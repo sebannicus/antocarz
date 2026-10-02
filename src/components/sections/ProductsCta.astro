@@ -109,12 +109,6 @@ const ztaudioUrl = SITE.ztaudioUrl;
 <script define:vars={{ PHP_API, whatsapp, ztaudioUrl }}>
   const OWN_BRANDS = ['ztaudio', 'rastreadores.cl'];
 
-  // Productos de audio (categoría "Car Audio", "KIT RADIOS ZTAUDIO", marca ZTAudio)
-  // no van a la ficha/WhatsApp genérico: linkean a la landing de audio /ztaudio.
-  function isAudioProduct(p) {
-    return /audio/i.test(p.categoria || '') || /ztaudio/i.test(`${p.marca || ''} ${p.nombre || ''}`);
-  }
-
   function shuffle(arr) {
     const a = [...arr];
     for (let i = a.length - 1; i > 0; i--) {
@@ -128,21 +122,16 @@ const ztaudioUrl = SITE.ztaudioUrl;
     const price = p.precio ? '$' + Number(p.precio).toLocaleString('es-CL') : 'Consultar';
     const img = p.imagen ? `https://api.antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
     const waText = encodeURIComponent(`Hola, me interesa el producto: ${p.nombre} (${price}). ¿Está disponible?`);
-    const isAudio = isAudioProduct(p);
     const a = document.createElement('a');
+    a.href = `https://wa.me/${whatsapp}?text=${waText}`;
     a.className = 'pcta__card';
-    if (isAudio) {
-      a.href = ztaudioUrl;
-    } else {
-      a.href = `https://wa.me/${whatsapp}?text=${waText}`;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-    }
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
     a.innerHTML = `
       ${p.masvendido == 1 ? '<span class="pcta__badge">Destacado</span>' : ''}
       <div class="pcta__img-wrap">
         <img src="${img}" alt="${p.nombre}" class="pcta__img" width="480" height="320" loading="lazy" decoding="async" />
-        <div class="pcta__overlay"><span>${isAudio ? 'Ver en ZTAudio →' : 'Cotizar por WhatsApp →'}</span></div>
+        <div class="pcta__overlay"><span>Cotizar por WhatsApp →</span></div>
       </div>
       <div class="pcta__body">
         <div class="pcta__meta">
