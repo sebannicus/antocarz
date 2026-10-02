@@ -1,16 +1,15 @@
 ---
 /**
  * Instagram.astro — Antocarz
- * Feed automático de Instagram via Behold.so
+ * Feed de Instagram propio vía /api/instagram (Meta Graph API, gratis).
+ * Reemplaza a Behold.so (plan vencido 2026-08-12).
  *
- * SETUP (5 minutos):
- * 1. Ir a https://behold.so → Sign Up gratis
- * 2. Conectar la cuenta @antocarzlaserena
- * 3. Crear un feed → copiar el FEED ID (ej: "AbCd1234")
- * 4. Reemplazar BEHOLD_FEED_ID abajo con tu ID real
+ * La grilla se renderiza con celdas de respaldo que linkean al perfil;
+ * el script las reemplaza por las últimas publicaciones si la API responde.
+ * Sin IG_ACCESS_TOKEN en Vercel queda la grilla de respaldo (no se rompe nada).
  */
 
-const BEHOLD_FEED_ID = ''; // DESACTIVADO 2026-08-12: plan Behold.so vencido. ID real: Nv26d89sn1o6MdGZ2U5Q — restaurar ese valor cuando se resuelva
+const POSTS = 6;
 const IG_HANDLE     = 'antocarzlaserena';
 const IG_URL        = 'https://www.instagram.com/antocarzlaserena/';
 ---
@@ -42,36 +41,75 @@ const IG_URL        = 'https://www.instagram.com/antocarzlaserena/';
       </a>
     </div>
 
-    <!-- Feed: Behold.so widget (activo cuando hay FEED ID) -->
-    {BEHOLD_FEED_ID ? (
-      <div class="ig__feed-live" id="ig-feed-live">
-        <behold-widget feed-id={BEHOLD_FEED_ID}></behold-widget>
-      </div>
-    ) : (
-      <!-- Placeholder visual hasta configurar Behold.so -->
-      <a href={IG_URL} target="_blank" rel="noopener noreferrer" class="ig__placeholder">
-        <div class="ig__placeholder-grid">
-          {Array.from({ length: 6 }).map(() => (
-            <div class="ig__placeholder-cell" aria-hidden="true">
-              <div class="ig__placeholder-inner">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-              </div>
-            </div>
-          ))}
-        </div>
-        <p class="ig__placeholder-note">Ver nuestro Instagram →</p>
-      </a>
-    )}
+    <!-- Feed: celdas de respaldo → reemplazadas client-side por posts reales -->
+    <div class="ig__grid" id="ig-grid" data-profile={IG_URL}>
+      {Array.from({ length: POSTS }).map(() => (
+        <a href={IG_URL} target="_blank" rel="noopener noreferrer" class="ig__cell" aria-label={`Ver Instagram @${IG_HANDLE}`}>
+          <div class="ig__cell-inner">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+    <a href={IG_URL} target="_blank" rel="noopener noreferrer" class="ig__note">Ver más en nuestro Instagram →</a>
 
   </div>
 </section>
 
-<!-- Script de Behold.so (solo se carga si hay feed ID) -->
-{BEHOLD_FEED_ID && (
-  <script src="https://w.behold.so/widget.js" type="module" is:inline></script>
-)}
+<script>
+  // Reemplaza las celdas de respaldo por las últimas publicaciones reales.
+  async function loadInstagram() {
+    const grid = document.getElementById('ig-grid');
+    if (!grid) return;
+    try {
+      const res = await fetch('/api/instagram');
+      if (!res.ok) return;
+      const { posts } = await res.json();
+      if (!Array.isArray(posts) || posts.length === 0) return;
+
+      const cells = grid.querySelectorAll<HTMLAnchorElement>('.ig__cell');
+      cells.forEach((cell, i) => {
+        const post = posts[i];
+        if (!post) return;
+        cell.href = post.permalink;
+        cell.setAttribute('aria-label', post.caption || 'Publicación de Instagram de Antocarz');
+        const img = document.createElement('img');
+        img.src = post.image;
+        img.alt = post.caption || 'Publicación de Instagram de Antocarz';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.className = 'ig__img';
+        cell.replaceChildren(img);
+        if (post.isVideo) {
+          const badge = document.createElement('span');
+          badge.className = 'ig__video-badge';
+          badge.setAttribute('aria-hidden', 'true');
+          badge.textContent = '▶';
+          cell.appendChild(badge);
+        }
+        cell.classList.add('ig__cell--live');
+      });
+    } catch {
+      // Sin conexión con la API: se mantiene la grilla de respaldo.
+    }
+  }
+
+  // Carga diferida: solo cuando la sección se acerca al viewport.
+  const igSection = document.getElementById('instagram');
+  if (igSection && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        io.disconnect();
+        loadInstagram();
+      }
+    }, { rootMargin: '400px' });
+    io.observe(igSection);
+  } else {
+    loadInstagram();
+  }
+</script>
 
 <style>
   /* ── Fondo Difuminado Rojo ── */
@@ -143,18 +181,8 @@ const IG_URL        = 'https://www.instagram.com/antocarzlaserena/';
     transform: translateY(-2px);
   }
 
-  /* ── Live feed ── */
-  .ig__feed-live {
-    width: 100%;
-  }
-
-  /* ── Placeholder grid ── */
-  .ig__placeholder {
-    display: block;
-    text-decoration: none;
-  }
-
-  .ig__placeholder-grid {
+  /* ── Grilla ── */
+  .ig__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 4px;
@@ -163,16 +191,22 @@ const IG_URL        = 'https://www.instagram.com/antocarzlaserena/';
   }
 
   @media (min-width: 640px) {
-    .ig__placeholder-grid { grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .ig__grid { grid-template-columns: repeat(6, 1fr); gap: 6px; }
   }
 
-  .ig__placeholder-cell {
+  .ig__cell {
+    position: relative;
+    display: block;
     aspect-ratio: 1 / 1;
+    overflow: hidden;
     background: var(--color-bg-overlay);
     border: 1px solid var(--color-border);
+    text-decoration: none;
   }
 
-  .ig__placeholder-inner {
+  .ig__cell--live { border-color: transparent; }
+
+  .ig__cell-inner {
     width: 100%;
     height: 100%;
     display: flex;
@@ -182,20 +216,41 @@ const IG_URL        = 'https://www.instagram.com/antocarzlaserena/';
     transition: color var(--transition-base);
   }
 
-  .ig__placeholder:hover .ig__placeholder-inner {
-    color: var(--color-gold);
+  .ig__cell:hover .ig__cell-inner { color: var(--color-gold); }
+
+  .ig__cell :global(.ig__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-slow), opacity var(--transition-base);
   }
 
-  .ig__placeholder-note {
+  .ig__cell:hover :global(.ig__img) {
+    transform: scale(1.05);
+    opacity: 0.85;
+  }
+
+  .ig__cell :global(.ig__video-badge) {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 12px;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+  }
+
+  .ig__note {
+    display: block;
     text-align: center;
     font-size: var(--text-sm);
     color: var(--color-gold);
     margin-top: var(--space-4);
     font-weight: var(--weight-medium);
+    text-decoration: none;
     transition: opacity var(--transition-fast);
   }
 
-  .ig__placeholder:hover .ig__placeholder-note {
-    opacity: 0.8;
-  }
+  .ig__note:hover { opacity: 0.8; }
 </style>
