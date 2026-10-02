@@ -12,6 +12,9 @@ export interface Service {
   image: string;
   images?: string[];
   badge?: string;
+  /** Si existe, la tarjeta completa linkea aquí. */
+  href?: string;
+  hrefLabel?: string;
 }
 
 export const SERVICES: Service[] = [
@@ -35,6 +38,8 @@ export const SERVICES: Service[] = [
       '/images/services/car-audio-4.webp',
     ],
     badge: 'Más solicitado',
+    href: '/ztaudio',
+    hrefLabel: 'Ver radios y audio ZTAudio →',
   },
   {
     icon: '🪟',

@@ -8,6 +8,9 @@ import SectionLabel from '../ui/SectionLabel.astro';
 import { SITE } from '../../content/site';
 
 const brands = SITE.partnerBrands;
+// Links internos (ej. /ztaudio) abren en la misma pestaña; externos en una nueva.
+const linkAttrs = (url: string) =>
+  url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {};
 ---
 
 <section class="own-brands section" id="marcas-propias" aria-labelledby="own-brands-heading">
@@ -31,7 +34,7 @@ const brands = SITE.partnerBrands;
         <article class="own-brand-card gs-slide-up" data-brand={brand.id}>
           <div class="own-brand-card__header">
             {brand.url ? (
-              <a href={brand.url} target="_blank" rel="noopener noreferrer" class="own-brand-card__logo-link">
+              <a href={brand.url} {...linkAttrs(brand.url)} class="own-brand-card__logo-link">
                 <img
                   src={brand.logo}
                   alt={brand.name}
@@ -56,7 +59,7 @@ const brands = SITE.partnerBrands;
             </span>
           </div>
           {brand.url && (
-            <a href={brand.url} target="_blank" rel="noopener noreferrer" class="own-brand-card__site-link" style={`color: ${brand.color}`}>
+            <a href={brand.url} {...linkAttrs(brand.url)} class="own-brand-card__site-link" style={`color: ${brand.color}`}>
               Visitar {brand.name} →
             </a>
           )}

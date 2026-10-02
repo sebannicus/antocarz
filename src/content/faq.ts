@@ -9,6 +9,8 @@ export interface FaqItem {
   answer?: string;
   answerHtml?: string;
   category: string;
+  /** Link opcional mostrado bajo la respuesta (no entra al schema FAQPage). */
+  link?: { href: string; label: string };
 }
 
 export const FAQ_CATEGORIES = [
@@ -229,24 +231,28 @@ export const FAQ_ITEMS: FaqItem[] = [
   // ── Car Audio ────────────────────────────────────────────────────────────
   {
     category: 'Car Audio',
+    link: { href: '/ztaudio', label: 'Ver línea de audio ZTAudio →' },
     question: '¿Las radios Android ZTAudio son compatibles con CarPlay y Android Auto?',
     answer:
       'Sí. Las radios ZTAudio son compatibles con CarPlay inalámbrico y cableado (iOS 18 y versiones anteriores) y con Android Auto inalámbrico y cableado. Además incluyen GPS integrado con mapas globales, WiFi, Bluetooth A2DP, radio FM, reproducción 4K y Google Play Store completo para instalar Spotify, Waze, Netflix y más. Son compatibles con el 90% de los modelos del mercado (Toyota, Nissan, Kia, Hyundai, Chevrolet, Ford, Volkswagen y más).',
   },
   {
     category: 'Car Audio',
+    link: { href: '/ztaudio', label: 'Ver línea de audio ZTAudio →' },
     question: '¿Qué marcas de car audio instalan?',
     answer:
       'Somos distribuidores de nuestra marca propia ZTAudio (radios Android con CarPlay y GPS) y trabajamos con JBL y Pioneer para amplificadores, parlantes y subwoofers. También instalamos Hawk y BRM en sistemas de alarma. Contamos con adaptadores específicos para la mayoría de los modelos de vehículos disponibles en Chile.',
   },
   {
     category: 'Car Audio',
+    link: { href: '/ztaudio', label: 'Ver línea de audio ZTAudio →' },
     question: '¿Las radios ZTAudio incluyen cámara de retroceso o parlantes?',
     answer:
       'No. Las radios ZTAudio se venden e instalan sin cámara de retroceso ni parlantes. Son equipos separados que puedes agregar según tus necesidades. Si deseas incorporar una cámara de retroceso o parlantes, podemos instalarlo todo en conjunto — consúltanos por el valor adicional.',
   },
   {
     category: 'Car Audio',
+    link: { href: '/ztaudio', label: 'Ver línea de audio ZTAudio →' },
     question: '¿Qué tamaños de pantalla tienen las radios ZTAudio?',
     answer:
       'Las radios ZTAudio están disponibles en pantallas de 7, 9 y 10 pulgadas, con procesadores Quadcore u Octacore según el modelo. Todas son pantallas QLED táctiles con resolución 1280×720. El tamaño disponible depende del modelo y año de tu vehículo.',
@@ -354,12 +360,14 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     category: 'Garantía y Servicio',
+    link: { href: '/ztaudio', label: 'Ver línea de audio ZTAudio →' },
     question: '¿Cuánto demora una instalación de alarma o radio Android?',
     answer:
       'La instalación de una radio Android toma entre 1 y 2 horas dependiendo del modelo del vehículo. Una alarma estándar toma entre 2 y 3 horas; si se agrega GPS o inmovilizador RFID puede extenderse hasta 4 horas. Recomendamos agendar con anticipación para garantizarte el horario que prefieras en cualquiera de nuestras 2 sucursales en La Serena.',
   },
   {
     category: 'Garantía y Servicio',
+    link: { href: '/ztaudio', label: 'Ver línea de audio ZTAudio →' },
     question: '¿Trabajan con todos los modelos de autos?',
     answer:
       'Trabajamos con la gran mayoría de marcas y modelos disponibles en Chile, incluyendo Toyota, Nissan, Chevrolet, Hyundai, Kia, Suzuki, Volkswagen, Ford, Mazda, Mitsubishi y más. Nuestras radios ZTAudio son compatibles con el 90% del parque vehicular. Contamos con adaptadores específicos por modelo para garantizar una instalación limpia, sin modificaciones en el cableado original.',

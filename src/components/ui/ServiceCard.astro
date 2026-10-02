@@ -13,9 +13,13 @@ export interface ServiceCardProps {
 const { service } = Astro.props as ServiceCardProps;
 const hasCarousel = service.images && service.images.length > 1;
 const cardId = `sc-${Math.random().toString(36).slice(2, 8)}`;
+const Tag = service.href ? 'a' : 'article';
 ---
 
-<article class:list={['service-card', 'hover-lift', 'gs-fade-up']}>
+<Tag
+  class:list={['service-card', 'hover-lift', 'gs-fade-up', { 'service-card--link': service.href }]}
+  href={service.href}
+>
   {service.badge && (
     <span class="service-card__badge">{service.badge}</span>
   )}
@@ -59,8 +63,11 @@ const cardId = `sc-${Math.random().toString(36).slice(2, 8)}`;
         </li>
       ))}
     </ul>
+    {service.hrefLabel && (
+      <span class="service-card__cta">{service.hrefLabel}</span>
+    )}
   </div>
-</article>
+</Tag>
 
 <style>
   .service-card {
@@ -72,6 +79,12 @@ const cardId = `sc-${Math.random().toString(36).slice(2, 8)}`;
     display: flex;
     flex-direction: column;
     transition: border-color var(--transition-base), box-shadow var(--transition-slow);
+  }
+
+  .service-card--link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
   }
 
   .service-card:hover {
@@ -196,6 +209,16 @@ const cardId = `sc-${Math.random().toString(36).slice(2, 8)}`;
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
   }
+
+  .service-card__cta {
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-gold);
+    transition: opacity var(--transition-fast);
+  }
+
+  .service-card--link:hover .service-card__cta { opacity: 0.8; }
 
   .service-card__check {
     color: var(--color-gold);

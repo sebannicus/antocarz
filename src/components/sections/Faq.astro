@@ -71,6 +71,9 @@ const byCategory = FAQ_CATEGORIES.map((cat) => ({
                     ? <Fragment set:html={item.answerHtml} />
                     : <p>{item.answer}</p>
                   }
+                  {item.link && (
+                    <a href={item.link.href} class="link-gold faq__link">{item.link.label}</a>
+                  )}
                 </div>
               </details>
             ))}
@@ -273,6 +276,13 @@ const byCategory = FAQ_CATEGORIES.map((cat) => ({
 
   .faq__answer {
     padding: 0 var(--space-6) var(--space-5);
+  }
+
+  .faq__link {
+    display: inline-block;
+    margin-top: var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
   }
 
   .faq__answer p {

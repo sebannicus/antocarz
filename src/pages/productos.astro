@@ -2,10 +2,12 @@
 export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import OfertaFija from '../components/sections/OfertaFija.astro';
+import { SITE } from '../content/site';
 
 const title = "Catálogo de Productos | Antocarz 2026";
 const description = "Explora nuestro catálogo completo de equipamiento automotriz.";
 const PHP_API = "https://api.antocarz.cl/api/products.php?key=antocarz_api_2026";
+const ztaudioUrl = SITE.ztaudioUrl;
 
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -58,9 +60,9 @@ const breadcrumbSchema = {
         </div>
       </div>
 
-      <!-- Marquee marcas Car Audio — visible solo al filtrar esa categoría -->
-      <div id="audio-brands-marquee" class="audio-marquee" aria-hidden="true">
-        <p class="audio-marquee__label">Marcas en Car Audio</p>
+      <!-- Marquee marcas Car Audio — visible solo al filtrar esa categoría; linkea a /ztaudio -->
+      <a href={ztaudioUrl} id="audio-brands-marquee" class="audio-marquee" aria-label="Ver línea de audio ZTAudio">
+        <p class="audio-marquee__label">Marcas en Car Audio · <span class="audio-marquee__cta">Ver línea ZTAudio →</span></p>
         <div class="marquee">
           <div class="marquee__track audio-marquee__track">
             <span class="audio-brand-item">ZTAudio</span><span class="audio-brand-sep">✦</span>
@@ -79,7 +81,7 @@ const breadcrumbSchema = {
             <span class="audio-brand-item">Lanzar</span><span class="audio-brand-sep">✦</span>
           </div>
         </div>
-      </div>
+      </a>
 
       <div id="loadingState" class="loading-state">
         <div class="loading-spinner"></div>
@@ -254,8 +256,9 @@ const breadcrumbSchema = {
   .load-more-container { text-align: center; margin-top: 50px; }
 
   /* ── Marquee Car Audio ── */
-  .audio-marquee { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.45s ease, opacity 0.35s ease, margin-bottom 0.35s ease; margin-bottom: 0; }
-  .audio-marquee.visible { max-height: 90px; opacity: 1; margin-bottom: 30px; }
+  .audio-marquee { display: block; text-decoration: none; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.45s ease, opacity 0.35s ease, margin-bottom 0.35s ease, visibility 0.35s; margin-bottom: 0; }
+  .audio-marquee.visible { max-height: 90px; opacity: 1; visibility: visible; margin-bottom: 30px; }
+  .audio-marquee__cta { color: var(--color-primary); }
   .audio-marquee__label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.3); text-align: center; padding: 10px 0 6px; }
   .audio-marquee__track { animation-duration: 20s; }
   .audio-brand-item { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; white-space: nowrap; color: #fff; padding: 0 28px; opacity: 0.95; }
@@ -270,7 +273,7 @@ const breadcrumbSchema = {
   }
 </style>
 
-<script define:vars={{ PHP_API }}>
+<script define:vars={{ PHP_API, ztaudioUrl }}>
   // ── Analytics helper ──────────────────────────────────────────────────────
   function fireGA(eventName, params) {
     if (typeof window.gtag === 'function') {
@@ -293,6 +296,11 @@ const breadcrumbSchema = {
   function formatPrice(n) {
     return '$' + Number(n).toLocaleString('es-CL');
   }
+  // Productos de audio (categoría "Car Audio", "KIT RADIOS ZTAUDIO", marca ZTAudio)
+  // no van a la ficha/WhatsApp genérico: linkean a la landing de audio /ztaudio.
+  function isAudioProduct(p) {
+    return /audio/i.test(p.categoria || '') || /ztaudio/i.test(`${p.marca || ''} ${p.nombre || ''}`);
+  }
   function buildCard(p) {
     const slug = slugify(p.nombre, p.id_producto);
     const price = p.precio ? Number(p.precio) : 0;
@@ -307,8 +315,9 @@ const breadcrumbSchema = {
     const ofertaStr = hasOffer ? formatPrice(oferta) : '';
     const img = p.imagen ? `https://api.antocarz.cl/imgprod/${p.imagen}` : '/images/products/radio-ztaudio-1.webp';
     const code = p.codigo_antocarz || p.codigo_producto || `ANT-${p.id_producto}`;
+    const isAudio = isAudioProduct(p);
     const a = document.createElement('a');
-    a.href = `/productos/${slug}`;
+    a.href = isAudio ? ztaudioUrl : `/productos/${slug}`;
     a.className = 'product-card';
     a.dataset.category = p.categoria || 'General';
     a.dataset.brand = p.marca || 'Sin marca';
@@ -333,7 +342,7 @@ const breadcrumbSchema = {
                </div>`
             : `<span class="price">${priceStr}</span>`
           }
-          <span class="btn-view">Ver más</span>
+          <span class="btn-view">${isAudio ? 'Ver en ZTAudio' : 'Ver más'}</span>
         </div>
       </div>`;
 

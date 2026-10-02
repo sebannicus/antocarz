@@ -11,6 +11,9 @@ export const SITE = {
   description:
     'Seguridad automotriz en La Serena: polarizado nanocarbón certificado, láminas anti-impactos, cortacorriente eléctrico, rastreadores GPS antirrobo y car audio Android con CarPlay. +10.000 instalaciones y +10.000 certificados emitidos. Garantía absoluta.',
   url: 'https://www.antocarz.cl',
+  // Landing de audio (proyecto ZTAudio, reverse-proxy en vercel.json).
+  // Todo lo relacionado con audio / ZTAudio en el sitio linkea aquí.
+  ztaudioUrl: '/ztaudio',
 
   phone: '+56 9 9737 1969',
   whatsapp: '56982890047',
@@ -62,6 +65,7 @@ export const SITE = {
     { label: 'Ofertas', href: '/productos?categoria=Ofertas' },
     { label: 'Servicios', href: '#servicios' },
     { label: 'Productos', href: '/productos' },
+    { label: 'Car Audio', href: '/ztaudio' },
     { label: 'Polarizado', href: '#polarizado' },
     { label: 'Preguntas', href: '#faq' },
     { label: 'Cómo llegar', href: '#map-heading' },
@@ -72,6 +76,7 @@ export const SITE = {
     {
       id: 'ztaudio',
       name: 'ZTAudio',
+      url: '/ztaudio',
       logo: '/logos/ztaudio.webp',
       image: '/images/products/radio-ztaudio-1.webp',
       images: [

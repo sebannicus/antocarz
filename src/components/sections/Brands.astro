@@ -5,9 +5,9 @@
  */
 
 const brands = [
-  { name: 'JBL',            src: '/logos/jbl.webp',          w: 80  },
-  { name: 'Pioneer',        src: '/logos/pioneer.webp',      w: 120 },
-  { name: 'ZTAudio',        src: '/logos/ztaudio.svg',       w: 130 },
+  { name: 'JBL',            src: '/logos/jbl.webp',          w: 80,  href: '/ztaudio' },
+  { name: 'Pioneer',        src: '/logos/pioneer.webp',      w: 120, href: '/ztaudio' },
+  { name: 'ZTAudio',        src: '/logos/ztaudio.svg',       w: 130, href: '/ztaudio' },
   { name: 'Hawk',           src: '/logos/hawk.webp',         w: 95  },
   { name: 'rastreadores.cl',src: '/logos/rastreadores.webp', w: 160 },
 ];
@@ -23,17 +23,22 @@ const items = [...brands, ...brands, ...brands];
 
   <div class="brands__marquee marquee">
     <div class="marquee__track">
-      {items.map((b) => (
-        <img
-          src={b.src}
-          alt={b.name}
-          width={b.w}
-          height={50}
-          class="brands__logo"
-          loading="lazy"
-          draggable="false"
-        />
-      ))}
+      {items.map((b) => {
+        const logo = (
+          <img
+            src={b.src}
+            alt={b.name}
+            width={b.w}
+            height={50}
+            class="brands__logo"
+            loading="lazy"
+            draggable="false"
+          />
+        );
+        return b.href
+          ? <a href={b.href} class="brands__link" aria-label={`${b.name} — ver línea de audio ZTAudio`}>{logo}</a>
+          : logo;
+      })}
     </div>
   </div>
 </section>
@@ -69,6 +74,11 @@ const items = [...brands, ...brands, ...brands];
     flex-shrink: 0;
     transition: opacity var(--transition-fast);
     border-radius: 4px;
+  }
+
+  .brands__link {
+    display: inline-flex;
+    flex-shrink: 0;
   }
 
   .brands__logo:hover {
