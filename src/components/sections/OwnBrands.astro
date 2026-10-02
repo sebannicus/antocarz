@@ -11,6 +11,9 @@ const brands = SITE.partnerBrands;
 // Links internos (ej. /ztaudio) abren en la misma pestaña; externos en una nueva.
 const linkAttrs = (url: string) =>
   url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+// Marca con link interno (ZTAudio → /ztaudio): la tarjeta completa es el link
+// y "Visitar X →" va al final. Las externas mantienen links sueltos.
+const isCardLink = (url?: string) => !!url && !url.startsWith('http');
 ---
 
 <section class="own-brands section" id="marcas-propias" aria-labelledby="own-brands-heading">
@@ -30,10 +33,18 @@ const linkAttrs = (url: string) =>
     </div>  
 
     <div class="own-brands__grid">
-      {brands.map((brand) => (
-        <article class="own-brand-card gs-slide-up" data-brand={brand.id}>
+      {brands.map((brand) => {
+        const cardLink = isCardLink(brand.url);
+        const Tag = cardLink ? 'a' : 'article';
+        return (
+        <Tag
+          class:list={['own-brand-card', 'gs-slide-up', { 'own-brand-card--link': cardLink }]}
+          data-brand={brand.id}
+          href={cardLink ? brand.url : undefined}
+          aria-label={cardLink ? `Visitar ${brand.name}` : undefined}
+        >
           <div class="own-brand-card__header">
-            {brand.url ? (
+            {brand.url && !cardLink ? (
               <a href={brand.url} {...linkAttrs(brand.url)} class="own-brand-card__logo-link">
                 <img
                   src={brand.logo}
@@ -58,7 +69,7 @@ const linkAttrs = (url: string) =>
               {brand.badge}
             </span>
           </div>
-          {brand.url && (
+          {brand.url && !cardLink && (
             <a href={brand.url} {...linkAttrs(brand.url)} class="own-brand-card__site-link" style={`color: ${brand.color}`}>
               Visitar {brand.name} →
             </a>
@@ -95,8 +106,15 @@ const linkAttrs = (url: string) =>
               </li>
             ))}
           </ul>
-        </article>
-      ))}
+
+          {cardLink && (
+            <span class="own-brand-card__site-link own-brand-card__cta" style={`color: ${brand.color}`}>
+              Visitar {brand.name} →
+            </span>
+          )}
+        </Tag>
+        );
+      })}
     </div>
   </div>
 </section>
@@ -153,6 +171,19 @@ const linkAttrs = (url: string) =>
     gap: var(--space-5);
     transition: border-color var(--transition-base), transform var(--transition-base);
   }
+
+  .own-brand-card--link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .own-brand-card__cta {
+    margin-top: auto;
+    padding-top: var(--space-2);
+  }
+
+  .own-brand-card--link:hover .own-brand-card__cta { opacity: 0.75; }
 
   .own-brand-card:hover {
     border-color: var(--color-border-hover);
