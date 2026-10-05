@@ -43,14 +43,14 @@ export const HALLOWEEN_2026: Campaign = {
   previewParam: 'halloween',
   forceDark: true,
   banner: {
-    // Original del cliente: banner_antocarz_halloween.webp (7089px, sin uso directo).
-    src: '/slides hero/banner_antocarz_halloween-2560.webp',
+    // Pieza del cliente v2 (banner_antocarz_halloween_v2.png, 7090px) → versiones optimizadas.
+    src: '/slides hero/banner_antocarz_halloween_v2-2560.webp',
     // %20 obligatorio: en srcset un espacio separa la URL del descriptor.
-    srcset: '/slides%20hero/banner_antocarz_halloween-1280.webp 1280w, /slides%20hero/banner_antocarz_halloween-2560.webp 2560w',
+    srcset: '/slides%20hero/banner_antocarz_halloween_v2-1280.webp 1280w, /slides%20hero/banner_antocarz_halloween_v2-2560.webp 2560w',
     sizes: '(min-width: 1248px) 1200px, 100vw',
     width: 2560,
-    height: 619,
-    alt: 'Ofertas del terror — Promoción especial GPS Rastreador 4G + SIM multioperador internacional + suscripción 6 meses o 1 año, 20% de descuento — Antocarz',
+    height: 620,
+    alt: 'Ofertas del terror — Revisa las ofertas disponibles en Antocarz',
   },
 };
 
