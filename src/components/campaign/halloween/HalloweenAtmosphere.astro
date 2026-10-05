@@ -1,0 +1,104 @@
+---
+/**
+ * HalloweenAtmosphere.astro — Antocarz · Campaña Halloween 2026
+ * Capa global de la campaña. Responsabilidades:
+ *  1. Cargar el tema visual (tokens + overrides) — halloween.css.
+ *  2. Fondo atmosférico fijo (nebulosa violeta) detrás de todo el sitio.
+ *  3. Brillo sutil que sigue al cursor + CTA magnéticos (solo mouse/trackpad).
+ *  4. Publicar --hw-mx / --hw-my (-1..1) en <html> para el parallax de la luna.
+ *
+ * Se renderiza desde BaseLayout solo si la campaña está habilitada; aun así,
+ * nada se ve ni corre si <html> no tiene data-campaign="halloween".
+ */
+import '../../../styles/themes/halloween.css';
+---
+
+<div class="hw-atmosphere" aria-hidden="true"></div>
+<div class="hw-cursor-glow" aria-hidden="true"></div>
+
+<script>
+  const MAGNET_STRENGTH = 0.05; // fracción de la distancia al cursor
+  const MAGNET_MAX = 6;         // px de desplazamiento máximo
+
+  const html = document.documentElement;
+  const isLive = html.dataset.campaign === 'halloween';
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (isLive && finePointer && !reducedMotion) {
+    const glow = document.querySelector<HTMLElement>('.hw-cursor-glow');
+    const magnets = Array.from(document.querySelectorAll<HTMLElement>('.btn--primary.btn--lg'));
+    let mouseX = 0;
+    let mouseY = 0;
+    let frame = 0;
+
+    const render = () => {
+      frame = 0;
+      if (glow) glow.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      html.style.setProperty('--hw-mx', ((mouseX / window.innerWidth) * 2 - 1).toFixed(3));
+      html.style.setProperty('--hw-my', ((mouseY / window.innerHeight) * 2 - 1).toFixed(3));
+
+      // CTA magnéticos: un leve "tirón" hacia el cursor, solo muy de cerca y
+      // con tope de MAGNET_MAX px para que el botón nunca se sienta perseguidor.
+      for (const btn of magnets) {
+        const r = btn.getBoundingClientRect();
+        const dx = mouseX - (r.left + r.width / 2);
+        const dy = mouseY - (r.top + r.height / 2);
+        const near = Math.hypot(dx, dy) < r.width * 0.6;
+        const pull = (d: number) => Math.max(-MAGNET_MAX, Math.min(MAGNET_MAX, d * MAGNET_STRENGTH));
+        btn.style.translate = near ? `${pull(dx)}px ${pull(dy)}px` : '';
+      }
+    };
+
+    window.addEventListener('pointermove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      glow?.classList.add('hw-cursor-glow--on');
+      if (!frame) frame = requestAnimationFrame(render);
+    }, { passive: true });
+
+    document.addEventListener('pointerleave', () => glow?.classList.remove('hw-cursor-glow--on'));
+  }
+</script>
+
+<style>
+  .hw-atmosphere,
+  .hw-cursor-glow { display: none; }
+
+  :global(html[data-campaign="halloween"]) .hw-atmosphere {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 50% at 85% 0%, rgba(124, 58, 237, 0.14) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 50% at 0% 100%, rgba(91, 33, 182, 0.14) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255, 122, 26, 0.035) 0%, transparent 70%),
+      #0B0814;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global(html[data-campaign="halloween"]) .hw-cursor-glow {
+      display: block;
+      position: fixed;
+      top: -160px;
+      left: -160px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 122, 26, 0.09) 0%, rgba(124, 58, 237, 0.06) 35%, transparent 70%);
+      pointer-events: none;
+      z-index: var(--z-top);
+      mix-blend-mode: screen;
+      opacity: 0;
+      transition: opacity 400ms ease;
+      will-change: transform;
+    }
+    :global(html[data-campaign="halloween"]) .hw-cursor-glow.hw-cursor-glow--on { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html[data-campaign="halloween"]) .hw-cursor-glow { display: none; }
+  }
+</style>

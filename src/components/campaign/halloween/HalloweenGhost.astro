@@ -1,0 +1,34 @@
+---
+/**
+ * HalloweenGhost.astro — Antocarz · Campaña Halloween 2026
+ * Fantasma flotante reutilizable (decorativo, aria-hidden).
+ *
+ * Props:
+ *  - size:    ancho en px
+ *  - delay:   desfase de la flotación (s), para que varios no se muevan igual
+ *  - opacity: transparencia base (los lejanos, más tenues)
+ *  - flip:    mira hacia el otro lado
+ *  - class:   clases extra del contenedor (para posicionarlo)
+ *
+ * Los estilos de .hw-ghost-figure viven en styles/themes/halloween.css porque
+ * también los usan los fantasmas que inyectan los scripts.
+ */
+import { GHOST_SVG } from './shapes';
+
+export interface HalloweenGhostProps {
+  size?: number;
+  delay?: number;
+  opacity?: number;
+  flip?: boolean;
+  class?: string;
+}
+
+const { size = 48, delay = 0, opacity = 0.9, flip = false, class: className } = Astro.props as HalloweenGhostProps;
+---
+
+<span
+  class:list={['hw-ghost-figure', { 'hw-ghost-figure--flip': flip }, className]}
+  style={`--size:${size}px; --delay:${delay}s; --ghost-opacity:${opacity};`}
+  aria-hidden="true"
+  set:html={GHOST_SVG}
+/>

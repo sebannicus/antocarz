@@ -3,29 +3,31 @@
  * Hero.astro — Antocarz
  * Desktop: texto izquierda + slider derecha grande (58% viewport).
  * Mobile: texto primero, slider debajo (bloque normal, no absoluto).
- * El banner fijo de "Ofertas Septiembre" vive aparte, en OfertaFija.astro,
- * justo debajo del header — este slider solo rota las otras 4 imágenes.
+ * El banner fijo de ofertas vive aparte, en OfertaFija.astro, justo debajo
+ * del header — este slider solo rota las promociones del mes.
  * Cada slide es un link a /productos?categoria=Ofertas (filtro virtual de
  * productos con precio de oferta activo — ver productos.astro).
  */
 
 import Button from '../ui/Button.astro';
 import { SITE } from '../../content/site';
+import { ACTIVE_CAMPAIGN } from '../../content/campaign';
+import HalloweenHeroScene from '../campaign/halloween/HalloweenHeroScene.astro';
+
+const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
 
 const whatsappMsg = encodeURIComponent('Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?');
 const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
 
 const OFFERS_URL = '/productos?categoria=Ofertas';
 
-const slides = [
-  { src: '/slides hero/oferta-septiembre-2.webp', alt: 'Viva Chile — Antocarz Seguridad Automotriz, La Serena' },
-  { src: '/slides hero/oferta-septiembre-3.webp', alt: 'Protege tu vehículo — Alarmas y seguridad antirrobo Antocarz' },
-  { src: '/slides hero/oferta-septiembre-4.webp', alt: 'La seguridad en tus manos — Cortacorriente y alarmas Antocarz' },
-  { src: '/slides hero/oferta-septiembre-5.webp', alt: 'La seguridad en tus manos — Rastreadores GPS Antocarz' },
-  { src: '/slides hero/oferta-septiembre-6.webp', alt: 'La seguridad en tus manos — Polarizado y láminas Antocarz' },
-  { src: '/slides hero/oferta-septiembre-7.webp', alt: 'La seguridad en tus manos — Instalación de láminas Antocarz' },
-  { src: '/slides hero/oferta-septiembre-8.webp', alt: 'Disfruta el viaje — Radio Android ZTAudio CarPlay Waze Netflix', href: '/ztaudio' },
-  { src: '/slides hero/oferta-septiembre-9.webp', alt: 'Protege tu vehículo — Alarmas Hawk instalador autorizado Antocarz' },
+// href opcional: sin él, la slide lleva al filtro de Ofertas.
+type Slide = { src: string; alt: string; href?: string };
+const slides: Slide[] = [
+  { src: '/slides hero/oferta-octubre-1.webp', alt: 'Componentes JBL 10, 13 y 16 cm con 20% de descuento — Antocarz' },
+  { src: '/slides hero/oferta-octubre-2.webp', alt: 'Instalación de GPS gratis contratando suscripción anual — GPS Autorastreo y Rastreadores.cl en Antocarz' },
+  { src: '/slides hero/oferta-octubre-3.webp', alt: 'Parlantes 10, 13 y 16 cm con 20% de descuento — Pioneer, Hertz, JBL y Kenwood en Antocarz' },
+  { src: '/slides hero/oferta-octubre-4.webp', alt: 'Láminas de seguridad Techfilms 8 micras 100% clear con 20% de descuento en 2 vidrios laterales delanteros — Antocarz' },
 ];
 
 // Franja animada inferior. El bloque se renderiza 2 veces para el loop
@@ -64,12 +66,21 @@ const marqueeItems: MarqueeItem[] = [
 
 <section class="hero" id="inicio" aria-label="Inicio">
 
+  {isHalloween && <HalloweenHeroScene />}
+
   <!-- Degradado de transición texto→slider (solo desktop) -->
   <div class="hero__fade" aria-hidden="true"></div>
 
   <!-- ── Contenido izquierda ── -->
   <div class="container hero__inner">
     <div class="hero__content" id="hero-content">
+
+      {isHalloween && (
+        <button type="button" class="hw-badge" data-hw-badge>
+          <span class="hw-badge__moon" aria-hidden="true"></span>
+          Edición Halloween 2026
+        </button>
+      )}
 
       <span class="hero__label">
         <span class="hero__label-dot" aria-hidden="true"></span>

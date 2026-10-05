@@ -2,19 +2,44 @@
 /**
  * OfertaFija.astro — Antocarz
  * Banner fijo (no carrusel) justo debajo del header, con la pieza de
- * "Ofertas Septiembre" que el cliente quiere siempre visible — a diferencia
- * del slider del Hero, que sigue rotando las otras 4 imágenes.
+ * ofertas que el cliente quiere siempre visible — a diferencia del slider
+ * del Hero, que sigue rotando las otras imágenes.
+ *
+ * Si la campaña de temporada trae su propio banner (src/content/campaign.ts),
+ * se renderizan ambos y el CSS muestra el que corresponde según
+ * html[data-campaign]. Así el cambio de vuelta es automático al terminar la
+ * campaña, incluso en páginas prerenderizadas. El banner visible se carga
+ * eager; el oculto queda lazy (un <img> lazy con display:none no se descarga).
  */
+import { ACTIVE_CAMPAIGN, isCampaignLive } from '../../content/campaign';
+
+const campaignBanner = ACTIVE_CAMPAIGN?.banner;
+const showCampaign = Boolean(campaignBanner && ACTIVE_CAMPAIGN && isCampaignLive(ACTIVE_CAMPAIGN, Astro.url));
 ---
 
 <div class="container oferta-fija-wrap">
-  <a class="oferta-fija" href="/productos?categoria=Ofertas" data-wa-source="oferta-fija" aria-label="Ver productos en oferta">
+  <a class:list={['oferta-fija', { 'oferta-fija--has-campaign': campaignBanner }]} href="/productos?categoria=Ofertas" data-wa-source="oferta-fija" aria-label="Ver productos en oferta">
+    {campaignBanner && (
+      <img
+        src={campaignBanner.src}
+        srcset={campaignBanner.srcset}
+        sizes={campaignBanner.sizes}
+        width={campaignBanner.width}
+        height={campaignBanner.height}
+        alt={campaignBanner.alt}
+        class="oferta-fija__img oferta-fija__img--campaign"
+        loading={showCampaign ? 'eager' : 'lazy'}
+        fetchpriority={showCampaign ? 'high' : 'auto'}
+      />
+    )}
     <img
       src="/slides hero/oferta-septiembre-1.webp"
+      width="4631"
+      height="1016"
       alt="Super ofertas en todo — Hertz, Pioneer, Recoil, Kenwood, JBL — Antocarz"
-      class="oferta-fija__img"
-      loading="eager"
-      fetchpriority="high"
+      class="oferta-fija__img oferta-fija__img--default"
+      loading={showCampaign ? 'lazy' : 'eager'}
+      fetchpriority={showCampaign ? 'auto' : 'high'}
     />
   </a>
 </div>
@@ -30,15 +55,19 @@
     display: block;
     width: 100%;
     background: #0D0D0D;
-    aspect-ratio: 4631 / 1016; /* proporcion nativa de la pieza del cliente */
     overflow: hidden;
     border-radius: var(--radius-lg, 12px);
   }
 
+  /* width/height en cada <img> reservan su proporción nativa (sin CLS),
+     ahora que puede haber dos piezas con proporciones distintas. */
   .oferta-fija__img {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    height: auto;
     display: block;
   }
+
+  .oferta-fija__img--campaign { display: none; }
+  :global(html[data-campaign]) .oferta-fija__img--campaign { display: block; }
+  :global(html[data-campaign]) .oferta-fija--has-campaign .oferta-fija__img--default { display: none; }
 </style>

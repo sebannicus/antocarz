@@ -6,6 +6,10 @@
 
 import Button from '../ui/Button.astro';
 import { SITE } from '../../content/site';
+import { ACTIVE_CAMPAIGN } from '../../content/campaign';
+import HalloweenPumpkin from '../campaign/halloween/HalloweenPumpkin.astro';
+
+const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
 
 const whatsappMsg = encodeURIComponent('Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?');
 const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
@@ -19,15 +23,16 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
   <div class="container container--sm">
     <div class="cta-final__inner" data-scroll-children>
 
-      <!-- Logo prominente antes del CTA -->
-      <img
-        src="/logos/PNG PEQUE LOGO.webp"
-        alt="Antocarz"
-        class="cta-final__logo"
-        width="180"
-        height="80"
-        loading="lazy"
-      />
+      <!-- Logo prominente antes del CTA (en Halloween, escoltado por calabazas) -->
+      {isHalloween ? (
+        <div class="hw-cta-logo">
+          <HalloweenPumpkin size={44} face="grin" tilt={-8} class="hw-cta-logo__pumpkin" />
+          <img src="/logos/PNG PEQUE LOGO.webp" alt="Antocarz" class="cta-final__logo" width="180" height="80" loading="lazy" />
+          <HalloweenPumpkin size={44} face="smile" tilt={8} delay={-1.6} class="hw-cta-logo__pumpkin" />
+        </div>
+      ) : (
+        <img src="/logos/PNG PEQUE LOGO.webp" alt="Antocarz" class="cta-final__logo" width="180" height="80" loading="lazy" />
+      )}
 
       <span class="cta-final__label" aria-hidden="true">
         <span class="cta-final__dot"></span>
@@ -64,6 +69,16 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
 </section>
 
 <style>
+  /* Campaña Halloween: calabazas a los lados del logo (ocultas fuera de campaña). */
+  .hw-cta-logo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: var(--space-4);
+  }
+  .hw-cta-logo :global(.hw-cta-logo__pumpkin) { display: none; }
+  :global(html[data-campaign="halloween"]) .hw-cta-logo :global(.hw-cta-logo__pumpkin) { display: block; }
+
   .cta-final {
     position: relative;
     text-align: center;

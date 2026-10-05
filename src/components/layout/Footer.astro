@@ -4,6 +4,10 @@
  */
 
 import { SITE } from '../../content/site';
+import { ACTIVE_CAMPAIGN } from '../../content/campaign';
+import HalloweenPumpkin from '../campaign/halloween/HalloweenPumpkin.astro';
+
+const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
 
 const year = new Date().getFullYear();
 const whatsappMsg = encodeURIComponent('Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?');
@@ -11,6 +15,13 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
 ---
 
 <footer class="footer">
+  {isHalloween && (
+    <div class="hw-footer-pumpkins" data-hw-pumpkins aria-hidden="true">
+      <HalloweenPumpkin size={34} face="none" tilt={-10} />
+      <HalloweenPumpkin size={56} face="grin" tilt={4} delay={-0.8} />
+      <HalloweenPumpkin size={40} face="smile" tilt={-5} delay={-2.1} />
+    </div>
+  )}
   <div class="container footer__inner">
     <div class="footer__brand">
       <a href="/" class="footer__logo" aria-label="Antocarz — Inicio">
@@ -64,6 +75,31 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
 </footer>
 
 <style>
+  /* Campaña Halloween: trío de calabazas sobre el borde superior del footer. */
+  .hw-footer-pumpkins { display: none; }
+  :global(html[data-campaign="halloween"]) .hw-footer-pumpkins {
+    position: absolute;
+    top: 0;
+    right: clamp(20px, 8vw, 140px);
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    transform: translateY(-82%);
+    cursor: pointer;
+  }
+  :global(.hw-footer-pumpkins--laugh) :global(.hw-pumpkin) {
+    animation: hw-laugh 0.18s ease-in-out 6 alternate;
+  }
+  :global(.hw-footer-pumpkins--laugh) :global(.hw-pumpkin:nth-child(2)) { animation-delay: 0.06s; }
+  :global(.hw-footer-pumpkins--laugh) :global(.hw-pumpkin:nth-child(3)) { animation-delay: 0.12s; }
+  @keyframes hw-laugh {
+    from { transform: translateY(0) scale(1); }
+    to   { transform: translateY(-6px) scale(1.06, 0.94); }
+  }
+  @media (max-width: 767px) {
+    :global(html[data-campaign="halloween"]) .hw-footer-pumpkins { transform: translateY(-82%) scale(0.75); transform-origin: bottom right; }
+  }
+
   .footer {
     background: var(--color-bg-surface);
     border-top: 1px solid var(--color-border);

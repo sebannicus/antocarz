@@ -9,11 +9,16 @@ export interface SectionLabelProps {
   align?: 'left' | 'center';
 }
 
+import { ACTIVE_CAMPAIGN } from '../../content/campaign';
+import HalloweenPumpkin from '../campaign/halloween/HalloweenPumpkin.astro';
+
 const { text, align = 'left' } = Astro.props as SectionLabelProps;
+const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
 ---
 
 <span class:list={['section-label', align === 'center' && 'section-label--center']}>
   <span class="section-label__dot" aria-hidden="true"></span>
+  {isHalloween && <HalloweenPumpkin size={16} face="grin" class="section-label__pumpkin" />}
   {text}
 </span>
 
@@ -41,5 +46,13 @@ const { text, align = 'left' } = Astro.props as SectionLabelProps;
     background: var(--color-gold);
     border-radius: 50%;
     flex-shrink: 0;
+  }
+
+  /* Campaña Halloween: la viñeta pasa a ser una mini calabaza. */
+  .section-label :global(.section-label__pumpkin) { display: none; }
+  :global(html[data-campaign="halloween"]) .section-label__dot { display: none; }
+  :global(html[data-campaign="halloween"]) .section-label :global(.section-label__pumpkin) {
+    display: block;
+    margin-top: -3px;
   }
 </style>

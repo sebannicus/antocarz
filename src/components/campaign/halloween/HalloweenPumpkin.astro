@@ -1,0 +1,125 @@
+---
+/**
+ * HalloweenPumpkin.astro — Antocarz · Campaña Halloween 2026
+ * Calabaza minimalista en SVG (sin imágenes). Reutilizable en cualquier
+ * tamaño: desde viñeta de 14px hasta decoración de 80px.
+ *
+ * Props:
+ *  - size:  ancho en px (alto ≈ 0.92 × ancho)
+ *  - face:  'grin' (sonrisa dentada) | 'smile' (simple) | 'none' (sin tallar)
+ *  - lit:   la cara tallada brilla y parpadea como vela
+ *  - tilt:  rotación en grados, para que un grupo no se vea clonado
+ *  - delay: desfase del parpadeo (s), para que no parpadeen al unísono
+ *  - class: clases extra del contenedor
+ */
+
+export interface HalloweenPumpkinProps {
+  size?: number;
+  face?: 'grin' | 'smile' | 'none';
+  lit?: boolean;
+  tilt?: number;
+  delay?: number;
+  class?: string;
+}
+
+const {
+  size = 48,
+  face = 'grin',
+  lit = true,
+  tilt = 0,
+  delay = 0,
+  class: className,
+} = Astro.props as HalloweenPumpkinProps;
+
+// Ids únicos por instancia: varias calabazas en la misma página no deben
+// compartir <linearGradient>s (si la primera está oculta, las demás pierden el relleno).
+const uid = `pk${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<svg
+  class:list={['hw-pumpkin', { 'hw-pumpkin--lit': lit && face !== 'none' }, className]}
+  viewBox="0 0 100 92"
+  width={size}
+  height={Math.round(size * 0.92)}
+  style={`--tilt:${tilt}deg; --flicker-delay:${delay}s;`}
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <radialGradient id={`${uid}-body`} cx="0.4" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#FF9E45" />
+      <stop offset="0.55" stop-color="#D9600C" />
+      <stop offset="1" stop-color="#6E2503" />
+    </radialGradient>
+    <radialGradient id={`${uid}-fire`} cx="0.5" cy="0.55" r="0.6">
+      <stop offset="0" stop-color="#FFF6C2" />
+      <stop offset="0.45" stop-color="#FFC23D" />
+      <stop offset="1" stop-color="#FF7A1A" />
+    </radialGradient>
+  </defs>
+
+  <!-- Tallo + zarcillo -->
+  <path d="M46 20c0-8 3-14 10-17l4 3c-5 3-7 8-7 14z" fill="#4A3417" />
+  <path d="M57 11c6-4 13-3 16 1-5 0-9 1-12 4" fill="none" stroke="#5B7A2A" stroke-width="2.5" stroke-linecap="round" />
+
+  <!-- Gajos (de atrás hacia adelante) -->
+  <g fill={`url(#${uid}-body)`} stroke="#7A2E05" stroke-opacity="0.4" stroke-width="1">
+    <ellipse cx="27" cy="57" rx="24" ry="30" />
+    <ellipse cx="73" cy="57" rx="24" ry="30" />
+    <ellipse cx="39" cy="57" rx="22" ry="33" />
+    <ellipse cx="61" cy="57" rx="22" ry="33" />
+    <ellipse cx="50" cy="57" rx="16" ry="34" />
+  </g>
+
+  {face !== 'none' && (
+    <g
+      class="hw-pumpkin__face"
+      fill={lit ? `url(#${uid}-fire)` : '#2A1405'}
+      stroke="#3A1402"
+      stroke-width="2.5"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    >
+      <path d="M31 47l9-11 8 12z" />
+      <path d="M52 48l8-12 9 11z" />
+      <path d="M46 59l4-7 4 7z" />
+      {face === 'grin' ? (
+        <path d="M27 64Q50 86 73 64l-6 3-4-4-4 5-4-4-5 5-5-5-4 4-4-5-4 4z" />
+      ) : (
+        <path d="M30 65Q50 82 70 65Q50 74 30 65z" />
+      )}
+    </g>
+  )}
+</svg>
+
+<style>
+  .hw-pumpkin {
+    display: block;
+    flex-shrink: 0;
+    rotate: var(--tilt, 0deg);
+    overflow: visible;
+  }
+
+  .hw-pumpkin--lit {
+    filter: drop-shadow(0 0 10px rgba(255, 122, 26, 0.45));
+  }
+
+  .hw-pumpkin--lit .hw-pumpkin__face {
+    animation: hw-candle 3.2s ease-in-out infinite;
+    animation-delay: var(--flicker-delay, 0s);
+  }
+
+  /* Vela: parpadeo irregular, solo opacidad (barato). */
+  @keyframes hw-candle {
+    0%, 100% { opacity: 1; }
+    18%      { opacity: 0.82; }
+    22%      { opacity: 0.95; }
+    47%      { opacity: 0.78; }
+    52%      { opacity: 1; }
+    76%      { opacity: 0.88; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hw-pumpkin--lit .hw-pumpkin__face { animation: none; }
+  }
+</style>

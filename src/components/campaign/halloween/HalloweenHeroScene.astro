@@ -1,0 +1,333 @@
+---
+/**
+ * HalloweenHeroScene.astro — Antocarz · Campaña Halloween 2026
+ * Capa decorativa del Hero: cielo violeta, luna llena con una bruja que la
+ * cruza cada tanto, murciélagos, fantasmas, calabazas, brasas y niebla. Puramente visual (aria-hidden) y solo visible cuando <html> tiene
+ * data-campaign="halloween" (ver src/content/campaign.ts).
+ *
+ * La luna reacciona al mouse (vars --hw-mx/--hw-my, ver HalloweenAtmosphere)
+ * y esconde un easter egg (ver HalloweenEasterEggs).
+ */
+
+import HalloweenPumpkin from './HalloweenPumpkin.astro';
+import HalloweenGhost from './HalloweenGhost.astro';
+import { BAT_PATH, WITCH_SVG } from './shapes';
+
+// Brasas: posición horizontal, duración, tamaño, retardo y color.
+// Fijas (no Math.random) para que el SSR sea determinista.
+const embers = [
+  { x: 6,  d: 14, s: 3, delay: -2,  c: 'o' },
+  { x: 14, d: 18, s: 2, delay: -9,  c: 'v' },
+  { x: 23, d: 12, s: 4, delay: -5,  c: 'o' },
+  { x: 31, d: 20, s: 2, delay: -14, c: 'v' },
+  { x: 40, d: 16, s: 3, delay: -7,  c: 'o' },
+  { x: 48, d: 22, s: 2, delay: -1,  c: 'v' },
+  { x: 57, d: 15, s: 3, delay: -11, c: 'o' },
+  { x: 64, d: 19, s: 2, delay: -4,  c: 'v' },
+  { x: 72, d: 13, s: 4, delay: -8,  c: 'o' },
+  { x: 79, d: 21, s: 2, delay: -16, c: 'v' },
+  { x: 86, d: 17, s: 3, delay: -3,  c: 'o' },
+  { x: 93, d: 24, s: 2, delay: -12, c: 'v' },
+];
+
+---
+
+<div class="hw-scene" aria-hidden="true">
+  <div class="hw-scene__sky"></div>
+
+  <div class="hw-moon" data-hw-moon>
+    <div class="hw-moon__halo"></div>
+    <div class="hw-moon__disc"></div>
+    <div class="hw-moon__cloud"></div>
+    <span class="hw-witch" set:html={WITCH_SVG} />
+  </div>
+
+  <HalloweenGhost size={58} delay={-1.5} class="hw-scene-ghost hw-scene-ghost--near" />
+  <HalloweenGhost size={28} delay={-4} opacity={0.55} flip class="hw-scene-ghost hw-scene-ghost--far" />
+
+  {[1, 2, 3].map((n) => (
+    <svg class={`hw-bat hw-bat--${n}`} viewBox="0 0 64 30" focusable="false">
+      <path d={BAT_PATH} />
+    </svg>
+  ))}
+
+  <div class="hw-embers">
+    {embers.map((e) => (
+      <span
+        class={`hw-ember hw-ember--${e.c}`}
+        style={`--x:${e.x}%; --d:${e.d}s; --s:${e.s}px; --delay:${e.delay}s;`}
+      ></span>
+    ))}
+  </div>
+
+  <!-- Calabazas apoyadas sobre la franja de marcas, bajo el carrusel -->
+  <div class="hw-hero-pumpkins">
+    <HalloweenPumpkin size={36} face="smile" tilt={-10} delay={-2.4} />
+    <HalloweenPumpkin size={62} face="grin" tilt={-4} />
+    <HalloweenPumpkin size={42} face="smile" tilt={9} delay={-1.3} />
+    <HalloweenPumpkin size={26} face="none" tilt={-12} />
+  </div>
+
+  <div class="hw-fog hw-fog--back"></div>
+  <div class="hw-fog hw-fog--front"></div>
+</div>
+
+<style>
+  /* Oculta por defecto: solo existe visualmente con la campaña activa. */
+  .hw-scene { display: none; }
+
+  :global(html[data-campaign="halloween"]) .hw-scene {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* ── Cielo: profundidad violeta, nunca negro plano ── */
+  .hw-scene__sky {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 55% at 72% 18%, rgba(124, 58, 237, 0.22) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 10% 90%, rgba(91, 33, 182, 0.18) 0%, transparent 70%),
+      linear-gradient(180deg, #0B0814 0%, #120B22 55%, #0B0814 100%);
+  }
+
+  /* ── Luna ── */
+  .hw-moon {
+    --size: 210px;
+    position: absolute;
+    top: 28px;
+    left: calc(50% + 230px);
+    width: var(--size);
+    height: var(--size);
+    pointer-events: auto;
+    cursor: pointer;
+    translate: calc(var(--hw-mx, 0) * -14px) calc(var(--hw-my, 0) * -10px);
+    transition: translate 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    animation: hw-moon-rise 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .hw-moon__halo {
+    position: absolute;
+    inset: -70%;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, rgba(255, 160, 80, 0.42) 0%, rgba(255, 122, 26, 0.16) 28%, rgba(139, 92, 246, 0.14) 48%, transparent 68%);
+    animation: hw-breathe 7s ease-in-out infinite;
+  }
+
+  .hw-moon__disc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 34%, rgba(190, 120, 70, 0.16) 0 8%, transparent 13%),
+      radial-gradient(circle at 60% 60%, rgba(190, 120, 70, 0.13) 0 11%, transparent 17%),
+      radial-gradient(circle at 46% 76%, rgba(190, 120, 70, 0.10) 0 5%, transparent 9%),
+      radial-gradient(circle at 72% 32%, rgba(190, 120, 70, 0.09) 0 4%, transparent 8%),
+      radial-gradient(circle at 36% 34%, #FFF6EA 0%, #FFE2BF 38%, #FFB877 72%, #F08A3A 100%);
+    box-shadow:
+      0 0 30px rgba(255, 170, 100, 0.55),
+      0 0 90px rgba(255, 122, 26, 0.35),
+      0 0 180px rgba(139, 92, 246, 0.25),
+      inset -26px -18px 50px rgba(150, 60, 20, 0.30);
+    transition: filter 1.2s ease, box-shadow 1.2s ease;
+  }
+
+  /* Velo de nube que cruza lento por delante de la luna. */
+  .hw-moon__cloud {
+    position: absolute;
+    top: 52%;
+    left: -60%;
+    width: 220%;
+    height: 34%;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse 30% 50% at 30% 50%, rgba(40, 24, 70, 0.55), transparent 70%),
+      radial-gradient(ellipse 25% 45% at 62% 40%, rgba(55, 32, 92, 0.45), transparent 70%);
+    filter: blur(10px);
+    animation: hw-cloud 38s linear infinite;
+  }
+
+  /* Easter egg: eclipse (ver HalloweenEasterEggs) */
+  :global(.hw-moon--eclipse) .hw-moon__disc {
+    filter: hue-rotate(-28deg) saturate(1.6) brightness(0.7);
+    box-shadow: 0 0 60px rgba(179, 18, 43, 0.75), 0 0 160px rgba(179, 18, 43, 0.35);
+  }
+
+  /* ── Bruja: cruza por delante de la luna cada 16s ── */
+  .hw-witch {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    width: calc(var(--size) * 0.42);
+    color: #08050F;
+    filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.5));
+    opacity: 0;
+    animation: hw-witch-cross 16s linear infinite 3s;
+  }
+  .hw-witch :global(svg) { display: block; width: 100%; height: auto; }
+
+  @keyframes hw-witch-cross {
+    0%, 72% { opacity: 0; transform: translate(calc(var(--size) * -0.9), 20%) rotate(-4deg); }
+    74%     { opacity: 1; }
+    98%     { opacity: 1; }
+    100%    { opacity: 0; transform: translate(calc(var(--size) * 1.5), -40%) rotate(-10deg); }
+  }
+
+  /* ── Fantasmas en el cielo (desktop) ── */
+  .hw-scene :global(.hw-scene-ghost) { position: absolute; }
+  .hw-scene :global(.hw-scene-ghost--near) {
+    top: 150px;
+    left: calc(50% + 80px);
+    translate: calc(var(--hw-mx, 0) * -18px) calc(var(--hw-my, 0) * -12px);
+    transition: translate 900ms ease;
+  }
+  .hw-scene :global(.hw-scene-ghost--far) {
+    top: 196px;
+    left: calc(50% + 488px);
+    translate: calc(var(--hw-mx, 0) * -8px) calc(var(--hw-my, 0) * -6px);
+    transition: translate 900ms ease;
+  }
+
+  /* ── Murciélagos ── */
+  .hw-bat {
+    position: absolute;
+    fill: #08050F;
+    filter: drop-shadow(0 0 6px rgba(124, 58, 237, 0.45));
+    animation:
+      hw-bat-flap 0.28s ease-in-out infinite alternate,
+      hw-bat-drift var(--drift, 9s) ease-in-out infinite;
+    translate: calc(var(--hw-mx, 0) * -22px) calc(var(--hw-my, 0) * -14px);
+    transition: translate 800ms ease;
+  }
+  .hw-bat--1 { width: 44px; top: 96px;  left: calc(50% + 300px); --drift: 8s; }
+  .hw-bat--2 { width: 26px; top: 40px;  left: calc(50% + 470px); --drift: 11s; animation-delay: -0.1s, -3s; }
+  .hw-bat--3 { width: 18px; top: 210px; left: calc(50% + 180px); --drift: 13s; animation-delay: -0.2s, -6s; opacity: 0.7; }
+
+  /* ── Brasas ── */
+  .hw-embers { position: absolute; inset: 0; }
+  .hw-ember {
+    position: absolute;
+    bottom: -10px;
+    left: var(--x);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    opacity: 0;
+    animation: hw-ember-rise var(--d) linear infinite;
+    animation-delay: var(--delay);
+  }
+  .hw-ember--o { background: #FFA552; box-shadow: 0 0 8px 2px rgba(255, 122, 26, 0.55); }
+  .hw-ember--v { background: #C4B5FD; box-shadow: 0 0 8px 2px rgba(124, 58, 237, 0.55); }
+
+  /* ── Calabazas ── */
+  .hw-hero-pumpkins {
+    position: absolute;
+    /* Sentadas justo sobre el borde superior del marquee (bottom: space-12 + su alto). */
+    bottom: calc(var(--space-12) + var(--hw-marquee-h, 58px) - 4px);
+    left: calc(50% + 340px);
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    z-index: 1;
+  }
+  /* Resplandor en el "suelo" bajo las calabazas. */
+  .hw-hero-pumpkins::after {
+    content: '';
+    position: absolute;
+    left: -30px;
+    right: -30px;
+    bottom: -16px;
+    height: 34px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255, 122, 26, 0.35), transparent 70%);
+    filter: blur(6px);
+    z-index: -1;
+  }
+
+  /* ── Niebla ── */
+  .hw-fog {
+    position: absolute;
+    left: -25%;
+    width: 150%;
+    height: 220px;
+    bottom: -40px;
+    filter: blur(28px);
+    will-change: transform;
+  }
+  .hw-fog--back {
+    background:
+      radial-gradient(ellipse 30% 60% at 20% 60%, rgba(139, 92, 246, 0.16), transparent 70%),
+      radial-gradient(ellipse 25% 50% at 65% 55%, rgba(167, 139, 250, 0.12), transparent 70%);
+    animation: hw-fog-drift 46s ease-in-out infinite alternate;
+  }
+  .hw-fog--front {
+    bottom: -80px;
+    background:
+      radial-gradient(ellipse 28% 55% at 40% 50%, rgba(200, 190, 230, 0.10), transparent 70%),
+      radial-gradient(ellipse 30% 60% at 85% 60%, rgba(139, 92, 246, 0.12), transparent 70%);
+    animation: hw-fog-drift 32s ease-in-out infinite alternate-reverse;
+  }
+
+  /* ── Keyframes (solo transform/opacity → GPU) ── */
+  @keyframes hw-moon-rise {
+    from { opacity: 0; transform: translateY(40px) scale(0.92); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes hw-cloud {
+    from { transform: translateX(-30%); }
+    to   { transform: translateX(45%); }
+  }
+  @keyframes hw-breathe {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.06); }
+  }
+  @keyframes hw-bat-flap {
+    from { scale: 1 1; }
+    to   { scale: 1 0.55; }
+  }
+  @keyframes hw-bat-drift {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(18px, -10px); }
+  }
+  @keyframes hw-ember-rise {
+    0%   { opacity: 0;   transform: translate(0, 0); }
+    10%  { opacity: 0.9; }
+    50%  { transform: translate(14px, -45vh); }
+    85%  { opacity: 0.5; }
+    100% { opacity: 0;   transform: translate(-10px, -90vh); }
+  }
+  @keyframes hw-fog-drift {
+    from { transform: translateX(-6%); }
+    to   { transform: translateX(6%); }
+  }
+
+  /* ── Tablet / Mobile: menos de todo ── */
+  @media (max-width: 1023px) {
+    .hw-moon { --size: 108px; top: -14px; left: auto; right: -26px; }
+    .hw-bat--1 { top: 24px; left: auto; right: 84px; width: 26px; }
+    .hw-bat--2, .hw-bat--3 { display: none; }
+    /* En mobile el marquee va en flujo al final del Hero y deja ~32px libres
+       bajo el carrusel: el grupo se achica para caber ahí sin taparlo. */
+    .hw-scene :global(.hw-scene-ghost) { display: none; }
+    .hw-hero-pumpkins {
+      left: auto;
+      right: 14px;
+      bottom: calc(var(--hw-marquee-h, 58px) - 3px);
+      transform: scale(0.5);
+      transform-origin: bottom right;
+    }
+    .hw-ember:nth-child(n + 7) { display: none; }
+    .hw-fog { height: 160px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hw-moon, .hw-moon__halo, .hw-moon__cloud, .hw-bat, .hw-fog { animation: none; }
+    .hw-witch { display: none; }
+    .hw-embers { display: none; }
+  }
+</style>

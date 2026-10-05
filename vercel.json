@@ -3,6 +3,13 @@
     { "source": "/ztaudio", "destination": "https://ztaudio.vercel.app/ztaudio" },
     { "source": "/ztaudio/:match*", "destination": "https://ztaudio.vercel.app/ztaudio/:match*" }
   ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": ".*\\.vercel\\.app" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
+  ],
   "redirects": [
     {
       "source": "/dproducto.php",

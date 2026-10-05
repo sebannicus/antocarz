@@ -1,0 +1,439 @@
+/**
+ * halloween.css — Antocarz · Campaña Halloween 2026
+ * Tema de temporada. TODO cuelga de html[data-campaign="halloween"]:
+ * sin ese atributo este archivo no cambia nada.
+ *
+ * Capas:
+ *  1. Tokens  → re-mapea la paleta (rojo → naranja calabaza + violeta).
+ *  2. Global  → fondo, franjas, cursor, scrollbar, selección.
+ *  3. Overrides puntuales → colores que los componentes tienen fijos
+ *     (#0D0D0D, rgba(227,6,19,…)) y que los tokens no alcanzan.
+ *
+ * Especificidad: el prefijo `html[...]` (0,1,1) le gana a los estilos con
+ * scope de Astro (.clase[data-astro-cid-x] = 0,2,0) al sumarse a la clase.
+ *
+ * Contraste: naranja #FF7A1A sobre #0B0814 ≈ 7.6:1. Los botones naranjas
+ * llevan texto oscuro (#140A1F, ≈ 7.4:1) — el blanco no alcanza AA.
+ */
+
+/* ════════════════════════════════════════════
+ * 1. TOKENS
+ * ════════════════════════════════════════════ */
+html[data-campaign="halloween"] {
+  --hw-night:        #0B0814;
+  --hw-surface:      #141024;
+  --hw-overlay:      #1C1630;
+  --hw-orange:       #FF7A1A;
+  --hw-orange-light: #FFA552;
+  --hw-orange-dim:   #E0610A;
+  --hw-violet:       #8B5CF6;
+  --hw-violet-light: #C4B5FD;
+  --hw-violet-deep:  #3B1F6B;
+  --hw-blood:        #B3122B;
+  --hw-ink:          #140A1F;
+
+  --color-bg:          var(--hw-night);
+  --color-bg-surface:  var(--hw-surface);
+  --color-bg-overlay:  var(--hw-overlay);
+
+  /* "gold" es el acento principal del sistema (históricamente rojo). */
+  --color-gold:        var(--hw-orange);
+  --color-gold-light:  var(--hw-orange-light);
+  --color-gold-dim:    var(--hw-orange-dim);
+  --color-violet:      var(--hw-violet);
+  --color-violet-dim:  var(--hw-violet-deep);
+
+  --color-text-primary:   #FFFFFF;
+  --color-text-secondary: #D6D0E6;
+  --color-text-muted:     #9C92B4;
+
+  --color-border:       rgba(139, 92, 246, 0.18);
+  --color-border-hover: rgba(255, 122, 26, 0.45);
+
+  --shadow-card:       0 8px 32px rgba(8, 4, 20, 0.6);
+  --shadow-gold:       0 0 40px rgba(255, 122, 26, 0.16), 0 0 80px rgba(139, 92, 246, 0.10);
+  --shadow-gold-hover: 0 0 60px rgba(255, 122, 26, 0.28), 0 0 100px rgba(139, 92, 246, 0.16);
+  --glow-gold:         0 0 80px rgba(255, 122, 26, 0.40);
+  --glow-violet:       0 0 80px rgba(139, 92, 246, 0.25);
+
+  color-scheme: dark;
+}
+
+/* ════════════════════════════════════════════
+ * 2. GLOBAL
+ * ════════════════════════════════════════════ */
+
+/* Rejilla difuminada de fondo: naranja + violeta en vez de rojo. */
+html[data-campaign="halloween"] .bg-hazard-glow {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--hw-violet) 0, var(--hw-violet) 60px,
+    var(--hw-night) 60px, var(--hw-night) 120px,
+    var(--hw-orange) 120px, var(--hw-orange) 140px,
+    var(--hw-night) 140px, var(--hw-night) 200px
+  );
+  opacity: 0.07;
+}
+
+/* El perro del logo, "iluminado por la luna": tinte violeta y algo más visible. */
+html[data-campaign="halloween"] .bg-dog-watermark {
+  opacity: 0.05;
+  filter: grayscale(100%) sepia(100%) hue-rotate(215deg) saturate(3) brightness(1.2);
+}
+
+/* Cursor de marca en naranja. */
+html[data-campaign="halloween"] body {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="%23FF7A1A" stroke="%23140A1F" stroke-width="1.5"><path d="M4 2L20 12L13 14L16 22L13 23L10 15L4 18V2Z"/></svg>') 4 2, auto;
+}
+html[data-campaign="halloween"] :is(a, button, select, input[type="submit"], [role="button"], [role="tab"], .branch-btn) {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="%23140A1F" stroke="%23FF7A1A" stroke-width="1.5"><path d="M4 2L20 12L13 14L16 22L13 23L10 15L4 18V2Z"/></svg>') 4 2, pointer !important;
+}
+
+/* Franjas separadoras → cinta de "zona peligrosa" naranja/negro que avanza lento. */
+html[data-campaign="halloween"] .hazard-stripes {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--hw-orange) 0, var(--hw-orange) 40px,
+    #120B1F 40px, #120B1F 80px
+  );
+  background-size: 113.14px 100%; /* 80px / sin(45°) → loop sin saltos */
+  box-shadow: 0 0 24px rgba(255, 122, 26, 0.22), 0 0 60px rgba(139, 92, 246, 0.18);
+  border-color: #07040D;
+  animation: hw-tape 6s linear infinite;
+}
+@keyframes hw-tape {
+  to { background-position: 113.14px 0; }
+}
+
+/* ── Calabazas sentadas sobre las cintas de "zona peligrosa" ──
+ * Imágenes SVG embebidas (data URI) → sin markup extra ni requests.
+ * Mismo dibujo que HalloweenPumpkin.astro (sin parpadeo). Alternan lado. */
+html[data-campaign="halloween"] {
+  --hw-pumpkin-grin:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 92'%3E%3Cdefs%3E%3CradialGradient id='b' cx='.4' cy='.35' r='.75'%3E%3Cstop offset='0' stop-color='%23FF9E45'/%3E%3Cstop offset='.55' stop-color='%23D9600C'/%3E%3Cstop offset='1' stop-color='%236E2503'/%3E%3C/radialGradient%3E%3CradialGradient id='f' cx='.5' cy='.55' r='.6'%3E%3Cstop offset='0' stop-color='%23FFF6C2'/%3E%3Cstop offset='.45' stop-color='%23FFC23D'/%3E%3Cstop offset='1' stop-color='%23FF7A1A'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M46 20c0-8 3-14 10-17l4 3c-5 3-7 8-7 14z' fill='%234A3417'/%3E%3Cpath d='M57 11c6-4 13-3 16 1-5 0-9 1-12 4' fill='none' stroke='%235B7A2A' stroke-width='2.5' stroke-linecap='round'/%3E%3Cg fill='url%28%23b%29' stroke='%237A2E05' stroke-opacity='.4'%3E%3Cellipse cx='27' cy='57' rx='24' ry='30'/%3E%3Cellipse cx='73' cy='57' rx='24' ry='30'/%3E%3Cellipse cx='39' cy='57' rx='22' ry='33'/%3E%3Cellipse cx='61' cy='57' rx='22' ry='33'/%3E%3Cellipse cx='50' cy='57' rx='16' ry='34'/%3E%3C/g%3E%3Cg fill='url%28%23f%29' stroke='%233A1402' stroke-width='2.5' stroke-linejoin='round' paint-order='stroke'%3E%3Cpath d='M31 47l9-11 8 12z'/%3E%3Cpath d='M52 48l8-12 9 11z'/%3E%3Cpath d='M46 59l4-7 4 7z'/%3E%3Cpath d='M27 64Q50 86 73 64l-6 3-4-4-4 5-4-4-5 5-5-5-4 4-4-5-4 4z'/%3E%3C/g%3E%3C/svg%3E");
+  --hw-pumpkin-smile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 92'%3E%3Cdefs%3E%3CradialGradient id='b' cx='.4' cy='.35' r='.75'%3E%3Cstop offset='0' stop-color='%23FF9E45'/%3E%3Cstop offset='.55' stop-color='%23D9600C'/%3E%3Cstop offset='1' stop-color='%236E2503'/%3E%3C/radialGradient%3E%3CradialGradient id='f' cx='.5' cy='.55' r='.6'%3E%3Cstop offset='0' stop-color='%23FFF6C2'/%3E%3Cstop offset='.45' stop-color='%23FFC23D'/%3E%3Cstop offset='1' stop-color='%23FF7A1A'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M46 20c0-8 3-14 10-17l4 3c-5 3-7 8-7 14z' fill='%234A3417'/%3E%3Cpath d='M57 11c6-4 13-3 16 1-5 0-9 1-12 4' fill='none' stroke='%235B7A2A' stroke-width='2.5' stroke-linecap='round'/%3E%3Cg fill='url%28%23b%29' stroke='%237A2E05' stroke-opacity='.4'%3E%3Cellipse cx='27' cy='57' rx='24' ry='30'/%3E%3Cellipse cx='73' cy='57' rx='24' ry='30'/%3E%3Cellipse cx='39' cy='57' rx='22' ry='33'/%3E%3Cellipse cx='61' cy='57' rx='22' ry='33'/%3E%3Cellipse cx='50' cy='57' rx='16' ry='34'/%3E%3C/g%3E%3Cg fill='url%28%23f%29' stroke='%233A1402' stroke-width='2.5' stroke-linejoin='round' paint-order='stroke'%3E%3Cpath d='M31 47l9-11 8 12z'/%3E%3Cpath d='M52 48l8-12 9 11z'/%3E%3Cpath d='M46 59l4-7 4 7z'/%3E%3Cpath d='M30 65Q50 82 70 65Q50 74 30 65z'/%3E%3C/g%3E%3C/svg%3E");
+  --hw-pumpkin-plain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 92'%3E%3Cdefs%3E%3CradialGradient id='b' cx='.4' cy='.35' r='.75'%3E%3Cstop offset='0' stop-color='%23FF9E45'/%3E%3Cstop offset='.55' stop-color='%23D9600C'/%3E%3Cstop offset='1' stop-color='%236E2503'/%3E%3C/radialGradient%3E%3CradialGradient id='f' cx='.5' cy='.55' r='.6'%3E%3Cstop offset='0' stop-color='%23FFF6C2'/%3E%3Cstop offset='.45' stop-color='%23FFC23D'/%3E%3Cstop offset='1' stop-color='%23FF7A1A'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M46 20c0-8 3-14 10-17l4 3c-5 3-7 8-7 14z' fill='%234A3417'/%3E%3Cpath d='M57 11c6-4 13-3 16 1-5 0-9 1-12 4' fill='none' stroke='%235B7A2A' stroke-width='2.5' stroke-linecap='round'/%3E%3Cg fill='url%28%23b%29' stroke='%237A2E05' stroke-opacity='.4'%3E%3Cellipse cx='27' cy='57' rx='24' ry='30'/%3E%3Cellipse cx='73' cy='57' rx='24' ry='30'/%3E%3Cellipse cx='39' cy='57' rx='22' ry='33'/%3E%3Cellipse cx='61' cy='57' rx='22' ry='33'/%3E%3Cellipse cx='50' cy='57' rx='16' ry='34'/%3E%3C/g%3E%3C/svg%3E");
+}
+html[data-campaign="halloween"] .hazard-stripes { position: relative; }
+html[data-campaign="halloween"] .hazard-stripes::before,
+html[data-campaign="halloween"] .hazard-stripes::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 1px);
+  background: no-repeat bottom / contain;
+  filter: drop-shadow(0 0 10px rgba(255, 122, 26, 0.45));
+  pointer-events: none;
+}
+html[data-campaign="halloween"] .hazard-stripes::before {
+  left: 9%;
+  width: 46px;
+  height: 43px;
+  background-image: var(--hw-pumpkin-grin);
+  rotate: -5deg;
+}
+html[data-campaign="halloween"] .hazard-stripes::after {
+  left: calc(9% + 44px);
+  width: 28px;
+  height: 26px;
+  background-image: var(--hw-pumpkin-plain);
+  rotate: 8deg;
+}
+/* Las cintas pares van a la derecha, con la sonrisa simple. */
+html[data-campaign="halloween"] .hazard-stripes:nth-of-type(even)::before {
+  left: auto;
+  right: 9%;
+  background-image: var(--hw-pumpkin-smile);
+  rotate: 6deg;
+}
+html[data-campaign="halloween"] .hazard-stripes:nth-of-type(even)::after {
+  left: auto;
+  right: calc(9% + 42px);
+  rotate: -9deg;
+}
+@media (max-width: 767px) {
+  html[data-campaign="halloween"] .hazard-stripes::before { width: 34px; height: 32px; }
+  html[data-campaign="halloween"] .hazard-stripes::after  { width: 20px; height: 19px; }
+  html[data-campaign="halloween"] .hazard-stripes:nth-of-type(even)::after { right: calc(9% + 32px); }
+  html[data-campaign="halloween"] .hazard-stripes:not(:nth-of-type(even))::after { left: calc(9% + 32px); }
+}
+
+html[data-campaign="halloween"] ::selection {
+  background-color: rgba(255, 122, 26, 0.35);
+  color: #FFFFFF;
+}
+html[data-campaign="halloween"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--hw-orange), var(--hw-violet));
+}
+
+/* Foco visible más luminoso sobre fondo oscuro. */
+html[data-campaign="halloween"] :focus-visible {
+  outline-color: var(--hw-orange-light);
+  box-shadow: 0 0 0 6px rgba(255, 122, 26, 0.18);
+}
+
+/* Pulso de los CTA: energía naranja. */
+html[data-campaign="halloween"] .pulse-gold { animation-name: hw-pulse; }
+@keyframes hw-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 122, 26, 0.45), 0 4px 24px rgba(255, 122, 26, 0.35); }
+  50%      { box-shadow: 0 0 0 12px rgba(255, 122, 26, 0), 0 4px 32px rgba(139, 92, 246, 0.35); }
+}
+
+/* ════════════════════════════════════════════
+ * 3. COMPONENTES
+ * ════════════════════════════════════════════ */
+
+/* ── Header: vidrio oscuro con línea de luz violeta→naranja ── */
+html[data-campaign="halloween"] .header--scrolled {
+  background: rgba(11, 8, 20, 0.78);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 10px 30px rgba(5, 2, 12, 0.5);
+}
+html[data-campaign="halloween"] .header--scrolled::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.6), rgba(255, 122, 26, 0.6), transparent);
+}
+html[data-campaign="halloween"] .header__link:hover {
+  color: #FFFFFF;
+  text-shadow: 0 0 14px rgba(255, 122, 26, 0.75);
+}
+/* Modo oscuro forzado durante la campaña → el toggle de tema sobra. */
+html[data-campaign="halloween"] #theme-toggle { display: none; }
+
+/* ── Botones ── */
+html[data-campaign="halloween"] .btn--primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(135deg, var(--hw-orange-light) 0%, var(--hw-orange) 45%, var(--hw-orange-dim) 100%);
+  color: var(--hw-ink);
+  font-weight: var(--weight-bold);
+  box-shadow: 0 4px 24px rgba(255, 122, 26, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: box-shadow var(--transition-base), transform var(--transition-spring), translate 300ms ease-out;
+}
+/* Destello de energía que cruza el botón al pasar el mouse. */
+html[data-campaign="halloween"] .btn--primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 700ms ease;
+}
+html[data-campaign="halloween"] .btn--primary:hover {
+  color: var(--hw-ink);
+  box-shadow: 0 6px 36px rgba(255, 122, 26, 0.55), 0 0 60px rgba(139, 92, 246, 0.35);
+}
+html[data-campaign="halloween"] .btn--primary:hover::after { transform: translateX(120%); }
+
+html[data-campaign="halloween"] .btn--ghost {
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(20, 16, 36, 0.45);
+  backdrop-filter: blur(6px);
+}
+html[data-campaign="halloween"] .btn--ghost:hover {
+  border-color: rgba(255, 122, 26, 0.6);
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.3), inset 0 0 14px rgba(255, 122, 26, 0.08);
+}
+html[data-campaign="halloween"] .btn--secondary { background: rgba(255, 122, 26, 0.10); }
+html[data-campaign="halloween"] .btn--secondary:hover { background: rgba(255, 122, 26, 0.20); }
+html[data-campaign="halloween"] .btn--outline:hover { color: var(--hw-ink); }
+
+/* ── Banner fijo ── */
+html[data-campaign="halloween"] .oferta-fija {
+  background: transparent;
+  overflow: visible; /* el título del banner Halloween sobresale con transparencia */
+}
+html[data-campaign="halloween"] .oferta-fija__img--campaign {
+  /* drop-shadow sigue el alfa de la pieza (box-shadow dibujaría un rectángulo). */
+  filter: drop-shadow(0 14px 30px rgba(5, 2, 12, 0.65)) drop-shadow(0 0 40px rgba(255, 122, 26, 0.12));
+  transition: filter var(--transition-slow);
+}
+html[data-campaign="halloween"] .oferta-fija:hover .oferta-fija__img--campaign {
+  filter: drop-shadow(0 14px 30px rgba(5, 2, 12, 0.65)) drop-shadow(0 0 50px rgba(255, 122, 26, 0.3));
+}
+
+/* ── Hero ── */
+html[data-campaign="halloween"] .hero { background: var(--hw-night); }
+html[data-campaign="halloween"] .hero::before {
+  background: radial-gradient(ellipse, rgba(139, 92, 246, 0.16) 0%, transparent 70%);
+}
+html[data-campaign="halloween"] .hero__fade {
+  /* Sin bordes duros: el cielo violeta ya no es negro plano como antes. */
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(11, 8, 20, 0.70) 35%,
+    rgba(11, 8, 20, 0.45) 65%,
+    transparent 100%
+  );
+}
+/* Fondo de las slides transparente → la luna/cielo se ven alrededor de la pieza. */
+html[data-campaign="halloween"] .hero__slide-img { background: transparent; }
+html[data-campaign="halloween"] .hero__slide-img {
+  filter: drop-shadow(0 20px 50px rgba(5, 2, 12, 0.7));
+}
+html[data-campaign="halloween"] .hero__title-accent {
+  background: linear-gradient(100deg, var(--hw-orange-light) 0%, var(--hw-orange) 45%, #FF5A3C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 22px rgba(255, 122, 26, 0.45));
+}
+html[data-campaign="halloween"] .hero__label { color: var(--hw-violet-light); }
+html[data-campaign="halloween"] .hero__proof { border-top-color: rgba(139, 92, 246, 0.22); }
+html[data-campaign="halloween"] .hero__marquee {
+  background: rgba(11, 8, 20, 0.6);
+  border-color: rgba(139, 92, 246, 0.18);
+}
+html[data-campaign="halloween"] .hero__marquee-sep { color: var(--hw-violet-light); opacity: 0.6; }
+
+/* Badge de la edición especial (markup en Hero.astro). */
+.hw-badge { display: none; }
+html[data-campaign="halloween"] .hw-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 14px 6px 8px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--hw-orange-light);
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.18), rgba(255, 122, 26, 0.10));
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.18);
+  font-family: inherit;
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+}
+html[data-campaign="halloween"] .hw-badge:hover {
+  border-color: rgba(255, 122, 26, 0.55);
+  box-shadow: 0 0 30px rgba(255, 122, 26, 0.3);
+}
+html[data-campaign="halloween"] .hw-badge__moon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 36%, #FFF1DC, #FFA552 60%, #E0610A);
+  box-shadow: 0 0 10px rgba(255, 122, 26, 0.7);
+}
+
+/* ── Cards: borde violeta tenue, glow naranja/violeta al hover ── */
+html[data-campaign="halloween"] :is(.service-card, .own-brand-card, .testimonial-card, .pcta__card, .ig__cell) {
+  background-image: linear-gradient(160deg, rgba(139, 92, 246, 0.06) 0%, transparent 40%);
+}
+html[data-campaign="halloween"] :is(.service-card, .own-brand-card, .pcta__card):hover {
+  border-color: rgba(255, 122, 26, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 122, 26, 0.15), 0 18px 50px rgba(5, 2, 12, 0.6), 0 0 60px rgba(139, 92, 246, 0.22);
+}
+html[data-campaign="halloween"] .testimonial-card:hover {
+  border-color: rgba(139, 92, 246, 0.45);
+  box-shadow: 0 0 50px rgba(139, 92, 246, 0.18);
+}
+html[data-campaign="halloween"] .service-card:hover .service-card__img-overlay {
+  background: linear-gradient(to top, rgba(59, 31, 107, 0.6) 0%, rgba(255, 122, 26, 0.12) 55%, transparent 100%);
+}
+
+/* ── Fondos de sección que tenían un halo rojo fijo → violeta ── */
+html[data-campaign="halloween"] .testimonials {
+  background: radial-gradient(ellipse at bottom, rgba(139, 92, 246, 0.12) 0%, var(--color-bg-surface) 75%);
+}
+html[data-campaign="halloween"] .faq__outer,
+html[data-campaign="halloween"] .faq {
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.08) 0%, var(--color-bg-overlay) 70%);
+}
+html[data-campaign="halloween"] .pcta {
+  background: radial-gradient(ellipse at top, rgba(255, 122, 26, 0.07) 0%, var(--color-bg) 70%);
+}
+html[data-campaign="halloween"] .ig {
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.08) 0%, var(--color-bg-surface) 65%);
+}
+
+/* ── Footer ── */
+html[data-campaign="halloween"] .footer {
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 80% at 50% 0%, rgba(59, 31, 107, 0.35), transparent 70%),
+    var(--hw-surface);
+  border-top-color: rgba(139, 92, 246, 0.25);
+}
+
+/* ── Ficha de producto (/productos/[id]) ──
+ * Calabazas sentadas sobre el marco de la foto y marco con brillo violeta.
+ * .gallery-main tiene overflow:hidden → se cuelgan de .product-gallery. */
+html[data-campaign="halloween"] .product-gallery { position: relative; }
+html[data-campaign="halloween"] .product-gallery::before,
+html[data-campaign="halloween"] .product-gallery::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  z-index: 2;
+  background: no-repeat bottom / contain;
+  filter: drop-shadow(0 0 10px rgba(255, 122, 26, 0.45));
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+html[data-campaign="halloween"] .product-gallery::before {
+  right: 34px;
+  width: 50px;
+  height: 46px;
+  background-image: var(--hw-pumpkin-grin);
+  rotate: 5deg;
+}
+html[data-campaign="halloween"] .product-gallery::after {
+  right: 84px;
+  width: 30px;
+  height: 28px;
+  background-image: var(--hw-pumpkin-plain);
+  rotate: -8deg;
+}
+html[data-campaign="halloween"] .gallery-main {
+  background: #141024;
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 0 60px rgba(139, 92, 246, 0.15);
+}
+html[data-campaign="halloween"] .gallery-thumb { background: #141024; }
+
+/* ── Fantasmas (HalloweenGhost.astro + los inyectados por script) ── */
+.hw-ghost-figure {
+  display: block;
+  width: var(--size, 48px);
+  opacity: var(--ghost-opacity, 0.9);
+  pointer-events: none;
+  /* El filtro va en el contenedor y la máscara en el <svg>: así el resplandor
+     sigue la silueta ya desvanecida (en el mismo elemento, la máscara
+     recortaría el glow en un rectángulo). */
+  filter: drop-shadow(0 0 14px rgba(196, 181, 253, 0.55));
+  animation: hw-ghost-float 6s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+.hw-ghost-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+}
+.hw-ghost-figure--flip svg { scale: -1 1; }
+@keyframes hw-ghost-float {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-12px) rotate(3deg); }
+}
+
+/* ════════════════════════════════════════════
+ * Accesibilidad / performance
+ * ════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  html[data-campaign="halloween"] .hazard-stripes { animation: none; }
+  html[data-campaign="halloween"] .btn--primary::after { display: none; }
+  .hw-ghost-figure { animation: none; }
+}
+@media (max-width: 767px) {
+  html[data-campaign="halloween"] .hazard-stripes { animation: none; }
+  html[data-campaign="halloween"] .header--scrolled { backdrop-filter: blur(10px); }
+}

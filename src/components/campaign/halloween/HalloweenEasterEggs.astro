@@ -1,0 +1,328 @@
+---
+/**
+ * HalloweenEasterEggs.astro — Antocarz · Campaña Halloween 2026
+ * Detalles opcionales y discretos para quien los descubra:
+ *  1. Cada tanto cruza la pantalla un murciélago, un fantasma o una bruja (desktop).
+ *  2. Una araña baja por su hilo en la sección FAQ; si le pasas el mouse, sube.
+ *  3. Tres clics a la luna del Hero → eclipse rojo + mensaje del perro guardián.
+ *  4. Un fantasmita se asoma en el footer (al pasar el mouse; fijo en táctil), y las calabazas
+ *     del footer se ríen si les haces clic.
+ *  5. Clic en el badge "Edición Halloween 2026" del Hero → lluvia de calabazas.
+ *  6. Un saludo en la consola para curiosos.
+ *
+ * Nada de esto bloquea interacción ni contenido. Con prefers-reduced-motion
+ * solo queda el mensaje de la luna (sin animación).
+ */
+---
+
+<div class="hw-toast" role="status" aria-live="polite"></div>
+
+<script>
+  import { BAT_SVG, GHOST_SVG, SPIDER_SVG, WITCH_SVG } from './shapes';
+
+  const html = document.documentElement;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  function showToast(message: string) {
+    const toast = document.querySelector<HTMLElement>('.hw-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('hw-toast--on');
+    window.setTimeout(() => toast.classList.remove('hw-toast--on'), 5200);
+  }
+
+  /* 1 ── Cruces ocasionales: murciélago, fantasma o bruja ──── */
+  const FLYERS = [
+    { className: 'hw-flyby--bat',   svg: BAT_SVG },
+    { className: 'hw-flyby--ghost', svg: GHOST_SVG },
+    { className: 'hw-flyby--witch', svg: WITCH_SVG },
+  ];
+  let flyerIndex = 0;
+
+  function scheduleFlyby() {
+    const wait = 18000 + Math.random() * 18000;
+    window.setTimeout(() => {
+      if (!document.hidden) {
+        const flyer = FLYERS[flyerIndex++ % FLYERS.length];
+        const el = document.createElement('div');
+        el.className = `hw-flyby ${flyer.className}`;
+        el.innerHTML = flyer.svg;
+        el.style.top = `${12 + Math.random() * 45}vh`;
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove(), { once: true });
+      }
+      scheduleFlyby();
+    }, wait);
+  }
+
+  /* 2 ── Araña en FAQ ────────────────────────────────────── */
+  function mountSpider() {
+    const faq = document.getElementById('faq');
+    if (!faq) return;
+    faq.classList.add('hw-has-spider');
+    const spider = document.createElement('div');
+    spider.className = 'hw-spider';
+    spider.innerHTML = `<span class="hw-spider__thread"></span><span class="hw-spider__body">${SPIDER_SVG}</span>`;
+    faq.appendChild(spider);
+
+    const observer = new IntersectionObserver(([entry]) => {
+      spider.classList.toggle('hw-spider--down', entry.isIntersecting);
+    }, { threshold: 0.25 });
+    observer.observe(faq);
+
+    spider.addEventListener('pointerenter', () => {
+      spider.classList.add('hw-spider--flee');
+      window.setTimeout(() => spider.classList.remove('hw-spider--flee'), 4000);
+    });
+  }
+
+  /* 3 ── Eclipse de la luna ──────────────────────────────── */
+  function wireMoon() {
+    const moon = document.querySelector<HTMLElement>('[data-hw-moon]');
+    if (!moon) return;
+    let clicks = 0;
+    let resetTimer = 0;
+    moon.addEventListener('click', () => {
+      clicks += 1;
+      window.clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(() => { clicks = 0; }, 1500);
+      if (clicks < 3) return;
+      clicks = 0;
+      moon.classList.add('hw-moon--eclipse');
+      showToast('Shhh… el perro guardián de Antocarz vigila tu auto incluso esta noche.');
+      window.setTimeout(() => moon.classList.remove('hw-moon--eclipse'), 6000);
+    });
+  }
+
+  /* 4 ── Fantasma en el footer ───────────────────────────── */
+  function mountGhost() {
+    const footer = document.querySelector<HTMLElement>('.footer');
+    if (!footer) return;
+    const ghost = document.createElement('div');
+    ghost.className = 'hw-ghost';
+    ghost.innerHTML = `<span class="hw-ghost-figure" style="--size:38px">${GHOST_SVG}</span>`;
+    footer.appendChild(ghost);
+
+    const pumpkins = footer.querySelector<HTMLElement>('[data-hw-pumpkins]');
+    pumpkins?.addEventListener('click', () => {
+      pumpkins.classList.remove('hw-footer-pumpkins--laugh');
+      void pumpkins.offsetWidth; // reinicia la animación si se hace clic seguido
+      pumpkins.classList.add('hw-footer-pumpkins--laugh');
+      showToast('Jajaja… ¿Tu auto ya tiene alarma? Estas calabazas sí.');
+    });
+  }
+
+  /* 5 ── Lluvia de calabazas ───────────────────────────── */
+  function wirePumpkinRain() {
+    const badge = document.querySelector<HTMLElement>('[data-hw-badge]');
+    if (!badge) return;
+    const looks = ['--hw-pumpkin-grin', '--hw-pumpkin-smile', '--hw-pumpkin-plain'];
+    let raining = false;
+    badge.addEventListener('click', () => {
+      showToast('¡Dulce o truco! Y cero sustos con tu auto: cotiza tu seguridad hoy.');
+      if (raining || reducedMotion) return;
+      raining = true;
+      const count = window.innerWidth < 768 ? 10 : 18;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        const size = 22 + Math.random() * 30;
+        p.className = 'hw-rain';
+        p.style.left = `${Math.random() * 96}vw`;
+        p.style.width = `${size}px`;
+        p.style.height = `${size * 0.92}px`;
+        p.style.backgroundImage = `var(${looks[i % looks.length]})`;
+        p.style.animationDuration = `${2.4 + Math.random() * 1.8}s`;
+        p.style.animationDelay = `${Math.random() * 0.9}s`;
+        p.style.setProperty('--spin', `${(Math.random() - 0.5) * 540}deg`);
+        document.body.appendChild(p);
+        p.addEventListener('animationend', () => p.remove(), { once: true });
+      }
+      window.setTimeout(() => { raining = false; }, 4500);
+    });
+  }
+
+  if (html.dataset.campaign === 'halloween') {
+    wireMoon();
+    wirePumpkinRain();
+    if (!reducedMotion) {
+      mountSpider();
+      mountGhost();
+      if (finePointer) scheduleFlyby();
+    }
+    console.log(
+      '%c🦇 Antocarz · Halloween Edition 2026 %c\n¿Curioseando el código? Prueba hacer 3 clics en la luna.',
+      'color:#FF7A1A;font-weight:bold;font-size:14px',
+      'color:#C4B5FD',
+    );
+  }
+</script>
+
+<style>
+  .hw-toast { display: none; }
+
+  :global(html[data-campaign="halloween"]) .hw-toast {
+    display: block;
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    z-index: var(--z-overlay);
+    max-width: min(92vw, 460px);
+    padding: 14px 20px;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    color: #FFFFFF;
+    background: rgba(20, 16, 36, 0.92);
+    border: 1px solid rgba(139, 92, 246, 0.45);
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.35), 0 0 80px rgba(179, 18, 43, 0.25);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: translate(-50%, 20px);
+    pointer-events: none;
+    transition: opacity 400ms ease, transform 400ms ease;
+  }
+  :global(html[data-campaign="halloween"]) .hw-toast.hw-toast--on {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  /* Murciélago que cruza */
+  :global(.hw-flyby) {
+    position: fixed;
+    left: 0;
+    width: 30px;
+    z-index: var(--z-above);
+    pointer-events: none;
+    fill: #08050F;
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.6));
+    animation: hw-flyby 7s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+  }
+  :global(.hw-flyby svg) { display: block; width: 100%; height: auto; }
+  :global(.hw-flyby--bat svg) { animation: hw-flap 0.22s ease-in-out infinite alternate; }
+
+  /* Fantasma: más lento, ondulante y translúcido. */
+  :global(.hw-flyby--ghost) {
+    width: 40px;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 14px rgba(196, 181, 253, 0.7));
+    animation: hw-flyby-ghost 11s ease-in-out forwards;
+  }
+  :global(.hw-flyby--ghost svg) {
+    -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  }
+  /* Bruja: silueta con halo violeta para que se lea sobre fondo oscuro. */
+  :global(.hw-flyby--witch) {
+    width: 70px;
+    color: #1A1030;
+    filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.85)) drop-shadow(0 0 2px rgba(255, 122, 26, 0.6));
+    animation: hw-flyby-witch 6s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  }
+
+  @keyframes hw-flyby-ghost {
+    0%   { transform: translate(-60px, 0); opacity: 0; }
+    10%  { opacity: 0.85; }
+    25%  { transform: translate(25vw, -30px); }
+    50%  { transform: translate(50vw, 25px); }
+    75%  { transform: translate(75vw, -20px); }
+    90%  { opacity: 0.85; }
+    100% { transform: translate(calc(100vw + 60px), 0); opacity: 0; }
+  }
+  @keyframes hw-flyby-witch {
+    0%   { transform: translate(-90px, 60px) rotate(-8deg); }
+    100% { transform: translate(calc(100vw + 90px), -80px) rotate(-14deg); }
+  }
+
+  @keyframes hw-flyby {
+    0%   { transform: translate(-60px, 0) rotate(-6deg); }
+    25%  { transform: translate(25vw, -40px) rotate(4deg); }
+    50%  { transform: translate(50vw, 20px) rotate(-4deg); }
+    75%  { transform: translate(75vw, -30px) rotate(6deg); }
+    100% { transform: translate(calc(100vw + 60px), 10px) rotate(0deg); }
+  }
+  @keyframes hw-flap {
+    from { scale: 1 1; }
+    to   { scale: 1 0.5; }
+  }
+
+  /* Lluvia de calabazas */
+  :global(.hw-rain) {
+    position: fixed;
+    top: -70px;
+    z-index: var(--z-overlay);
+    pointer-events: none;
+    background: no-repeat center / contain;
+    filter: drop-shadow(0 0 8px rgba(255, 122, 26, 0.5));
+    animation: hw-rain linear both;
+  }
+  @keyframes hw-rain {
+    from { transform: translateY(0) rotate(0deg); opacity: 1; }
+    85%  { opacity: 1; }
+    to   { transform: translateY(calc(100vh + 140px)) rotate(var(--spin)); opacity: 0; }
+  }
+
+  /* Araña */
+  :global(.hw-has-spider) { position: relative; }
+  :global(.hw-spider) {
+    position: absolute;
+    top: 0;
+    right: clamp(16px, 6vw, 90px);
+    width: 40px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: auto;
+  }
+  :global(.hw-spider__thread) {
+    width: 1px;
+    height: 150px;
+    background: linear-gradient(to bottom, rgba(196, 181, 253, 0.05), rgba(196, 181, 253, 0.45));
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 2.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+  :global(.hw-spider__body) {
+    width: 40px;
+    filter: drop-shadow(0 0 6px rgba(196, 181, 253, 0.45));
+    margin-top: -2px;
+    transform: translateY(-150px);
+    transition: transform 2.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+    animation: hw-sway 4s ease-in-out infinite;
+    transform-origin: top center;
+  }
+  :global(.hw-spider--down .hw-spider__thread) { transform: scaleY(1); }
+  :global(.hw-spider--down .hw-spider__body)   { transform: translateY(0); }
+  :global(.hw-spider--flee .hw-spider__thread) { transform: scaleY(0); transition-duration: 0.5s; }
+  :global(.hw-spider--flee .hw-spider__body)   { transform: translateY(-150px); transition-duration: 0.5s; }
+
+  @keyframes hw-sway {
+    0%, 100% { rotate: -4deg; }
+    50%      { rotate: 4deg; }
+  }
+
+  /* Fantasma que se asoma desde el borde superior del footer */
+  :global(.hw-ghost) {
+    position: absolute;
+    top: 0;
+    left: clamp(20px, 8vw, 140px);
+    width: 38px;
+    transform: translateY(-20%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 900ms cubic-bezier(0.3, 1.4, 0.5, 1), opacity 600ms ease;
+  }
+  :global(.footer:hover .hw-ghost) {
+    opacity: 1;
+    transform: translateY(-85%);
+  }
+  /* En táctil no hay hover: el fantasma queda asomado siempre. */
+  @media (hover: none) {
+    :global(.hw-ghost) { opacity: 1; transform: translateY(-85%); }
+  }
+
+  @media (max-width: 767px) {
+    :global(.hw-spider) { display: none; }
+  }
+</style>

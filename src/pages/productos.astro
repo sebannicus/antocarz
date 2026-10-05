@@ -18,7 +18,7 @@ const breadcrumbSchema = {
   ]
 };
 ---
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} preloadOfferBanner>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   <OfertaFija />
   <section class="catalog-hero">

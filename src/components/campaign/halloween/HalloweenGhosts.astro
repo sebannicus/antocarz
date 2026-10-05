@@ -1,0 +1,96 @@
+---
+/**
+ * HalloweenGhosts.astro — Antocarz · Campaña Halloween 2026
+ * Fantasmas "residentes" que rondan secciones existentes, inyectados por
+ * script para no tocar el markup de esas secciones:
+ *  - #testimonios: dos fantasmas flotando en los márgenes (pantallas anchas).
+ *  - Sucursales: un fantasma asomado por detrás del borde superior del mapa.
+ *  - /verificador: un fantasma flotando junto a la tarjeta de búsqueda.
+ * Si una sección no existe en la página, simplemente se omite.
+ */
+---
+
+<script>
+  import { GHOST_SVG } from './shapes';
+
+  interface GhostOptions { size: number; className: string; delay?: number; opacity?: number; flip?: boolean }
+
+  function createGhost({ size, className, delay = 0, opacity = 0.9, flip = false }: GhostOptions): HTMLElement {
+    const ghost = document.createElement('span');
+    ghost.className = `hw-ghost-figure ${className}${flip ? ' hw-ghost-figure--flip' : ''}`;
+    ghost.setAttribute('aria-hidden', 'true');
+    ghost.style.setProperty('--size', `${size}px`);
+    ghost.style.setProperty('--delay', `${delay}s`);
+    ghost.style.setProperty('--ghost-opacity', String(opacity));
+    ghost.innerHTML = GHOST_SVG;
+    return ghost;
+  }
+
+  function hauntTestimonials() {
+    const section = document.getElementById('testimonios');
+    if (!section) return;
+    section.classList.add('hw-haunted');
+    section.append(
+      createGhost({ size: 50, className: 'hw-side-ghost hw-side-ghost--left', delay: -2 }),
+      createGhost({ size: 32, className: 'hw-side-ghost hw-side-ghost--right', delay: -4.5, opacity: 0.6, flip: true }),
+    );
+  }
+
+  function hauntMap() {
+    const mapWrap = document.querySelector<HTMLElement>('.localmap__map-wrap');
+    const container = mapWrap?.parentElement;
+    if (!mapWrap || !container) return;
+    container.classList.add('hw-haunted', 'hw-haunted--map');
+    const ghost = createGhost({ size: 46, className: 'hw-map-ghost', delay: -1 });
+    container.append(ghost);
+
+    // Se ancla a la esquina superior derecha del mapa, donde sea que el grid lo deje.
+    const place = () => {
+      ghost.style.top = `${mapWrap.offsetTop}px`;
+      ghost.style.left = `${mapWrap.offsetLeft + mapWrap.offsetWidth - 90}px`;
+    };
+    place();
+    new ResizeObserver(place).observe(container);
+  }
+
+  function hauntVerifier() {
+    const card = document.querySelector<HTMLElement>('.verif__card');
+    const container = card?.parentElement;
+    if (!card || !container) return;
+    container.classList.add('hw-haunted');
+    container.append(createGhost({ size: 52, className: 'hw-verif-ghost', delay: -3 }));
+  }
+
+  if (document.documentElement.dataset.campaign === 'halloween') {
+    hauntTestimonials();
+    hauntMap();
+    hauntVerifier();
+  }
+</script>
+
+<style>
+  :global(.hw-haunted) { position: relative; }
+
+  /* Testimonios: en los márgenes laterales, solo donde hay espacio real. */
+  :global(.hw-side-ghost) { position: absolute; display: none; }
+  @media (min-width: 1280px) {
+    :global(.hw-side-ghost) { display: block; }
+    :global(.hw-side-ghost--left)  { top: 20%; left: max(16px, calc(50% - 690px)); }
+    :global(.hw-side-ghost--right) { top: 58%; right: max(16px, calc(50% - 680px)); }
+  }
+
+  /* Verificador: a la derecha de la tarjeta (desktop). */
+  :global(.hw-verif-ghost) { position: absolute; display: none; }
+  @media (min-width: 1024px) {
+    :global(.hw-verif-ghost) { display: block; top: 52%; right: -40px; }
+  }
+
+  /* Mapa: el fantasma queda DETRÁS del mapa y se asoma por su borde superior. */
+  :global(.hw-haunted--map) { isolation: isolate; }
+  :global(.hw-haunted--map .localmap__map-wrap) { z-index: 1; }
+  :global(.hw-map-ghost) {
+    position: absolute;
+    z-index: 0;
+    margin-top: calc(var(--size) * -0.95);
+  }
+</style>

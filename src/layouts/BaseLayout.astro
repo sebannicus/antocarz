@@ -8,6 +8,10 @@ import { SITE } from '../content/site';
 import { FAQ_ITEMS } from '../content/faq';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import HalloweenAtmosphere from '../components/campaign/halloween/HalloweenAtmosphere.astro';
+import HalloweenEasterEggs from '../components/campaign/halloween/HalloweenEasterEggs.astro';
+import HalloweenGhosts from '../components/campaign/halloween/HalloweenGhosts.astro';
+import { ACTIVE_CAMPAIGN, isCampaignLive } from '../content/campaign';
 import '../styles/global.css';
 import '../styles/animations.css';
 
@@ -16,6 +20,8 @@ export interface BaseLayoutProps {
   description?: string;
   canonicalUrl?: string;
   noIndex?: boolean;
+  /** true en las páginas que muestran el banner fijo (OfertaFija) — es su LCP. */
+  preloadOfferBanner?: boolean;
 }
 
 const {
@@ -23,6 +29,7 @@ const {
   description = SITE.description,
   canonicalUrl = SITE.url,
   noIndex = false,
+  preloadOfferBanner = false,
 } = Astro.props as BaseLayoutProps;
 
 const schemaLocalBusiness = {
@@ -88,10 +95,16 @@ const schemaFAQPage = {
 };
 
 const gaId = import.meta.env.PUBLIC_GA_ID;
+
+// Campaña de temporada: el server decide el estado inicial (sin parpadeo en
+// SSR) y el script inline del <head> lo corrige en el navegador (necesario en
+// páginas prerenderizadas y para que se apague sola al terminar la fecha).
+const campaignLive = ACTIVE_CAMPAIGN ? isCampaignLive(ACTIVE_CAMPAIGN, Astro.url) : false;
+const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
 ---
 
 <!doctype html>
-<html lang="es-CL" data-theme="dark">
+<html lang="es-CL" data-theme="dark" data-campaign={campaignLive ? ACTIVE_CAMPAIGN?.id : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -144,8 +157,12 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Preload primera imagen hero (LCP) -->
-    <link rel="preload" as="image" href="/slides hero/oferta-septiembre-1.webp" />
+    <!-- Preload del banner fijo (LCP): el de la campaña si está activa -->
+    {preloadOfferBanner && (campaignLive && ACTIVE_CAMPAIGN?.banner ? (
+      <link rel="preload" as="image" href={ACTIVE_CAMPAIGN.banner.src} imagesrcset={ACTIVE_CAMPAIGN.banner.srcset} imagesizes={ACTIVE_CAMPAIGN.banner.sizes} />
+    ) : (
+      <link rel="preload" as="image" href="/slides hero/oferta-septiembre-1.webp" />
+    ))}
 
     <!-- Preconnect al servidor de imágenes de productos -->
     <link rel="preconnect" href="https://antocarz.cl" />
@@ -164,13 +181,35 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
 
     <meta name="theme-color" content="#0D0D0D" />
 
-    <!-- Prevenir flash de tema incorrecto (inline, no module) -->
-    <script is:inline>
+    <!-- Campaña de temporada + prevenir flash de tema incorrecto (inline, no module).
+         ?<previewParam>=1|0 fuerza on/off y se recuerda en la sesión. -->
+    <script is:inline define:vars={{ campaign: ACTIVE_CAMPAIGN }}>
       (function() {
-        const saved = localStorage.getItem('antocarz-theme');
-        if (saved === 'light') {
-          document.documentElement.setAttribute('data-theme', 'light');
+        const root = document.documentElement;
+        let live = false;
+        if (campaign) {
+          let forced = null;
+          try {
+            forced = new URLSearchParams(location.search).get(campaign.previewParam);
+            if (forced === '1' || forced === '0') sessionStorage.setItem('antocarz-campaign', forced);
+            else forced = sessionStorage.getItem('antocarz-campaign');
+          } catch (e) {}
+          const now = Date.now();
+          live = forced === '1' || (forced !== '0' && now >= Date.parse(campaign.start) && now < Date.parse(campaign.end));
         }
+        if (live) {
+          root.setAttribute('data-campaign', campaign.id);
+          if (campaign.forceDark) {
+            root.setAttribute('data-theme', 'dark');
+            document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0B0814');
+            return;
+          }
+        } else {
+          root.removeAttribute('data-campaign');
+        }
+        let saved = null;
+        try { saved = localStorage.getItem('antocarz-theme'); } catch (e) {}
+        if (saved === 'light') root.setAttribute('data-theme', 'light');
       })();
     </script>
   </head>
@@ -181,11 +220,14 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
     
     <!-- Marca de agua gigante y sutil del logo (el perro) -->
     <div class="bg-dog-watermark"></div>
+    {isHalloween && <HalloweenAtmosphere />}
+    {isHalloween && <HalloweenGhosts />}
     <Header />
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <Footer />
+    {isHalloween && <HalloweenEasterEggs />}
 
     <script>
       import { initScrollReveal } from '../utils/animations';

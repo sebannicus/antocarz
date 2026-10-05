@@ -1,0 +1,8 @@
+# Lo que la CLI de Vercel NUNCA debe subir (credenciales y basura local)
+php-api/
+antocarz-analytics-*.json
+.env*
+.playwright-mcp/
+/*.png
+dist/
+.astro/
