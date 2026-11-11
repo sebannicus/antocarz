@@ -33,10 +33,12 @@ const showCampaign = Boolean(campaignBanner && ACTIVE_CAMPAIGN && isCampaignLive
       />
     )}
     <img
-      src="/slides hero/oferta-septiembre-1.webp"
-      width="4631"
-      height="1016"
-      alt="Super ofertas en todo — Hertz, Pioneer, Recoil, Kenwood, JBL — Antocarz"
+      src="/slides hero/banner-noviembre-2560.webp"
+      srcset="/slides%20hero/banner-noviembre-1280.webp 1280w, /slides%20hero/banner-noviembre-2560.webp 2560w"
+      sizes="(min-width: 1248px) 1200px, 100vw"
+      width="2560"
+      height="562"
+      alt="Tu auto seguro, tu mente tranquila — Seguridad automotriz Antocarz"
       class="oferta-fija__img oferta-fija__img--default"
       loading={showCampaign ? 'lazy' : 'eager'}
       fetchpriority={showCampaign ? 'auto' : 'high'}

@@ -37,7 +37,7 @@ export interface Campaign {
 
 export const HALLOWEEN_2026: Campaign = {
   id: 'halloween',
-  enabled: true,
+  enabled: false, // terminó el 1-nov-2026
   start: '2026-10-01T00:00:00-03:00',
   end: '2026-11-01T00:00:00-03:00',
   previewParam: 'halloween',

@@ -161,7 +161,7 @@ const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
     {preloadOfferBanner && (campaignLive && ACTIVE_CAMPAIGN?.banner ? (
       <link rel="preload" as="image" href={ACTIVE_CAMPAIGN.banner.src} imagesrcset={ACTIVE_CAMPAIGN.banner.srcset} imagesizes={ACTIVE_CAMPAIGN.banner.sizes} />
     ) : (
-      <link rel="preload" as="image" href="/slides hero/oferta-septiembre-1.webp" />
+      <link rel="preload" as="image" href="/slides hero/banner-noviembre-2560.webp" imagesrcset="/slides%20hero/banner-noviembre-1280.webp 1280w, /slides%20hero/banner-noviembre-2560.webp 2560w" imagesizes="(min-width: 1248px) 1200px, 100vw" />
     ))}
 
     <!-- Preconnect al servidor de imágenes de productos -->
