@@ -276,7 +276,7 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
         if (data.valid) {
           msgEl.textContent = 'RUT verificado. Descargando…';
           msgEl.className = 'verif-item__msg verif-item__msg--ok';
-          window.location.href = `${DOWNLOAD_BASE}?val=${cert.id}`;
+          window.location.href = `${DOWNLOAD_BASE}?val=${cert.id}&rut=${encodeURIComponent(rut)}`; // F1 1.6: el ERP exige el RUT del titular
         } else {
           msgEl.textContent = 'El RUT no coincide con este certificado.';
           msgEl.className = 'verif-item__msg verif-item__msg--error';
