@@ -32,6 +32,8 @@ export interface Campaign {
   previewParam: string;
   /** Fuerza el modo oscuro mientras la campaña está activa. */
   forceDark: boolean;
+  /** <meta name="theme-color"> mientras la campaña está activa. */
+  themeColor?: string;
   banner?: CampaignBanner;
 }
 
@@ -42,6 +44,7 @@ export const HALLOWEEN_2026: Campaign = {
   end: '2026-11-01T00:00:00-03:00',
   previewParam: 'halloween',
   forceDark: true,
+  themeColor: '#0B0814',
   banner: {
     // Pieza del cliente v2 (banner_antocarz_halloween_v2.png, 7090px) → versiones optimizadas.
     src: '/slides hero/banner_antocarz_halloween_v2-2560.webp',
@@ -54,7 +57,24 @@ export const HALLOWEEN_2026: Campaign = {
   },
 };
 
-export const ACTIVE_CAMPAIGN: Campaign | null = HALLOWEEN_2026.enabled ? HALLOWEEN_2026 : null;
+export const NAVIDAD_2026: Campaign = {
+  id: 'navidad',
+  enabled: true,
+  // Del viernes 20-nov al domingo 28-dic inclusive (diciembre en Chile = UTC-3).
+  start: '2026-11-20T00:00:00-03:00',
+  end: '2026-12-29T00:00:00-03:00',
+  previewParam: 'navidad',
+  forceDark: true,
+  themeColor: '#0A1D14',
+  // Sin banner propio: sigue el banner fijo del mes hasta que el cliente mande la pieza navideña.
+};
+
+/** Momento objetivo del contador regresivo de la campaña de Navidad. */
+export const CHRISTMAS_AT = '2026-12-25T00:00:00-03:00';
+
+/** Campaña habilitada (solo una a la vez; la primera de la lista gana). */
+export const ACTIVE_CAMPAIGN: Campaign | null =
+  [NAVIDAD_2026, HALLOWEEN_2026].find((c) => c.enabled) ?? null;
 
 /** Evaluación en servidor — evita el parpadeo en páginas SSR. */
 export function isCampaignLive(campaign: Campaign, url: URL, now: Date = new Date()): boolean {

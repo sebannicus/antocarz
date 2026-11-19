@@ -11,6 +11,7 @@ import Footer from '../components/layout/Footer.astro';
 import HalloweenAtmosphere from '../components/campaign/halloween/HalloweenAtmosphere.astro';
 import HalloweenEasterEggs from '../components/campaign/halloween/HalloweenEasterEggs.astro';
 import HalloweenGhosts from '../components/campaign/halloween/HalloweenGhosts.astro';
+import NavidadAtmosphere from '../components/campaign/navidad/NavidadAtmosphere.astro';
 import { ACTIVE_CAMPAIGN, isCampaignLive } from '../content/campaign';
 import '../styles/global.css';
 import '../styles/animations.css';
@@ -101,6 +102,9 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
 // páginas prerenderizadas y para que se apague sola al terminar la fecha).
 const campaignLive = ACTIVE_CAMPAIGN ? isCampaignLive(ACTIVE_CAMPAIGN, Astro.url) : false;
 const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
+const isNavidad = ACTIVE_CAMPAIGN?.id === 'navidad';
+// Serif de titulares de la campaña de Navidad (no bloqueante, solo si está habilitada).
+const navidadFont = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap';
 ---
 
 <!doctype html>
@@ -174,6 +178,7 @@ const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" /></noscript>
+    {isNavidad && <link href={navidadFont} rel="stylesheet" media="print" onload="this.media='all'" />}
 
     <!-- Schema JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify(schemaLocalBusiness)} />
@@ -201,7 +206,7 @@ const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
           root.setAttribute('data-campaign', campaign.id);
           if (campaign.forceDark) {
             root.setAttribute('data-theme', 'dark');
-            document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0B0814');
+            if (campaign.themeColor) document.querySelector('meta[name="theme-color"]')?.setAttribute('content', campaign.themeColor);
             return;
           }
         } else {
@@ -222,6 +227,7 @@ const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
     <div class="bg-dog-watermark"></div>
     {isHalloween && <HalloweenAtmosphere />}
     {isHalloween && <HalloweenGhosts />}
+    {isNavidad && <NavidadAtmosphere />}
     <Header />
     <main id="main-content" tabindex="-1">
       <slot />

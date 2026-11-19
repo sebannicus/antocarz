@@ -21,11 +21,16 @@ import FAQ from '../components/sections/Faq.astro';
 import LocalMap from '../components/sections/LocalMap.astro';
 import CtaFinal from '../components/sections/CtaFinal.astro';
 import Instagram from '../components/sections/Instagram.astro';
+import NavidadRegalos from '../components/campaign/navidad/NavidadRegalos.astro';
+import { ACTIVE_CAMPAIGN } from '../content/campaign';
+
+const isNavidad = ACTIVE_CAMPAIGN?.id === 'navidad';
 ---
 
 <BaseLayout preloadOfferBanner>
   <OfertaFija />
   <Hero />
+  {isNavidad && <NavidadRegalos />}
   <Testimonials />
   <Authority />
   <Brands />

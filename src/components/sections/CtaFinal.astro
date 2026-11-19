@@ -8,8 +8,10 @@ import Button from '../ui/Button.astro';
 import { SITE } from '../../content/site';
 import { ACTIVE_CAMPAIGN } from '../../content/campaign';
 import HalloweenPumpkin from '../campaign/halloween/HalloweenPumpkin.astro';
+import { XMAS, ornamentSvg } from '../campaign/navidad/shapes';
 
 const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
+const isNavidad = ACTIVE_CAMPAIGN?.id === 'navidad';
 
 const whatsappMsg = encodeURIComponent('Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?');
 const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
@@ -24,7 +26,13 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
     <div class="cta-final__inner" data-scroll-children>
 
       <!-- Logo prominente antes del CTA (en Halloween, escoltado por calabazas) -->
-      {isHalloween ? (
+      {isNavidad ? (
+        <div class="xm-cta-logo">
+          <span class="xm-cta-logo__orn xm-cta-logo__orn--l" aria-hidden="true" set:html={ornamentSvg(XMAS.red)} />
+          <img src="/logos/PNG PEQUE LOGO.webp" alt="Antocarz" class="cta-final__logo" width="180" height="80" loading="lazy" />
+          <span class="xm-cta-logo__orn xm-cta-logo__orn--r" aria-hidden="true" set:html={ornamentSvg(XMAS.gold)} />
+        </div>
+      ) : isHalloween ? (
         <div class="hw-cta-logo">
           <HalloweenPumpkin size={44} face="grin" tilt={-8} class="hw-cta-logo__pumpkin" />
           <img src="/logos/PNG PEQUE LOGO.webp" alt="Antocarz" class="cta-final__logo" width="180" height="80" loading="lazy" />
@@ -69,6 +77,27 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
 </section>
 
 <style>
+  /* Campaña Navidad: esferas colgando a los lados del logo (ocultas fuera de campaña). */
+  .xm-cta-logo { display: flex; align-items: center; justify-content: center; gap: var(--space-4); }
+  .xm-cta-logo__orn { display: none; }
+  :global(html[data-campaign="navidad"]) .xm-cta-logo__orn {
+    display: block;
+    width: 30px;
+    align-self: flex-start;
+    transform-origin: top center;
+    animation: xm-cta-swing 3.4s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(226, 184, 75, 0.45));
+  }
+  :global(html[data-campaign="navidad"]) .xm-cta-logo__orn--r { animation-delay: -1.7s; }
+  .xm-cta-logo__orn :global(svg) { display: block; width: 100%; height: auto; }
+  @keyframes xm-cta-swing {
+    0%, 100% { transform: rotate(-7deg); }
+    50%      { transform: rotate(7deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html[data-campaign="navidad"]) .xm-cta-logo__orn { animation: none; }
+  }
+
   /* Campaña Halloween: calabazas a los lados del logo (ocultas fuera de campaña). */
   .hw-cta-logo {
     display: flex;

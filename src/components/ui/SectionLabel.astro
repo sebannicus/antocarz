@@ -11,14 +11,17 @@ export interface SectionLabelProps {
 
 import { ACTIVE_CAMPAIGN } from '../../content/campaign';
 import HalloweenPumpkin from '../campaign/halloween/HalloweenPumpkin.astro';
+import { ornamentSvg } from '../campaign/navidad/shapes';
 
 const { text, align = 'left' } = Astro.props as SectionLabelProps;
 const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
+const isNavidad = ACTIVE_CAMPAIGN?.id === 'navidad';
 ---
 
 <span class:list={['section-label', align === 'center' && 'section-label--center']}>
   <span class="section-label__dot" aria-hidden="true"></span>
   {isHalloween && <HalloweenPumpkin size={16} face="grin" class="section-label__pumpkin" />}
+  {isNavidad && <span class="section-label__ornament" aria-hidden="true" set:html={ornamentSvg()} />}
   {text}
 </span>
 
@@ -46,6 +49,26 @@ const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
     background: var(--color-gold);
     border-radius: 50%;
     flex-shrink: 0;
+  }
+
+  /* Campaña Navidad: la viñeta pasa a ser una esfera que se balancea. */
+  .section-label__ornament { display: none; }
+  :global(html[data-campaign="navidad"]) .section-label__dot { display: none; }
+  :global(html[data-campaign="navidad"]) .section-label__ornament {
+    display: inline-block;
+    width: 13px;
+    flex-shrink: 0;
+    transform-origin: top center;
+    animation: xm-ornament-swing 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 5px rgba(226, 184, 75, 0.5));
+  }
+  .section-label__ornament :global(svg) { display: block; width: 100%; height: auto; }
+  @keyframes xm-ornament-swing {
+    0%, 100% { transform: rotate(-8deg); }
+    50%      { transform: rotate(8deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html[data-campaign="navidad"]) .section-label__ornament { animation: none; }
   }
 
   /* Campaña Halloween: la viñeta pasa a ser una mini calabaza. */

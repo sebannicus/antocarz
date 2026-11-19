@@ -6,8 +6,10 @@
 import { SITE } from '../../content/site';
 import { ACTIVE_CAMPAIGN } from '../../content/campaign';
 import HalloweenPumpkin from '../campaign/halloween/HalloweenPumpkin.astro';
+import { XMAS, gnomeSvg, giftSvg } from '../campaign/navidad/shapes';
 
 const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
+const isNavidad = ACTIVE_CAMPAIGN?.id === 'navidad';
 
 const year = new Date().getFullYear();
 const whatsappMsg = encodeURIComponent('Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?');
@@ -20,6 +22,14 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
       <HalloweenPumpkin size={34} face="none" tilt={-10} />
       <HalloweenPumpkin size={56} face="grin" tilt={4} delay={-0.8} />
       <HalloweenPumpkin size={40} face="smile" tilt={-5} delay={-2.1} />
+    </div>
+  )}
+  {isNavidad && (
+    <div class="xm-footer-gnomes" aria-hidden="true">
+      <span class="xm-footer-gnomes__g xm-footer-gnomes__g--1" set:html={gnomeSvg(XMAS.red, XMAS.pine)} />
+      <span class="xm-footer-gnomes__gift" set:html={giftSvg(XMAS.gold, XMAS.burgundy)} />
+      <span class="xm-footer-gnomes__g xm-footer-gnomes__g--2" set:html={gnomeSvg(XMAS.burgundy, XMAS.pineLight)} />
+      <span class="xm-footer-gnomes__g xm-footer-gnomes__g--3" set:html={gnomeSvg(XMAS.pineLight, XMAS.red)} />
     </div>
   )}
   <div class="container footer__inner">
@@ -75,6 +85,36 @@ const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
 </footer>
 
 <style>
+  /* Campaña Navidad: gnomos parados sobre la nieve del borde superior del footer. */
+  .xm-footer-gnomes { display: none; }
+  :global(html[data-campaign="navidad"]) .xm-footer-gnomes {
+    position: absolute;
+    top: 6px;
+    right: clamp(20px, 8vw, 140px);
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+  .xm-footer-gnomes :global(svg) { display: block; width: 100%; height: auto; }
+  .xm-footer-gnomes__g { transform-origin: bottom center; animation: xm-footer-sway 4s ease-in-out infinite; }
+  .xm-footer-gnomes__g--1 { width: 34px; }
+  .xm-footer-gnomes__g--2 { width: 48px; animation-delay: -1.3s; }
+  .xm-footer-gnomes__g--3 { width: 30px; animation-delay: -2.6s; }
+  .xm-footer-gnomes__gift { width: 26px; }
+  @keyframes xm-footer-sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50%      { transform: rotate(3deg); }
+  }
+  @media (max-width: 767px) {
+    :global(html[data-campaign="navidad"]) .xm-footer-gnomes { transform: translateY(-100%) scale(0.8); transform-origin: bottom right; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .xm-footer-gnomes__g { animation: none; }
+  }
+
   /* Campaña Halloween: trío de calabazas sobre el borde superior del footer. */
   .hw-footer-pumpkins { display: none; }
   :global(html[data-campaign="halloween"]) .hw-footer-pumpkins {

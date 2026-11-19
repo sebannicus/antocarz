@@ -1,0 +1,447 @@
+---
+/**
+ * NavidadHeroScene.astro — Antocarz · Campaña Navidad 2026
+ * Decoración del Hero, en tres capas (todas aria-hidden y visibles solo con
+ * <html data-campaign="navidad">):
+ *  1. .xm-scene  (detrás de todo): cielo verde bosque con luz cálida, bokeh,
+ *     guirnalda de luces y pinos lejanos.
+ *  2. .xm-flight (encima del texto): el trineo de Papá Noel que cruza el cielo.
+ *     Clic en el trineo → lluvia de regalos (easter egg).
+ *  3. .xm-ground (sobre la franja de marcas): pino, gnomos y regalos.
+ *     Clic en un gnomo → salta.
+ */
+import { XMAS, SLEIGH_SVG, gnomeSvg, treeSvg, giftSvg } from './shapes';
+
+// Guirnalda: N curvas colgantes; ampolletas sobre y = TOP + SAG·4t(1−t).
+const SWAGS = 4;
+const PER_SWAG = 7;
+const TOP = 2;
+const SAG = 26;
+const BULB_COLORS = ['r', 'g', 'y', 'w'];
+const bulbs: { x: number; y: number; c: string; i: number }[] = [];
+for (let s = 0; s < SWAGS; s++) {
+  for (let k = 1; k < PER_SWAG; k++) {
+    const t = k / PER_SWAG;
+    const i = bulbs.length;
+    bulbs.push({ x: ((s + t) / SWAGS) * 100, y: TOP + SAG * 4 * t * (1 - t), c: BULB_COLORS[i % 4], i });
+  }
+}
+// Curva cuadrática equivalente: control en y = TOP + 2·SAG (viewBox 1000 × 60).
+const wirePath = Array.from({ length: SWAGS }, (_, s) => {
+  const x0 = (s / SWAGS) * 1000;
+  const x1 = ((s + 1) / SWAGS) * 1000;
+  return `${s === 0 ? `M${x0} ${TOP}` : ''} Q${(x0 + x1) / 2} ${TOP + 2 * SAG} ${x1} ${TOP}`;
+}).join(' ');
+
+// Bokeh cálido fijo (determinista para el SSR).
+const bokeh = [
+  { x: 8,  y: 22, s: 90,  c: 'g', d: -1 },
+  { x: 22, y: 64, s: 60,  c: 'r', d: -3 },
+  { x: 38, y: 14, s: 70,  c: 'g', d: -5 },
+  { x: 52, y: 70, s: 110, c: 'r', d: -2 },
+  { x: 68, y: 30, s: 80,  c: 'g', d: -6 },
+  { x: 84, y: 60, s: 100, c: 'r', d: -4 },
+  { x: 94, y: 18, s: 60,  c: 'g', d: -7 },
+];
+
+const farTrees = [
+  { x: 1, h: 110 }, { x: 6, h: 80 }, { x: 11, h: 130 }, { x: 88, h: 120 }, { x: 93, h: 90 }, { x: 97, h: 140 },
+];
+
+const TREE = treeSvg();
+const GIFT_FOR_RAIN = [
+  giftSvg(XMAS.red, XMAS.gold),
+  giftSvg(XMAS.pineLight, XMAS.cream),
+  giftSvg(XMAS.gold, XMAS.burgundy),
+  giftSvg(XMAS.cream, XMAS.red),
+];
+---
+
+<div class="xm-scene" aria-hidden="true">
+  <div class="xm-scene__sky"></div>
+  <div class="xm-scene__warm"></div>
+
+  {bokeh.map((b) => (
+    <span class={`xm-bokeh xm-bokeh--${b.c}`} style={`--x:${b.x}%; --y:${b.y}%; --s:${b.s}px; --d:${b.d}s;`}></span>
+  ))}
+
+  <div class="xm-garland">
+    <svg class="xm-garland__wire" viewBox="0 0 1000 60" preserveAspectRatio="none" focusable="false">
+      <path d={wirePath} />
+    </svg>
+    {bulbs.map((b) => (
+      <span class={`xm-bulb xm-bulb--${b.c}`} style={`--x:${b.x}%; --y:${b.y}px; --i:${b.i};`}></span>
+    ))}
+  </div>
+
+  <div class="xm-far-trees">
+    {farTrees.map((t) => (
+      <span class="xm-far-tree" style={`--x:${t.x}%; --h:${t.h}px;`} set:html={TREE} />
+    ))}
+  </div>
+</div>
+
+<div class="xm-flight" aria-hidden="true">
+  <button type="button" class="xm-sleigh" data-xm-sleigh tabindex="-1" set:html={SLEIGH_SVG}></button>
+</div>
+
+<div class="xm-ground" aria-hidden="true">
+  <span class="xm-ground__tree" set:html={TREE} />
+  <button type="button" class="xm-gnome xm-gnome--a" data-xm-gnome tabindex="-1" set:html={gnomeSvg(XMAS.red, XMAS.pine)} />
+  <span class="xm-ground__gift xm-ground__gift--lg" set:html={giftSvg(XMAS.burgundy, XMAS.gold)} />
+  <span class="xm-ground__gift xm-ground__gift--sm" set:html={giftSvg(XMAS.gold, XMAS.red)} />
+  <button type="button" class="xm-gnome xm-gnome--b" data-xm-gnome tabindex="-1" set:html={gnomeSvg(XMAS.pineLight, XMAS.burgundy)} />
+  <span class="xm-ground__gift xm-ground__gift--md" set:html={giftSvg(XMAS.pineLight, XMAS.cream)} />
+</div>
+
+<template id="xm-gift-templates">
+  {GIFT_FOR_RAIN.map((g) => <span class="xm-rain-gift" set:html={g} />)}
+</template>
+
+<script>
+  const live = document.documentElement.dataset.campaign === 'navidad';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (live) {
+    // Gnomos: saltan al tocarlos.
+    document.querySelectorAll<HTMLElement>('[data-xm-gnome]').forEach((g) => {
+      g.addEventListener('click', () => {
+        g.classList.remove('is-hopping');
+        void g.offsetWidth; // reinicia la animación
+        g.classList.add('is-hopping');
+      });
+    });
+
+    // Trineo: lluvia de regalos + saludo.
+    const sleigh = document.querySelector<HTMLElement>('[data-xm-sleigh]');
+    const tpl = document.getElementById('xm-gift-templates') as HTMLTemplateElement | null;
+    let raining = false;
+
+    const toast = (text: string) => {
+      const el = document.createElement('div');
+      el.className = 'xm-toast';
+      el.setAttribute('role', 'status');
+      el.textContent = text;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3600);
+    };
+
+    sleigh?.addEventListener('click', () => {
+      if (raining || !tpl) return;
+      raining = true;
+      toast('¡Jo, jo, jo! Feliz Navidad les desea Antocarz 🎄');
+      if (!reduced) {
+        const gifts = Array.from(tpl.content.children) as HTMLElement[];
+        const count = window.innerWidth < 768 ? 12 : 22;
+        for (let i = 0; i < count; i++) {
+          const g = gifts[i % gifts.length].cloneNode(true) as HTMLElement;
+          g.style.setProperty('--x', `${Math.random() * 96}vw`);
+          g.style.setProperty('--s', `${26 + Math.random() * 30}px`);
+          g.style.setProperty('--r', `${Math.random() * 720 - 360}deg`);
+          g.style.setProperty('--dur', `${2.4 + Math.random() * 1.8}s`);
+          g.style.setProperty('--delay', `${Math.random() * 0.9}s`);
+          document.body.appendChild(g);
+          setTimeout(() => g.remove(), 5400);
+        }
+      }
+      setTimeout(() => { raining = false; }, 4000);
+    });
+  }
+</script>
+
+<style>
+  .xm-scene, .xm-flight, .xm-ground { display: none; }
+
+  :global(html[data-campaign="navidad"]) .xm-scene {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* ── Cielo: verde bosque profundo + luz cálida tras el titular ── */
+  .xm-scene__sky {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 55% 50% at 80% 20%, rgba(142, 27, 51, 0.30) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 60% at 0% 100%, rgba(31, 90, 58, 0.45) 0%, transparent 70%),
+      linear-gradient(180deg, #0A1D14 0%, #0E2619 55%, #0A1D14 100%);
+  }
+  .xm-scene__warm {
+    position: absolute;
+    left: -10%;
+    top: 5%;
+    width: 70%;
+    height: 90%;
+    background: radial-gradient(ellipse at 35% 45%, rgba(255, 196, 110, 0.20) 0%, rgba(226, 150, 60, 0.08) 35%, transparent 65%);
+    animation: xm-warm 6s ease-in-out infinite;
+  }
+  @keyframes xm-warm {
+    0%, 100% { opacity: 0.85; }
+    50%      { opacity: 1; }
+  }
+
+  .xm-bokeh {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    filter: blur(18px);
+    opacity: 0.5;
+    animation: xm-bokeh 9s ease-in-out var(--d) infinite;
+  }
+  .xm-bokeh--g { background: rgba(246, 210, 120, 0.35); }
+  .xm-bokeh--r { background: rgba(200, 40, 63, 0.35); }
+  @keyframes xm-bokeh {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.35; }
+    50%      { transform: translateY(-14px) scale(1.12); opacity: 0.6; }
+  }
+
+  /* ── Guirnalda de luces ── */
+  .xm-garland {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+  }
+  .xm-garland__wire {
+    position: absolute;
+    inset: 0 0 auto 0;
+    width: 100%;
+    height: 60px;
+  }
+  .xm-garland__wire path {
+    fill: none;
+    stroke: #1B3A26;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+  .xm-bulb {
+    --c: #F6D985;
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 9px;
+    height: 13px;
+    margin-left: -4.5px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: var(--c);
+    box-shadow: 0 0 8px 2px var(--c), 0 0 22px 4px color-mix(in srgb, var(--c) 45%, transparent);
+    animation: xm-bulb 2.4s ease-in-out calc(var(--i) * -0.37s) infinite;
+  }
+  .xm-bulb::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 2px;
+    width: 5px;
+    height: 4px;
+    border-radius: 1px;
+    background: #2C3A2F;
+  }
+  .xm-bulb--r { --c: #FF4D5E; }
+  .xm-bulb--g { --c: #6FE39A; }
+  .xm-bulb--y { --c: #F6D985; }
+  .xm-bulb--w { --c: #FFF8E8; }
+  @keyframes xm-bulb {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; box-shadow: 0 0 3px 1px var(--c); }
+  }
+
+  /* ── Pinos lejanos (bajo la franja de marcas) ── */
+  .xm-far-trees {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--space-12) + 50px);
+    height: 150px;
+    opacity: 0.45;
+    filter: saturate(0.7) brightness(0.75);
+  }
+  .xm-far-tree {
+    position: absolute;
+    left: var(--x);
+    bottom: 0;
+    height: var(--h);
+    aspect-ratio: 100 / 130;
+  }
+  .xm-far-tree :global(svg) { width: 100%; height: 100%; display: block; }
+
+  /* ── Trineo ── */
+  :global(html[data-campaign="navidad"]) .xm-flight {
+    display: block;
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 120px;
+    z-index: 6;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .xm-sleigh {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 230px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    pointer-events: auto;
+    filter: drop-shadow(0 0 10px rgba(246, 217, 133, 0.55));
+    animation: xm-fly 26s linear 3s infinite;
+    transform: translateX(-260px);
+  }
+  .xm-sleigh :global(svg) { display: block; width: 100%; height: auto; overflow: visible; }
+  .xm-sleigh :global(.xm-sleigh__nose) { animation: xm-nose 1s ease-in-out infinite; }
+  .xm-sleigh :global(.xm-sleigh__deer) { animation: xm-gallop 0.6s ease-in-out infinite alternate; }
+  @keyframes xm-fly {
+    0%   { transform: translate(-260px, 30px) rotate(-4deg); }
+    50%  { transform: translate(50vw, -6px) rotate(-1deg); }
+    70%  { transform: translate(calc(100vw + 40px), -10px) rotate(-3deg); }
+    100% { transform: translate(calc(100vw + 40px), -10px) rotate(-3deg); }
+  }
+  @keyframes xm-gallop {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-2px); }
+  }
+  @keyframes xm-nose {
+    0%, 100% { filter: drop-shadow(0 0 2px #FF3B4E); }
+    50%      { filter: drop-shadow(0 0 7px #FF3B4E); }
+  }
+
+  /* ── Suelo: pino, gnomos y regalos sobre la franja de marcas ── */
+  :global(html[data-campaign="navidad"]) .xm-ground {
+    display: flex;
+    position: absolute;
+    bottom: calc(var(--space-12) + var(--xm-marquee-h, 58px) - 4px);
+    left: calc(50% + 300px);
+    align-items: flex-end;
+    gap: 2px;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .xm-ground::after {
+    content: '';
+    position: absolute;
+    left: -30px;
+    right: -30px;
+    bottom: -14px;
+    height: 34px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255, 210, 130, 0.30) 0%, transparent 70%);
+    z-index: -1;
+  }
+  .xm-ground__tree { width: 92px; aspect-ratio: 100 / 130; margin-right: -6px; }
+  .xm-ground__tree :global(svg),
+  .xm-ground__gift :global(svg),
+  .xm-gnome :global(svg) { display: block; width: 100%; height: auto; }
+  .xm-ground__tree :global(.xm-tree__lamp) { animation: xm-lamp 1.8s ease-in-out calc(var(--i) * -0.29s) infinite; }
+  .xm-ground__tree :global(.xm-tree__star) {
+    transform-origin: 50px 12px;
+    animation: xm-star 3s ease-in-out infinite;
+  }
+  .xm-far-tree :global(.xm-tree__lamp) { animation: xm-lamp 2.6s ease-in-out calc(var(--i) * -0.41s) infinite; }
+  @keyframes xm-lamp {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+  }
+  @keyframes xm-star {
+    0%, 100% { filter: drop-shadow(0 0 3px #F6D985); transform: scale(1); }
+    50%      { filter: drop-shadow(0 0 9px #F6D985); transform: scale(1.12); }
+  }
+  .xm-ground__gift--lg { width: 38px; }
+  .xm-ground__gift--md { width: 30px; }
+  .xm-ground__gift--sm { width: 24px; margin-left: -10px; }
+
+  .xm-gnome {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    pointer-events: auto;
+    transform-origin: bottom center;
+  }
+  .xm-gnome--a { width: 46px; animation: xm-sway 4s ease-in-out infinite; }
+  .xm-gnome--b { width: 38px; animation: xm-sway 4.6s ease-in-out -1.7s infinite; }
+  .xm-gnome.is-hopping { animation: xm-hop 0.7s cubic-bezier(0.3, 1.6, 0.5, 1); }
+  @keyframes xm-sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50%      { transform: rotate(3deg); }
+  }
+  @keyframes xm-hop {
+    0%   { transform: translateY(0) scale(1, 1); }
+    25%  { transform: translateY(0) scale(1.1, 0.88); }
+    55%  { transform: translateY(-26px) scale(0.95, 1.06) rotate(-6deg); }
+    100% { transform: translateY(0) scale(1, 1); }
+  }
+
+  /* ── Lluvia de regalos y saludo (se agregan a <body>) ── */
+  :global(.xm-rain-gift) {
+    position: fixed;
+    top: -70px;
+    left: var(--x);
+    width: var(--s);
+    z-index: var(--z-top);
+    pointer-events: none;
+    animation: xm-rain var(--dur) cubic-bezier(0.4, 0.1, 0.6, 1) var(--delay) forwards;
+  }
+  :global(.xm-rain-gift svg) { display: block; width: 100%; height: auto; }
+  @keyframes xm-rain {
+    to { transform: translateY(calc(100vh + 120px)) rotate(var(--r)); }
+  }
+  :global(.xm-toast) {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    z-index: var(--z-top);
+    translate: -50% 0;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #1A1206;
+    background: linear-gradient(135deg, #F6D985, #E2B84B);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(226, 184, 75, 0.4);
+    animation: xm-toast 3.6s ease forwards;
+    white-space: nowrap;
+  }
+  @keyframes xm-toast {
+    0%   { opacity: 0; transform: translateY(16px); }
+    10%, 85% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(8px); }
+  }
+
+  @media (max-width: 1279px) {
+    .xm-far-tree:nth-child(2), .xm-far-tree:nth-child(5) { display: none; }
+  }
+
+  @media (max-width: 1023px) {
+    :global(html[data-campaign="navidad"]) .xm-ground {
+      left: auto;
+      right: 14px;
+      bottom: calc(var(--xm-marquee-h, 58px) - 3px);
+      transform: scale(0.6);
+      transform-origin: bottom right;
+    }
+    .xm-far-trees { display: none; }
+    .xm-garland { height: 50px; }
+    .xm-bulb:nth-child(even) { display: none; }
+    .xm-sleigh { width: 150px; top: 14px; animation-duration: 18s; }
+    :global(html[data-campaign="navidad"]) .xm-flight { height: 80px; }
+    .xm-bokeh:nth-child(n + 6) { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .xm-scene__warm, .xm-bokeh, .xm-bulb, .xm-gnome,
+    .xm-ground__tree :global(*), .xm-far-tree :global(*),
+    .xm-sleigh :global(*) { animation: none !important; }
+    .xm-sleigh { animation: none; transform: none; left: auto; right: 8%; }
+  }
+</style>

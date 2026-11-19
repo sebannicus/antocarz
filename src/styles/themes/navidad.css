@@ -1,0 +1,390 @@
+/**
+ * navidad.css — Antocarz · Campaña Navidad 2026 (20-nov → 28-dic)
+ * Tema de temporada. TODO cuelga de html[data-campaign="navidad"]:
+ * sin ese atributo este archivo no cambia nada.
+ *
+ * Paleta: verde bosque (fondos) · rojo burdeos (calidez) · dorado (acento).
+ * Tipografía: Playfair Display en titulares (cargada en BaseLayout solo
+ * cuando la campaña está habilitada), Lato en el resto.
+ *
+ * Contraste: dorado #E2B84B sobre #0A1D14 ≈ 9.6:1. Los botones dorados
+ * llevan texto oscuro (#1A1206) — el blanco sobre dorado no alcanza AA.
+ */
+
+/* ════════════════════════════════════════════
+ * 1. TOKENS
+ * ════════════════════════════════════════════ */
+html[data-campaign="navidad"] {
+  --xm-night:      #0A1D14;
+  --xm-surface:    #0F2619;
+  --xm-overlay:    #153321;
+  --xm-pine:       #1F5A3A;
+  --xm-gold:       #E2B84B;
+  --xm-gold-light: #F6D985;
+  --xm-gold-dim:   #C49A2C;
+  --xm-burgundy:   #8E1B33;
+  --xm-red:        #C8283F;
+  --xm-cream:      #F7F1E3;
+  --xm-ink:        #1A1206;
+  --xm-serif:      'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-headline: var(--xm-serif);
+
+  --color-bg:          var(--xm-night);
+  --color-bg-surface:  var(--xm-surface);
+  --color-bg-overlay:  var(--xm-overlay);
+
+  /* "gold" es el acento principal del sistema (históricamente rojo). */
+  --color-gold:        var(--xm-gold);
+  --color-gold-light:  var(--xm-gold-light);
+  --color-gold-dim:    var(--xm-gold-dim);
+  --color-violet:      var(--xm-red);
+  --color-violet-dim:  var(--xm-burgundy);
+
+  --color-text-primary:   #FFFFFF;
+  --color-text-secondary: #E4E0D2;
+  --color-text-muted:     #A9B5A6;
+
+  --color-border:       rgba(226, 184, 75, 0.16);
+  --color-border-hover: rgba(226, 184, 75, 0.45);
+
+  --shadow-card:       0 8px 32px rgba(2, 10, 6, 0.55);
+  --shadow-gold:       0 0 40px rgba(226, 184, 75, 0.14), 0 0 80px rgba(142, 27, 51, 0.12);
+  --shadow-gold-hover: 0 0 60px rgba(226, 184, 75, 0.26), 0 0 100px rgba(142, 27, 51, 0.18);
+  --glow-gold:         0 0 80px rgba(226, 184, 75, 0.35);
+  --glow-violet:       0 0 80px rgba(142, 27, 51, 0.30);
+
+  color-scheme: dark;
+}
+
+/* ════════════════════════════════════════════
+ * 2. GLOBAL
+ * ════════════════════════════════════════════ */
+
+/* Titulares con serif elegante. */
+html[data-campaign="navidad"] :is(h1, h2) {
+  font-family: var(--xm-serif);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Rejilla difuminada de fondo: dorado + verde en vez de rojo. */
+html[data-campaign="navidad"] .bg-hazard-glow {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--xm-gold) 0, var(--xm-gold) 60px,
+    var(--xm-night) 60px, var(--xm-night) 120px,
+    var(--xm-burgundy) 120px, var(--xm-burgundy) 180px,
+    var(--xm-night) 180px, var(--xm-night) 240px
+  );
+}
+
+/* Cintas separadoras → cinta de regalo burdeos/dorado con guirnalda de luces. */
+html[data-campaign="navidad"] .hazard-stripes {
+  position: relative;
+  height: 14px;
+  background:
+    linear-gradient(180deg, transparent 5px, var(--xm-gold) 5px, var(--xm-gold) 9px, transparent 9px),
+    repeating-linear-gradient(45deg, var(--xm-burgundy) 0 22px, #6E1428 22px 44px);
+  border-top: 1px solid rgba(246, 217, 133, 0.35);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 6px 24px rgba(142, 27, 51, 0.25);
+  opacity: 1;
+}
+/* Ampolletas sobre la cinta (dos capas que se alternan = titileo). */
+html[data-campaign="navidad"] .hazard-stripes::before,
+html[data-campaign="navidad"] .hazard-stripes::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: -5px;
+  height: 10px;
+  pointer-events: none;
+  background-size: 96px 10px;
+  background-repeat: repeat-x;
+}
+html[data-campaign="navidad"] .hazard-stripes::before {
+  background-image:
+    radial-gradient(circle at 12px 5px, #FF4D5E 0 3.5px, transparent 4.5px),
+    radial-gradient(circle at 60px 5px, #F6D985 0 3.5px, transparent 4.5px);
+  filter: drop-shadow(0 0 4px rgba(255, 210, 120, 0.9));
+  animation: xm-twinkle 1.6s steps(1, end) infinite;
+}
+html[data-campaign="navidad"] .hazard-stripes::after {
+  background-image:
+    radial-gradient(circle at 36px 5px, #7CE0A0 0 3.5px, transparent 4.5px),
+    radial-gradient(circle at 84px 5px, #FFFFFF 0 3.5px, transparent 4.5px);
+  filter: drop-shadow(0 0 4px rgba(200, 255, 220, 0.8));
+  animation: xm-twinkle 1.6s steps(1, end) -0.8s infinite;
+}
+@keyframes xm-twinkle {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.35; }
+}
+
+html[data-campaign="navidad"] ::selection {
+  background-color: rgba(226, 184, 75, 0.35);
+  color: #FFFFFF;
+}
+html[data-campaign="navidad"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--xm-gold), var(--xm-burgundy));
+}
+html[data-campaign="navidad"] :focus-visible {
+  outline-color: var(--xm-gold-light);
+  box-shadow: 0 0 0 6px rgba(226, 184, 75, 0.18);
+}
+
+/* Pulso de los CTA: brillo dorado cálido. */
+html[data-campaign="navidad"] .pulse-gold { animation-name: xm-pulse; }
+@keyframes xm-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(226, 184, 75, 0.45), 0 4px 24px rgba(226, 184, 75, 0.30); }
+  50%      { box-shadow: 0 0 0 12px rgba(226, 184, 75, 0), 0 4px 32px rgba(200, 40, 63, 0.35); }
+}
+
+/* Texto con degradado dorado (utilidad global del sitio). */
+html[data-campaign="navidad"] .text-gradient-gold {
+  background: linear-gradient(100deg, var(--xm-gold-light) 0%, var(--xm-gold) 50%, #D98A3D 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style: italic;
+}
+
+/* ════════════════════════════════════════════
+ * 3. COMPONENTES
+ * ════════════════════════════════════════════ */
+
+/* ── Header: vidrio verde con hilo dorado ── */
+html[data-campaign="navidad"] .header--scrolled {
+  background: rgba(10, 29, 20, 0.82);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 10px 30px rgba(2, 10, 6, 0.5);
+}
+html[data-campaign="navidad"] .header--scrolled::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200, 40, 63, 0.6), rgba(226, 184, 75, 0.7), rgba(200, 40, 63, 0.6), transparent);
+}
+html[data-campaign="navidad"] .header__link:hover {
+  color: #FFFFFF;
+  text-shadow: 0 0 14px rgba(226, 184, 75, 0.75);
+}
+html[data-campaign="navidad"] #theme-toggle { display: none; }
+
+/* ── Botones ── */
+html[data-campaign="navidad"] .btn--primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(135deg, var(--xm-gold-light) 0%, var(--xm-gold) 45%, var(--xm-gold-dim) 100%);
+  color: var(--xm-ink);
+  font-weight: var(--weight-bold);
+  box-shadow: 0 4px 24px rgba(226, 184, 75, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: box-shadow var(--transition-base), transform var(--transition-spring);
+}
+html[data-campaign="navidad"] .btn--primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.6) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 700ms ease;
+}
+html[data-campaign="navidad"] .btn--primary:hover {
+  color: var(--xm-ink);
+  box-shadow: 0 6px 36px rgba(226, 184, 75, 0.5), 0 0 60px rgba(200, 40, 63, 0.3);
+}
+html[data-campaign="navidad"] .btn--primary:hover::after { transform: translateX(120%); }
+
+html[data-campaign="navidad"] .btn--ghost {
+  border-color: rgba(226, 184, 75, 0.35);
+  background: rgba(15, 38, 25, 0.5);
+  backdrop-filter: blur(6px);
+}
+html[data-campaign="navidad"] .btn--ghost:hover {
+  border-color: rgba(226, 184, 75, 0.7);
+  box-shadow: 0 0 24px rgba(142, 27, 51, 0.35), inset 0 0 14px rgba(226, 184, 75, 0.08);
+}
+html[data-campaign="navidad"] .btn--secondary { background: rgba(226, 184, 75, 0.10); }
+html[data-campaign="navidad"] .btn--secondary:hover { background: rgba(226, 184, 75, 0.20); }
+html[data-campaign="navidad"] .btn--outline:hover { color: var(--xm-ink); }
+
+/* ── Banner fijo ── */
+html[data-campaign="navidad"] .oferta-fija { background: transparent; }
+
+/* ── Hero ── */
+html[data-campaign="navidad"] .hero { background: var(--xm-night); }
+html[data-campaign="navidad"] .hero::before {
+  background: radial-gradient(ellipse, rgba(226, 184, 75, 0.14) 0%, transparent 70%);
+}
+html[data-campaign="navidad"] .hero__fade {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(10, 29, 20, 0.70) 35%,
+    rgba(10, 29, 20, 0.40) 65%,
+    transparent 100%
+  );
+}
+html[data-campaign="navidad"] .hero__slide-img {
+  background: transparent;
+  filter: drop-shadow(0 20px 50px rgba(2, 10, 6, 0.7));
+}
+html[data-campaign="navidad"] .hero__title { text-shadow: 0 2px 30px rgba(0, 0, 0, 0.45); }
+html[data-campaign="navidad"] .hero__title-accent {
+  font-style: italic;
+  background: linear-gradient(100deg, var(--xm-gold-light) 0%, var(--xm-gold) 45%, #E08A3C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 22px rgba(246, 200, 110, 0.45));
+}
+html[data-campaign="navidad"] .hero__label { color: var(--xm-gold-light); }
+html[data-campaign="navidad"] .hero__label-dot { background: var(--xm-red); }
+html[data-campaign="navidad"] .hero__proof { border-top-color: rgba(226, 184, 75, 0.22); }
+html[data-campaign="navidad"] .hero__marquee {
+  background: rgba(10, 29, 20, 0.62);
+  border-color: rgba(226, 184, 75, 0.18);
+}
+html[data-campaign="navidad"] .hero__marquee-sep { color: var(--xm-red); opacity: 0.85; }
+
+/* Botón "Ver servicios" ↔ "Ideas de regalo": cada uno en su modo. */
+.xm-only { display: none !important; }
+html[data-campaign="navidad"] .xm-only { display: inline-flex !important; }
+html[data-campaign="navidad"] .xm-hide { display: none !important; }
+
+/* ── Cards: borde dorado tenue, brillo cálido al hover ── */
+html[data-campaign="navidad"] :is(.service-card, .own-brand-card, .testimonial-card, .pcta__card, .ig__cell) {
+  background-image: linear-gradient(160deg, rgba(226, 184, 75, 0.06) 0%, transparent 40%);
+}
+html[data-campaign="navidad"] :is(.service-card, .own-brand-card, .pcta__card):hover {
+  border-color: rgba(226, 184, 75, 0.5);
+  box-shadow: 0 0 0 1px rgba(226, 184, 75, 0.15), 0 18px 50px rgba(2, 10, 6, 0.6), 0 0 60px rgba(142, 27, 51, 0.25);
+}
+html[data-campaign="navidad"] .testimonial-card:hover {
+  border-color: rgba(200, 40, 63, 0.45);
+  box-shadow: 0 0 50px rgba(142, 27, 51, 0.2);
+}
+html[data-campaign="navidad"] .service-card:hover .service-card__img-overlay {
+  background: linear-gradient(to top, rgba(142, 27, 51, 0.55) 0%, rgba(226, 184, 75, 0.1) 55%, transparent 100%);
+}
+
+/* ── Fondos de sección con halo rojo fijo → cálidos ── */
+html[data-campaign="navidad"] .testimonials {
+  background: radial-gradient(ellipse at bottom, rgba(142, 27, 51, 0.16) 0%, var(--color-bg-surface) 75%);
+}
+html[data-campaign="navidad"] .faq__outer,
+html[data-campaign="navidad"] .faq {
+  background: radial-gradient(circle at center, rgba(226, 184, 75, 0.06) 0%, var(--color-bg-overlay) 70%);
+}
+html[data-campaign="navidad"] .pcta {
+  background: radial-gradient(ellipse at top, rgba(226, 184, 75, 0.08) 0%, var(--color-bg) 70%);
+}
+html[data-campaign="navidad"] .ig {
+  background: radial-gradient(circle at center, rgba(142, 27, 51, 0.12) 0%, var(--color-bg-surface) 65%);
+}
+
+/* ── Footer: nieve acumulada sobre el borde ── */
+html[data-campaign="navidad"] .footer {
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 80% at 50% 0%, rgba(142, 27, 51, 0.28), transparent 70%),
+    var(--xm-surface);
+  border-top-color: rgba(226, 184, 75, 0.25);
+}
+html[data-campaign="navidad"] .footer::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: -10px;
+  height: 18px;
+  background: var(--xm-snowcap) repeat-x bottom / 240px 18px;
+  pointer-events: none;
+  filter: drop-shadow(0 -2px 6px rgba(255, 255, 255, 0.15));
+}
+
+/* ── Ficha de producto (/productos/[id]): regalos sobre el marco de la foto ── */
+html[data-campaign="navidad"] .product-gallery { position: relative; }
+html[data-campaign="navidad"] .product-gallery::before,
+html[data-campaign="navidad"] .product-gallery::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  z-index: 2;
+  background: no-repeat bottom / contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+html[data-campaign="navidad"] .product-gallery::before {
+  right: 34px; width: 46px; height: 46px;
+  background-image: var(--xm-gift-red);
+  rotate: 4deg;
+}
+html[data-campaign="navidad"] .product-gallery::after {
+  right: 80px; width: 30px; height: 30px;
+  background-image: var(--xm-gift-green);
+  rotate: -7deg;
+}
+html[data-campaign="navidad"] .gallery-main {
+  background: var(--xm-surface);
+  border-color: rgba(226, 184, 75, 0.3);
+  box-shadow: 0 0 60px rgba(226, 184, 75, 0.12);
+}
+html[data-campaign="navidad"] .gallery-thumb { background: var(--xm-surface); }
+
+/* ════════════════════════════════════════════
+ * Accesibilidad / performance
+ * ════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  html[data-campaign="navidad"] .hazard-stripes::before,
+  html[data-campaign="navidad"] .hazard-stripes::after { animation: none; }
+  html[data-campaign="navidad"] .btn--primary::after { display: none; }
+}
+@media (max-width: 767px) {
+  html[data-campaign="navidad"] .header--scrolled { backdrop-filter: blur(10px); }
+}
+
+/* ════════════════════════════════════════════
+ * Badge "Navidad Antocarz · faltan…" del Hero (markup en Hero.astro)
+ * ════════════════════════════════════════════ */
+.xm-badge { display: none; }
+html[data-campaign="navidad"] .xm-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 7px 16px 7px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--xm-gold-light);
+  background: linear-gradient(90deg, rgba(142, 27, 51, 0.55), rgba(226, 184, 75, 0.12));
+  border: 1px solid rgba(226, 184, 75, 0.4);
+  box-shadow: 0 0 26px rgba(226, 184, 75, 0.18);
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+}
+html[data-campaign="navidad"] .xm-badge:hover {
+  border-color: rgba(246, 217, 133, 0.8);
+  box-shadow: 0 0 32px rgba(226, 184, 75, 0.35);
+}
+html[data-campaign="navidad"] .xm-badge__star {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  color: var(--xm-ink);
+  background: radial-gradient(circle at 38% 36%, #FFF6D6, var(--xm-gold) 70%);
+  box-shadow: 0 0 10px rgba(246, 217, 133, 0.8);
+}
+html[data-campaign="navidad"] .xm-badge__sep { opacity: 0.5; }
+html[data-campaign="navidad"] .xm-badge .xm-countdown-compact { color: rgba(255, 255, 255, 0.8); letter-spacing: 0.04em; }

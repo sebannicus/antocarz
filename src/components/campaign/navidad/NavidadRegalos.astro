@@ -1,0 +1,386 @@
+---
+/**
+ * NavidadRegalos.astro — Antocarz · Campaña Navidad 2026
+ * Sección destacada de temporada: guía de regalos (servicios/productos
+ * estrella), contador regresivo a Navidad y CTA a WhatsApp.
+ * Oculta salvo con <html data-campaign="navidad">.
+ *
+ * Cada regalo abre WhatsApp con un mensaje que nombra el servicio, para que el
+ * bot y el equipo sepan qué se quiere regalar. No se publican precios ni
+ * descuentos: eso lo define el cliente.
+ */
+import Button from '../../ui/Button.astro';
+import NavidadCountdown from './NavidadCountdown.astro';
+import { SITE } from '../../../content/site';
+import { XMAS, giftSvg } from './shapes';
+
+type Regalo = {
+  title: string;
+  tag: string;
+  line: string;
+  image: string;
+  /** Lo que va en el mensaje de WhatsApp. */
+  waName: string;
+  ribbon: 'red' | 'green' | 'gold';
+  more?: { href: string; label: string };
+};
+
+const REGALOS: Regalo[] = [
+  {
+    title: 'Radio Android con CarPlay',
+    tag: 'Para el que maneja cantando',
+    line: 'CarPlay y Android Auto inalámbrico, GPS y pantalla QLED. Radios ZTAudio, instaladas con garantía.',
+    image: '/images/services/car-audio-1.webp',
+    waName: 'una radio Android con CarPlay',
+    ribbon: 'red',
+    more: { href: SITE.ztaudioUrl, label: 'Ver radios' },
+  },
+  {
+    title: 'Polarizado Nanocarbón',
+    tag: 'Para el verano que viene',
+    line: 'Bloquea hasta el 99% de los rayos UV. Con sello en relieve y certificado legal incluidos.',
+    image: '/images/services/polarizado-1.webp',
+    waName: 'polarizado nanocarbón',
+    ribbon: 'gold',
+  },
+  {
+    title: 'Rastreador GPS',
+    tag: 'Para dormir tranquilo',
+    line: 'Ubica tu auto desde el celular. Distribuidores oficiales de Rastreadores.cl.',
+    image: '/images/services/alarma-3.webp',
+    waName: 'un rastreador GPS',
+    ribbon: 'green',
+  },
+  {
+    title: 'Láminas de Seguridad',
+    tag: 'Para cuidar a los tuyos',
+    line: 'Láminas anti-impactos que dificultan el robo por rotura de vidrio.',
+    image: '/images/services/polarizado-2.webp',
+    waName: 'láminas de seguridad',
+    ribbon: 'red',
+  },
+  {
+    title: 'Alarma y Cortacorriente',
+    tag: 'Para el auto regalón',
+    line: 'Alarmas homologadas e inmovilizador para que tu auto se quede donde lo dejaste.',
+    image: '/images/services/alarma-1.webp',
+    waName: 'una alarma y cortacorriente',
+    ribbon: 'gold',
+  },
+  {
+    title: 'Iluminación LED',
+    tag: 'Para ver y ser visto',
+    line: 'Ampolletas y neblineros LED para manejar de noche con más luz.',
+    image: '/images/services/led.webp',
+    waName: 'iluminación LED',
+    ribbon: 'green',
+  },
+];
+
+const waUrl = (text: string) => `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}`;
+const giftMsg = (name: string) => `Hola Antocarz 🎄 Vi su página web y quiero cotizar ${name} como regalo de Navidad.`;
+const helpUrl = waUrl('Hola Antocarz 🎁 Vi su página web y quiero regalar algo para un auto esta Navidad. ¿Me ayudan a elegir?');
+
+const BOW: Record<Regalo['ribbon'], string> = {
+  red: giftSvg(XMAS.red, XMAS.gold),
+  green: giftSvg(XMAS.pineLight, XMAS.cream),
+  gold: giftSvg(XMAS.gold, XMAS.burgundy),
+};
+---
+
+<section class="xm-gifts section" id="regalos" aria-labelledby="xm-gifts-title">
+  <div class="xm-gifts__snowcap" aria-hidden="true"></div>
+  <div class="container">
+    <header class="xm-gifts__head" data-scroll-children>
+      <span class="xm-gifts__eyebrow">✦ Guía de regalos · Navidad 2026 ✦</span>
+      <h2 class="xm-gifts__title" id="xm-gifts-title">
+        Regala <em>seguridad y estilo</em><br /> sobre ruedas
+      </h2>
+      <p class="xm-gifts__sub">
+        Para el auto de la familia, para tu pareja o para ti. Elige el regalo, cotízalo
+        por WhatsApp y llega a Nochebuena con el auto listo.
+      </p>
+    </header>
+
+    <div class="xm-gifts__countdown">
+      <p class="xm-gifts__countdown-label">Cuenta regresiva para Navidad</p>
+      <NavidadCountdown variant="full" />
+    </div>
+
+    <ul class="xm-gifts__grid" role="list">
+      {REGALOS.map((r) => (
+        <li class={`xm-gift xm-gift--${r.ribbon}`}>
+          <span class="xm-gift__bow" aria-hidden="true" set:html={BOW[r.ribbon]} />
+          <div class="xm-gift__media">
+            <img src={r.image} alt={r.title} loading="lazy" width="480" height="320" />
+            <span class="xm-gift__tag">{r.tag}</span>
+          </div>
+          <div class="xm-gift__body">
+            <h3 class="xm-gift__title">{r.title}</h3>
+            <p class="xm-gift__line">{r.line}</p>
+            <div class="xm-gift__actions">
+              <a class="xm-gift__cta" href={waUrl(giftMsg(r.waName))} target="_blank" rel="noopener noreferrer" data-wa-source="navidad-regalos">
+                Lo quiero de regalo 🎁
+              </a>
+              {r.more && <a class="xm-gift__more" href={r.more.href}>{r.more.label} →</a>}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="xm-gifts__final">
+      <p class="xm-gifts__final-text">¿No sabes qué regalar? <strong>Te ayudamos a elegir.</strong></p>
+      <div class="xm-gifts__final-cta">
+        <Button href={helpUrl} variant="primary" size="lg" external={true} pulse={true} data-wa-source="navidad-cta">
+          Elegir mi regalo por WhatsApp
+        </Button>
+        <Button href="/productos" variant="ghost" size="lg">
+          Ver catálogo completo →
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .xm-gifts { display: none; }
+
+  :global(html[data-campaign="navidad"]) .xm-gifts {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 50% 40% at 50% 0%, rgba(226, 184, 75, 0.14) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(142, 27, 51, 0.22) 0%, transparent 70%),
+      linear-gradient(180deg, #0F2619 0%, #0A1D14 100%);
+    border-top: 1px solid rgba(226, 184, 75, 0.2);
+  }
+  .xm-gifts__snowcap {
+    position: absolute;
+    left: 0; right: 0; top: -1px;
+    height: 18px;
+    background: var(--xm-snowcap) repeat-x top / 240px 18px;
+    transform: scaleY(-1);
+    opacity: 0.9;
+  }
+
+  .xm-gifts__head {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto var(--space-10, 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .xm-gifts__eyebrow {
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: #F6D985;
+  }
+  .xm-gifts__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.1rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    color: #FFFFFF;
+  }
+  .xm-gifts__title em {
+    font-style: italic;
+    background: linear-gradient(100deg, #F6D985, #E2B84B 50%, #E08A3C);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .xm-gifts__sub {
+    color: var(--color-text-secondary);
+    font-size: clamp(var(--text-base), 1.6vw, var(--text-lg));
+    line-height: var(--leading-relaxed);
+  }
+
+  .xm-gifts__countdown {
+    max-width: 560px;
+    margin: 0 auto var(--space-12, 48px);
+    text-align: center;
+  }
+  .xm-gifts__countdown-label {
+    margin-bottom: var(--space-4);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: var(--text-lg);
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .xm-gifts__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(20px, 2.5vw, 32px);
+    list-style: none;
+    margin: 0;
+    padding: 18px 0 0;
+  }
+
+  /* ── Tarjeta-regalo: cinta cruzada + moño arriba ── */
+  .xm-gift {
+    --ribbon: #C8283F;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #13301F 0%, #0E2418 100%);
+    border: 1px solid rgba(226, 184, 75, 0.22);
+    box-shadow: 0 14px 40px rgba(2, 10, 6, 0.5);
+    transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 300ms ease, border-color 300ms ease;
+  }
+  .xm-gift--gold  { --ribbon: #E2B84B; }
+  .xm-gift--green { --ribbon: #2E7A4F; }
+  .xm-gift::before {
+    /* Cinta vertical que atraviesa la tarjeta (bajo el contenido). */
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    right: 28px;
+    width: 10px;
+    background: var(--ribbon);
+    opacity: 0.85;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .xm-gift:hover {
+    transform: translateY(-6px) rotate(-0.4deg);
+    border-color: rgba(226, 184, 75, 0.55);
+    box-shadow: 0 22px 60px rgba(2, 10, 6, 0.6), 0 0 50px rgba(226, 184, 75, 0.18);
+  }
+  .xm-gift__bow {
+    position: absolute;
+    top: -22px;
+    right: 9px;
+    width: 48px;
+    z-index: 2;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+    transition: transform 400ms cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .xm-gift:hover .xm-gift__bow { transform: rotate(-10deg) translateY(-4px); }
+  .xm-gift__bow :global(svg) { display: block; width: 100%; height: auto; }
+
+  .xm-gift__media {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+  }
+  .xm-gift__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 600ms ease;
+  }
+  .xm-gift:hover .xm-gift__media img { transform: scale(1.05); }
+  .xm-gift__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 29, 20, 0.85) 0%, transparent 55%);
+  }
+  .xm-gift__tag {
+    position: absolute;
+    left: 14px;
+    bottom: 12px;
+    z-index: 1;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: var(--text-sm);
+    color: #1A1206;
+    background: #F6D985;
+  }
+
+  .xm-gift__body {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5, 20px) 52px var(--space-6, 24px) var(--space-5, 20px);
+    flex: 1;
+  }
+  .xm-gift__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+  .xm-gift__line {
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    flex: 1;
+  }
+  .xm-gift__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+  }
+  .xm-gift__cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: #1A1206;
+    background: linear-gradient(135deg, #F6D985, #E2B84B 60%, #C49A2C);
+    box-shadow: 0 4px 18px rgba(226, 184, 75, 0.3);
+    text-decoration: none;
+    transition: box-shadow 200ms ease, transform 200ms ease;
+  }
+  .xm-gift__cta:hover { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(226, 184, 75, 0.5); }
+  .xm-gift__more {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: #F6D985;
+    text-decoration: none;
+  }
+  .xm-gift__more:hover { text-decoration: underline; }
+
+  .xm-gifts__final {
+    margin-top: var(--space-12, 48px);
+    padding: clamp(24px, 4vw, 40px);
+    border-radius: 20px;
+    text-align: center;
+    background:
+      linear-gradient(135deg, rgba(142, 27, 51, 0.55), rgba(110, 20, 40, 0.35)),
+      #12281B;
+    border: 1px solid rgba(226, 184, 75, 0.3);
+    box-shadow: 0 20px 60px rgba(2, 10, 6, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .xm-gifts__final-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    color: #FFFFFF;
+    margin-bottom: var(--space-6, 24px);
+  }
+  .xm-gifts__final-text strong { color: #F6D985; font-style: italic; }
+  .xm-gifts__final-cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 1023px) {
+    .xm-gifts__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 639px) {
+    .xm-gifts__grid { grid-template-columns: 1fr; gap: 34px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .xm-gift, .xm-gift__bow, .xm-gift__media img { transition: none; }
+  }
+</style>

@@ -11,6 +11,8 @@ export interface ButtonProps {
   external?: boolean;
   pulse?: boolean;
   type?: 'button' | 'submit';
+  /** Clases extra (se suman a las del botón). */
+  class?: string;
   [key: string]: unknown;
 }
 
@@ -21,6 +23,7 @@ const {
   external = false,
   pulse = false,
   type = 'button',
+  class: extraClass,
   ...rest
 } = Astro.props as ButtonProps;
 
@@ -30,7 +33,7 @@ const externalProps = external ? { target: '_blank', rel: 'noopener noreferrer' 
 
 <Tag
   href={href}
-  class:list={['btn', `btn--${variant}`, `btn--${size}`, { 'pulse-gold': pulse }]}
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, { 'pulse-gold': pulse }, extraClass]}
   type={!href ? type : undefined}
   {...externalProps}
   {...rest}

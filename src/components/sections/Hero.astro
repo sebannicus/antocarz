@@ -13,8 +13,11 @@ import Button from '../ui/Button.astro';
 import { SITE } from '../../content/site';
 import { ACTIVE_CAMPAIGN } from '../../content/campaign';
 import HalloweenHeroScene from '../campaign/halloween/HalloweenHeroScene.astro';
+import NavidadHeroScene from '../campaign/navidad/NavidadHeroScene.astro';
+import NavidadCountdown from '../campaign/navidad/NavidadCountdown.astro';
 
 const isHalloween = ACTIVE_CAMPAIGN?.id === 'halloween';
+const isNavidad = ACTIVE_CAMPAIGN?.id === 'navidad';
 
 const whatsappMsg = encodeURIComponent('Hola Antocarz 👋 Vi su página web y quiero cotizar un servicio. ¿Me pueden ayudar?');
 const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${whatsappMsg}`;
@@ -71,6 +74,7 @@ const marqueeItems: MarqueeItem[] = [
 <section class="hero" id="inicio" aria-label="Inicio">
 
   {isHalloween && <HalloweenHeroScene />}
+  {isNavidad && <NavidadHeroScene />}
 
   <!-- Degradado de transición texto→slider (solo desktop) -->
   <div class="hero__fade" aria-hidden="true"></div>
@@ -84,6 +88,15 @@ const marqueeItems: MarqueeItem[] = [
           <span class="hw-badge__moon" aria-hidden="true"></span>
           Edición Halloween 2026
         </button>
+      )}
+
+      {isNavidad && (
+        <a href="#regalos" class="xm-badge">
+          <span class="xm-badge__star" aria-hidden="true">★</span>
+          <span class="xm-badge__title">Navidad Antocarz</span>
+          <span class="xm-badge__sep" aria-hidden="true">·</span>
+          <NavidadCountdown variant="compact" />
+        </a>
       )}
 
       <span class="hero__label">
@@ -105,9 +118,14 @@ const marqueeItems: MarqueeItem[] = [
         <Button href={whatsappUrl} variant="primary" size="lg" external={true} pulse={true} data-wa-source="inicio">
           Cotizar por WhatsApp
         </Button>
-        <Button href="#servicios" variant="ghost" size="lg">
+        <Button href="#servicios" variant="ghost" size="lg" class={isNavidad ? 'xm-hide' : undefined}>
           Ver servicios →
         </Button>
+        {isNavidad && (
+          <Button href="#regalos" variant="ghost" size="lg" class="xm-only">
+            Ideas de regalo 🎁
+          </Button>
+        )}
       </div>
 
       <div class="hero__proof">
