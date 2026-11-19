@@ -6,3 +6,7 @@ antocarz-analytics-*.json
 /*.png
 dist/
 .astro/
+npm-cache/
+claude-tmp/
+/*.csv
+/*.log
