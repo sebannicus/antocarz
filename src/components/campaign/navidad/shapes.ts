@@ -110,3 +110,54 @@ export const SLEIGH_SVG = `<svg viewBox="0 0 230 62" focusable="false" aria-hidd
     <path d="M18 34 v12 M48 34 v12" stroke="${C.gold}" stroke-width="2"/>
   </g>
 </svg>`;
+
+/** Papá Noel de pie saludando. viewBox 70×100. El brazo (.xm-santa__arm) se anima vía CSS. */
+export function santaSvg(): string {
+  return `<svg viewBox="0 0 70 100" focusable="false" aria-hidden="true">
+  <ellipse cx="25" cy="96" rx="9" ry="4" fill="#1C1410"/>
+  <ellipse cx="45" cy="96" rx="9" ry="4" fill="#1C1410"/>
+  <rect x="20" y="80" width="10" height="14" fill="${C.red}"/>
+  <rect x="40" y="80" width="10" height="14" fill="${C.red}"/>
+  <path d="M14 82 Q12 52 35 46 Q58 52 56 82z" fill="${C.red}"/>
+  <path d="M33 47 h4 v35 h-4z" fill="${C.cream}"/>
+  <rect x="13" y="70" width="44" height="7" rx="2" fill="#1C1410"/>
+  <rect x="30" y="69" width="10" height="9" rx="1.5" fill="none" stroke="${C.gold}" stroke-width="2"/>
+  <path d="M14 82 Q35 86 56 82 L56 86 Q35 90 14 86z" fill="${C.cream}"/>
+  <path d="M16 54 Q6 64 10 76" stroke="${C.red}" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <circle cx="10" cy="77" r="4.5" fill="${C.cream}"/>
+  <g class="xm-santa__arm">
+    <path d="M54 54 Q64 44 62 30" stroke="${C.red}" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <circle cx="62" cy="27" r="4.5" fill="${C.cream}"/>
+  </g>
+  <circle cx="35" cy="34" r="11" fill="${C.skin}"/>
+  <path d="M22 34 Q24 56 35 58 Q46 56 48 34 Q42 42 35 42 Q28 42 22 34z" fill="${C.cream}"/>
+  <path d="M28 41 Q35 37 42 41 Q35 44 28 41z" fill="${C.cream}"/>
+  <circle cx="31" cy="31" r="1.4" fill="#2A1A10"/>
+  <circle cx="39" cy="31" r="1.4" fill="#2A1A10"/>
+  <circle cx="35" cy="36" r="2.4" fill="#E8836A"/>
+  <path d="M22 28 Q30 4 52 12 L46 18 Q36 14 48 26z" fill="${C.red}"/>
+  <circle cx="53" cy="13" r="4" fill="${C.cream}"/>
+  <rect x="21" y="23" width="28" height="6" rx="3" fill="${C.cream}"/>
+</svg>`;
+}
+
+/** Reno parado de perfil (mirando a la izquierda), con collar y cascabel. viewBox 0 -8 90 88 (las astas suben sobre y=0). */
+export function reindeerSvg(rudolph = false): string {
+  const fur = '#8A5A34';
+  const dark = '#5E3B20';
+  return `<svg viewBox="0 -8 90 88" focusable="false" aria-hidden="true">
+  <path d="M30 46 v28 M38 48 v26 M62 48 v26 M70 46 v28" stroke="${dark}" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="50" cy="44" rx="26" ry="13" fill="${fur}"/>
+  <ellipse cx="50" cy="50" rx="18" ry="6" fill="#C79A6B"/>
+  <ellipse cx="77" cy="38" rx="4" ry="5" fill="${C.cream}"/>
+  <path d="M28 40 L20 18 L30 16 L36 40z" fill="${fur}"/>
+  <path d="M22 26 Q26 30 33 28" stroke="${C.red}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <circle cx="28" cy="31" r="2.6" fill="${C.gold}"/>
+  <ellipse cx="18" cy="16" rx="11" ry="7" fill="${fur}"/>
+  <ellipse cx="10" cy="19" rx="5" ry="4" fill="#C79A6B"/>
+  <path d="M27 11 l7 -4 M17 9 Q14 0 20 -4 M17 4 l-6 -3 M24 9 Q26 0 33 -2 M27 3 l5 -6" stroke="${dark}" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+  <ellipse cx="27" cy="12" rx="4" ry="2" fill="${dark}"/>
+  <circle cx="17" cy="13" r="1.6" fill="#1C1410"/>
+  <circle class="${rudolph ? 'xm-reindeer__nose' : ''}" cx="6" cy="18" r="${rudolph ? 3.6 : 2.4}" fill="${rudolph ? '#FF3B4E' : '#2A1A10'}"/>
+</svg>`;
+}

@@ -12,7 +12,7 @@
 import Button from '../../ui/Button.astro';
 import NavidadCountdown from './NavidadCountdown.astro';
 import { SITE } from '../../../content/site';
-import { XMAS, giftSvg } from './shapes';
+import { XMAS, giftSvg, santaSvg, reindeerSvg, SLEIGH_SVG } from './shapes';
 
 type Regalo = {
   title: string;
@@ -103,6 +103,8 @@ const BOW: Record<Regalo['ribbon'], string> = {
     </header>
 
     <div class="xm-gifts__countdown">
+      <span class="xm-gifts__santa" aria-hidden="true" set:html={santaSvg()} />
+      <span class="xm-gifts__rudolph" aria-hidden="true" set:html={reindeerSvg(true)} />
       <p class="xm-gifts__countdown-label">Cuenta regresiva para Navidad</p>
       <NavidadCountdown variant="full" />
     </div>
@@ -130,6 +132,10 @@ const BOW: Record<Regalo['ribbon'], string> = {
     </ul>
 
     <div class="xm-gifts__final">
+      <span class="xm-gifts__final-sleigh" aria-hidden="true" set:html={SLEIGH_SVG} />
+      <span class="xm-gifts__final-deer xm-gifts__final-deer--l" aria-hidden="true" set:html={reindeerSvg()} />
+      <span class="xm-gifts__final-deer xm-gifts__final-deer--r" aria-hidden="true" set:html={reindeerSvg(true)} />
+      <span class="xm-gifts__final-santa" aria-hidden="true" set:html={santaSvg()} />
       <p class="xm-gifts__final-text">¿No sabes qué regalar? <strong>Te ayudamos a elegir.</strong></p>
       <div class="xm-gifts__final-cta">
         <Button href={helpUrl} variant="primary" size="lg" external={true} pulse={true} data-wa-source="navidad-cta">
@@ -374,6 +380,71 @@ const BOW: Record<Regalo['ribbon'], string> = {
     gap: var(--space-4);
   }
 
+  /* ── Papá Noel y Rodolfo escoltando el contador ── */
+  .xm-gifts__countdown { position: relative; }
+  .xm-gifts__santa, .xm-gifts__rudolph {
+    position: absolute;
+    bottom: 0;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
+  }
+  .xm-gifts__santa { left: -110px; width: 86px; }
+  .xm-gifts__rudolph { right: -140px; width: 120px; transform-origin: bottom center; animation: xm-deer-nod 4s ease-in-out infinite; }
+  .xm-gifts__santa :global(svg), .xm-gifts__rudolph :global(svg),
+  .xm-gifts__final-deer :global(svg), .xm-gifts__final-santa :global(svg),
+  .xm-gifts__final-sleigh :global(svg) { display: block; width: 100%; height: auto; overflow: visible; }
+  .xm-gifts__santa :global(.xm-santa__arm),
+  .xm-gifts__final-santa :global(.xm-santa__arm) {
+    transform-origin: 54px 54px;
+    animation: xm-gifts-wave 1.2s ease-in-out infinite alternate;
+  }
+  .xm-gifts :global(.xm-reindeer__nose) { animation: xm-gifts-nose 1s ease-in-out infinite; }
+  @keyframes xm-gifts-wave {
+    from { transform: rotate(-14deg); }
+    to   { transform: rotate(16deg); }
+  }
+  @keyframes xm-gifts-nose {
+    0%, 100% { filter: drop-shadow(0 0 2px #FF3B4E); }
+    50%      { filter: drop-shadow(0 0 8px #FF3B4E); }
+  }
+  @keyframes xm-deer-nod {
+    0%, 75%, 100% { transform: rotate(0); }
+    85%           { transform: rotate(4deg); }
+  }
+
+  /* ── Tarjeta final: renos y Papá Noel sobre el borde, trineo cruzando ── */
+  .xm-gifts__final { position: relative; overflow: visible; }
+  .xm-gifts__final-deer, .xm-gifts__final-santa {
+    position: absolute;
+    top: 1px;
+    transform: translateY(-100%);
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+  }
+  .xm-gifts__final-deer--l { left: 6%; width: 80px; scale: -1 1; }
+  .xm-gifts__final-deer--r { right: 6%; width: 90px; }
+  .xm-gifts__final-santa { right: calc(6% + 92px); width: 56px; }
+  .xm-gifts__final-sleigh {
+    position: absolute;
+    top: -96px;
+    left: 0;
+    width: 150px;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 8px rgba(246, 217, 133, 0.5));
+    animation: xm-final-fly 16s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes xm-final-fly {
+    0%   { transform: translateX(-180px) translateY(10px); opacity: 0; }
+    8%   { opacity: 0.85; }
+    60%  { transform: translateX(calc(100cqw + 40px)) translateY(-10px); opacity: 0.85; }
+    65%, 100% { transform: translateX(calc(100cqw + 40px)) translateY(-10px); opacity: 0; }
+  }
+  .xm-gifts__final { container-type: inline-size; }
+
+  @media (max-width: 900px) {
+    .xm-gifts__santa { left: -8px; width: 54px; bottom: auto; top: -64px; }
+    .xm-gifts__rudolph { right: -8px; width: 76px; bottom: auto; top: -60px; }
+  }
+
   @media (max-width: 1023px) {
     .xm-gifts__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
@@ -382,5 +453,7 @@ const BOW: Record<Regalo['ribbon'], string> = {
   }
   @media (prefers-reduced-motion: reduce) {
     .xm-gift, .xm-gift__bow, .xm-gift__media img { transition: none; }
+    .xm-gifts__rudolph, .xm-gifts__final-sleigh, .xm-gifts :global(*) { animation: none !important; }
+    .xm-gifts__final-sleigh { display: none; }
   }
 </style>

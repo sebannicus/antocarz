@@ -10,7 +10,7 @@
  *  3. .xm-ground (sobre la franja de marcas): pino, gnomos y regalos.
  *     Clic en un gnomo → salta.
  */
-import { XMAS, SLEIGH_SVG, gnomeSvg, treeSvg, giftSvg } from './shapes';
+import { XMAS, SLEIGH_SVG, gnomeSvg, treeSvg, giftSvg, santaSvg, reindeerSvg } from './shapes';
 
 // Guirnalda: N curvas colgantes; ampolletas sobre y = TOP + SAG·4t(1−t).
 const SWAGS = 4;
@@ -78,20 +78,28 @@ const GIFT_FOR_RAIN = [
     {farTrees.map((t) => (
       <span class="xm-far-tree" style={`--x:${t.x}%; --h:${t.h}px;`} set:html={TREE} />
     ))}
+    <span class="xm-far-deer xm-far-deer--1" set:html={reindeerSvg()} />
+    <span class="xm-far-deer xm-far-deer--2" set:html={reindeerSvg()} />
+    <span class="xm-far-deer xm-far-deer--3" set:html={reindeerSvg(true)} />
   </div>
 </div>
 
 <div class="xm-flight" aria-hidden="true">
   <button type="button" class="xm-sleigh" data-xm-sleigh tabindex="-1" set:html={SLEIGH_SVG}></button>
+  <button type="button" class="xm-sleigh xm-sleigh--back" data-xm-sleigh tabindex="-1" set:html={SLEIGH_SVG}></button>
+  <button type="button" class="xm-sleigh xm-sleigh--far" data-xm-sleigh tabindex="-1" set:html={SLEIGH_SVG}></button>
 </div>
 
 <div class="xm-ground" aria-hidden="true">
+  <button type="button" class="xm-deer xm-deer--a" data-xm-gnome tabindex="-1" set:html={reindeerSvg(true)} />
   <span class="xm-ground__tree" set:html={TREE} />
   <button type="button" class="xm-gnome xm-gnome--a" data-xm-gnome tabindex="-1" set:html={gnomeSvg(XMAS.red, XMAS.pine)} />
   <span class="xm-ground__gift xm-ground__gift--lg" set:html={giftSvg(XMAS.burgundy, XMAS.gold)} />
   <span class="xm-ground__gift xm-ground__gift--sm" set:html={giftSvg(XMAS.gold, XMAS.red)} />
   <button type="button" class="xm-gnome xm-gnome--b" data-xm-gnome tabindex="-1" set:html={gnomeSvg(XMAS.pineLight, XMAS.burgundy)} />
   <span class="xm-ground__gift xm-ground__gift--md" set:html={giftSvg(XMAS.pineLight, XMAS.cream)} />
+  <button type="button" class="xm-santa" data-xm-sleigh tabindex="-1" set:html={santaSvg()} />
+  <button type="button" class="xm-deer xm-deer--b" data-xm-gnome tabindex="-1" set:html={reindeerSvg()} />
 </div>
 
 <template id="xm-gift-templates">
@@ -112,8 +120,8 @@ const GIFT_FOR_RAIN = [
       });
     });
 
-    // Trineo: lluvia de regalos + saludo.
-    const sleigh = document.querySelector<HTMLElement>('[data-xm-sleigh]');
+    // Trineos y Papá Noel: lluvia de regalos + saludo.
+    const santas = Array.from(document.querySelectorAll<HTMLElement>('[data-xm-sleigh]'));
     const tpl = document.getElementById('xm-gift-templates') as HTMLTemplateElement | null;
     let raining = false;
 
@@ -126,7 +134,7 @@ const GIFT_FOR_RAIN = [
       setTimeout(() => el.remove(), 3600);
     };
 
-    sleigh?.addEventListener('click', () => {
+    const rain = () => {
       if (raining || !tpl) return;
       raining = true;
       toast('¡Jo, jo, jo! Feliz Navidad les desea Antocarz 🎄');
@@ -145,7 +153,8 @@ const GIFT_FOR_RAIN = [
         }
       }
       setTimeout(() => { raining = false; }, 4000);
-    });
+    };
+    santas.forEach((s) => s.addEventListener('click', rain));
   }
 </script>
 
@@ -381,6 +390,62 @@ const GIFT_FOR_RAIN = [
     100% { transform: translateY(0) scale(1, 1); }
   }
 
+  /* ── Más trineos: uno de vuelta (espejado) y uno lejano ── */
+  .xm-sleigh--back {
+    top: 62px;
+    width: 170px;
+    animation: xm-fly-back 30s linear 15s infinite;
+    transform: translateX(calc(100vw + 40px)) scaleX(-1);
+  }
+  .xm-sleigh--far {
+    top: 8px;
+    width: 110px;
+    opacity: 0.55;
+    filter: drop-shadow(0 0 6px rgba(246, 217, 133, 0.4)) blur(0.4px);
+    animation: xm-fly 40s linear 9s infinite;
+  }
+  @keyframes xm-fly-back {
+    0%   { transform: translate(calc(100vw + 40px), 0) scaleX(-1) rotate(-3deg); }
+    55%  { transform: translate(40vw, 22px) scaleX(-1) rotate(-1deg); }
+    80%  { transform: translate(-260px, 6px) scaleX(-1) rotate(-4deg); }
+    100% { transform: translate(-260px, 6px) scaleX(-1) rotate(-4deg); }
+  }
+
+  /* ── Renos y Papá Noel en el suelo ── */
+  .xm-deer, .xm-santa {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    pointer-events: auto;
+    transform-origin: bottom center;
+  }
+  .xm-deer :global(svg), .xm-santa :global(svg), .xm-far-deer :global(svg) { display: block; width: 100%; height: auto; }
+  .xm-deer--a { width: 86px; margin-right: -4px; animation: xm-graze 5s ease-in-out infinite; }
+  .xm-deer--b { width: 70px; margin-left: -6px; scale: -1 1; animation: xm-graze 5.6s ease-in-out -2s infinite; }
+  .xm-deer.is-hopping { animation: xm-hop 0.7s cubic-bezier(0.3, 1.6, 0.5, 1); }
+  .xm-santa { width: 64px; margin-left: 2px; }
+  .xm-santa :global(.xm-santa__arm) {
+    transform-origin: 54px 54px;
+    animation: xm-wave 1.2s ease-in-out infinite alternate;
+  }
+  :global(.xm-reindeer__nose) { animation: xm-nose 1s ease-in-out infinite; }
+  @keyframes xm-wave {
+    from { transform: rotate(-14deg); }
+    to   { transform: rotate(16deg); }
+  }
+  @keyframes xm-graze {
+    0%, 70%, 100% { transform: rotate(0); }
+    80%           { transform: rotate(4deg); }
+    90%           { transform: rotate(-1deg); }
+  }
+
+  /* Renos lejanos entre los pinos. */
+  .xm-far-deer { position: absolute; bottom: 0; }
+  .xm-far-deer--1 { left: 3.5%; width: 64px; }
+  .xm-far-deer--2 { left: 8.5%; width: 48px; scale: -1 1; }
+  .xm-far-deer--3 { left: 90.5%; width: 58px; }
+
   /* ── Lluvia de regalos y saludo (se agregan a <body>) ── */
   :global(.xm-rain-gift) {
     position: fixed;
@@ -427,19 +492,22 @@ const GIFT_FOR_RAIN = [
       left: auto;
       right: 14px;
       bottom: calc(var(--xm-marquee-h, 58px) - 3px);
-      transform: scale(0.6);
+      transform: scale(0.5);
       transform-origin: bottom right;
     }
     .xm-far-trees { display: none; }
     .xm-garland { height: 50px; }
     .xm-bulb:nth-child(even) { display: none; }
     .xm-sleigh { width: 150px; top: 14px; animation-duration: 18s; }
+    .xm-sleigh--back { width: 110px; top: 44px; animation-duration: 22s; }
+    .xm-sleigh--far { width: 80px; top: 4px; animation-duration: 28s; }
     :global(html[data-campaign="navidad"]) .xm-flight { height: 80px; }
     .xm-bokeh:nth-child(n + 6) { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .xm-scene__warm, .xm-bokeh, .xm-bulb, .xm-gnome,
+    .xm-sleigh--back, .xm-sleigh--far { display: none; }
+    .xm-deer, .xm-santa :global(*), .xm-scene__warm, .xm-bokeh, .xm-bulb, .xm-gnome,
     .xm-ground__tree :global(*), .xm-far-tree :global(*),
     .xm-sleigh :global(*) { animation: none !important; }
     .xm-sleigh { animation: none; transform: none; left: auto; right: 8%; }
